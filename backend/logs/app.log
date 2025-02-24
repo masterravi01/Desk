@@ -1,0 +1,19 @@
+2025-02-24T09:41:47.676Z [INFO]: User created: Ravi 
+2025-02-24T09:42:09.173Z [INFO]: User created: Ronak
+2025-02-24T09:43:16.450Z [INFO]: User created: sonic
+2025-02-24T09:43:35.909Z [ERROR]: Failed to create user: SQLITE_CONSTRAINT: UNIQUE constraint failed: users.email
+2025-02-24T09:43:51.737Z [INFO]: User created: gabru 
+2025-02-24T09:44:05.636Z [INFO]: User created: sanchib
+2025-02-24T09:46:01.460Z [INFO]: User created: hiren bhai 
+2025-02-24T09:57:20.102Z [INFO]: User updated: 1
+2025-02-24T09:57:32.126Z [INFO]: User deleted: 6
+2025-02-24T09:58:36.690Z [INFO]: User updated: 1
+2025-02-24T09:58:44.130Z [INFO]: User deleted: 5
+2025-02-24T10:09:34.631Z [INFO]: User deleted: 4
+2025-02-24T10:09:41.084Z [INFO]: User updated: 3
+2025-02-24T10:10:52.191Z [INFO]: User updated: 1
+2025-02-24T10:11:02.447Z [INFO]: User deleted: 3
+2025-02-24T10:11:10.165Z [INFO]: User created: yyi7t87
+2025-02-24T10:11:15.220Z [INFO]: User updated: 7
+2025-02-24T10:11:22.450Z [INFO]: User updated: 7
+2025-02-24T10:22:46.627Z [INFO]: User created: aaa

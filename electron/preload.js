@@ -1,5 +1,5 @@
-const { contextBridge } = require('electron');
+const { contextBridge, ipcRenderer } = require('electron');
 
-contextBridge.exposeInMainWorld('api', {
-    version: () => process.versions.electron
+contextBridge.exposeInMainWorld('electron', {
+    navigate: (callback) => ipcRenderer.on('navigate', (_event, route) => callback(route))
 });

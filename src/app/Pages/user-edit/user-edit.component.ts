@@ -1,0 +1,42 @@
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { User, UserService } from '../../services/user.service';
+import { MatSelectModule } from '@angular/material/select';
+import { MatInputModule } from '@angular/material/input';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { FormsModule } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button'
+
+@Component({
+  selector: 'app-user-edit',
+  standalone: true,
+  imports: [MatFormFieldModule, MatInputModule, MatSelectModule, MatButtonModule, FormsModule],
+
+  templateUrl: './user-edit.component.html',
+  styleUrls: ['./user-edit.component.scss']
+})
+export class UserEditComponent implements OnInit {
+  user: User = { name: '', email: '' };
+  userId: number | null = null;
+
+  constructor(
+    private userService: UserService,
+    private route: ActivatedRoute,
+    private router: Router
+  ) { }
+
+  ngOnInit(): void {
+    this.userId = Number(this.route.snapshot.paramMap.get('id'));
+    this.userService.getUsers().subscribe(users => {
+      this.user = users.find(u => u.id === this.userId) || { name: '', email: '' };
+    });
+  }
+
+  updateUser() {
+    if (this.userId) {
+      this.userService.updateUser(this.userId, this.user).subscribe(() => {
+        this.router.navigate(['/']);
+      });
+    }
+  }
+}

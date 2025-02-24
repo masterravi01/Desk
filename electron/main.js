@@ -1,5 +1,7 @@
-const { app, BrowserWindow, globalShortcut } = require('electron');
+const { app, BrowserWindow, globalShortcut, Menu } = require('electron');
 const path = require('path');
+
+require('../backend/server');
 
 let mainWindow;
 
@@ -40,6 +42,40 @@ app.whenReady().then(() => {
 
     // ✅ Enable DevTools for debugging
     mainWindow.webContents.openDevTools();
+
+    // Custom Menu with Angular Routes
+    const menuTemplate = [
+        {
+            label: 'Navigation',
+            submenu: [
+                {
+                    label: 'Home',
+                    click: () => {
+                        mainWindow.webContents.send('navigate', '/home');
+                    }
+                },
+                {
+                    label: 'Products',
+                    click: () => {
+                        mainWindow.webContents.send('navigate', '/products');
+                    }
+                },
+                {
+                    label: 'Users',
+                    click: () => {
+                        mainWindow.webContents.send('navigate', '/users');
+                    }
+                },
+                { type: 'separator' },
+                {
+                    label: 'Exit',
+                    role: 'quit'
+                }
+            ]
+        }
+    ];
+    const menu = Menu.buildFromTemplate(menuTemplate);
+    Menu.setApplicationMenu(menu);
 
     mainWindow.on('closed', () => {
         mainWindow = null;
