@@ -1,6 +1,7 @@
 {
   "name": "my-ang",
   "version": "0.0.0",
+  "main": "electron/main.js",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
@@ -8,15 +9,33 @@
     "watch": "ng build --watch --configuration development",
     "electron:start": "electron electron/main.js",
     "electron:build": "ng build && electron-builder",
+  "dist": "electron-builder --win nsis",
     "test": "ng test"
   },
-  "build": {
-    "appId": "com.my-electron-app",
-    "productName": "MyElectronApp",
-    "directories": {
-      "output": "dist-electron"
-    }
+"build": {
+  "appId": "com.yourcompany.yourapp",
+  "productName": "YourApp",
+  "directories": {
+    "output": "dist_electron"
   },
+  "files": [
+    "dist/angular-app/**/*",
+    "electron/**/*",
+     "backend/"
+  ],
+  "extraResources": [
+    {
+      "from": "electron/",
+      "to": "app/electron/"
+    }
+  ],
+  "win": {
+    "target": "nsis",
+    "icon": "assets/icon.ico"
+  }
+}
+
+,
   "private": true,
   "dependencies": {
     "@angular/animations": "^17.3.0",
