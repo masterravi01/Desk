@@ -1,6 +1,12 @@
-const app = require('./app');
-const { PORT } = require('./config/dotenv');
+const app = require("./app");
+const { PORT } = require("./config/dotenv");
 
-app.listen(PORT, () => {
-    console.log(`🚀 Backend running on http://localhost:${PORT}`);
+const server = app.listen(PORT, () => {
+  console.log(`🚀 Backend running on http://localhost:${PORT}`);
+});
+// Gracefully close the server when Electron quits
+process.on("exit", () => {
+  server.close(() => {
+    console.log("Server closed");
+  });
 });

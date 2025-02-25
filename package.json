@@ -6,36 +6,31 @@
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
-    "watch": "ng build --watch --configuration development",
-    "electron:start": "electron electron/main.js",
-    "electron:build": "ng build && electron-builder",
-  "dist": "electron-builder --win nsis",
-    "test": "ng test"
+    "electron": "electron .",
+    "package": "electron-builder --win"
   },
-"build": {
-  "appId": "com.yourcompany.yourapp",
-  "productName": "YourApp",
-  "directories": {
-    "output": "dist_electron"
+  "build": {
+    "appId": "com.yourapp.id",
+    "productName": "Alfaone",
+    "directories": {
+      "output": "dist-electron"
+    },
+    "files": [
+      "dist/**/*",
+      "electron/**/*",
+      "backend/**/*",
+      "node_modules/**/*"
+    ],
+    "extraResources": [
+      {
+        "from": "backend",
+        "to": "backend"
+      }
+    ],
+    "asarUnpack": [
+      "backend/**"
+    ]
   },
-  "files": [
-    "dist/angular-app/**/*",
-    "electron/**/*",
-     "backend/"
-  ],
-  "extraResources": [
-    {
-      "from": "electron/",
-      "to": "app/electron/"
-    }
-  ],
-  "win": {
-    "target": "nsis",
-    "icon": "assets/icon.ico"
-  }
-}
-
-,
   "private": true,
   "dependencies": {
     "@angular/animations": "^17.3.0",
