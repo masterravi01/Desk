@@ -1,16 +1,41 @@
 const { app, BrowserWindow, globalShortcut, Menu } = require("electron");
 const path = require("path");
+const { spawn } = require("child_process");
 
 const isDev = !app.isPackaged;
+
+// ✅ Ensure the backend is correctly referenced
 const backendPath = isDev
   ? path.join(__dirname, "../backend/server.js") // Development mode
-  : path.join(process.resourcesPath, "backend/server.js"); // Production mode
+  : path.join(process.resourcesPath, "backend", "server.js"); // Production mode
 
-require(backendPath);
-
+let backendProcess;
 let mainWindow;
 
+// ✅ Function to start the backend server
+function startBackend() {
+  backendProcess = spawn("node", [backendPath], {
+    cwd: isDev ? path.join(__dirname, "../backend") : process.resourcesPath,
+    stdio: "inherit",
+    shell: true,
+    detached: true, // ✅ Keeps the process running independently
+  });
+
+  backendProcess.on("exit", (code) => {
+    console.log(`Backend process exited with code ${code}`);
+  });
+}
+
+// ✅ Stop backend when the app closes
+app.on("before-quit", () => {
+  console.log("Quitting application...");
+  if (backendProcess) backendProcess.kill();
+  app.exit();
+});
+
 app.whenReady().then(() => {
+  startBackend(); // ✅ Start backend server
+
   mainWindow = new BrowserWindow({
     width: 1200,
     height: 800,
@@ -21,65 +46,54 @@ app.whenReady().then(() => {
     },
   });
 
-  // ✅ Load the index.html file directly
-  mainWindow.loadFile(
-    path.join(__dirname, "../dist/my-ang/browser/index.html")
-  );
+  // ✅ Load the Angular app
+  const appURL = `file://${path.join(
+    __dirname,
+    "../dist/my-ang/browser/index.html"
+  )}`;
 
-  // ✅ Handle refresh issues
+  mainWindow.loadURL(appURL);
+
+  // ✅ Handle refresh issues in production
   mainWindow.webContents.on("did-fail-load", () => {
-    mainWindow.loadFile(
-      path.join(__dirname, "../dist/my-ang/browser/index.html")
-    );
+    mainWindow.loadURL(appURL);
   });
+
+  // ✅ Enable DevTools in development mode only
+  if (isDev) {
+    mainWindow.webContents.openDevTools();
+  }
 
   // ✅ Reload shortcuts
-  globalShortcut.register("F5", () => {
-    mainWindow.reload();
-  });
+  globalShortcut.register("F5", () => mainWindow.reload());
+  globalShortcut.register("CommandOrControl+R", () => mainWindow.reload());
 
-  globalShortcut.register("CommandOrControl+R", () => {
-    mainWindow.reload();
-  });
-
-  // ✅ Prevent full refresh issues, but allow file:// navigations
+  // ✅ Prevent full refresh issues but allow file:// navigations
   mainWindow.webContents.on("will-navigate", (event, url) => {
-    if (!url.startsWith("file://")) {
+    if (!url.startsWith("file://") && !isDev) {
       event.preventDefault();
     }
   });
 
-  // ✅ Enable DevTools for debugging
-  mainWindow.webContents.openDevTools();
-
-  // Custom Menu with Angular Routes
+  // ✅ Custom menu for Angular routes
   const menuTemplate = [
     {
       label: "Navigation",
       submenu: [
         {
           label: "Home",
-          click: () => {
-            mainWindow.webContents.send("navigate", "/home");
-          },
+          click: () => mainWindow.webContents.send("navigate", "/home"),
         },
         {
           label: "Products",
-          click: () => {
-            mainWindow.webContents.send("navigate", "/products");
-          },
+          click: () => mainWindow.webContents.send("navigate", "/products"),
         },
         {
           label: "Users",
-          click: () => {
-            mainWindow.webContents.send("navigate", "/users");
-          },
+          click: () => mainWindow.webContents.send("navigate", "/users"),
         },
         { type: "separator" },
-        {
-          label: "Exit",
-          role: "quit",
-        },
+        { label: "Exit", role: "quit" },
       ],
     },
   ];
@@ -89,10 +103,6 @@ app.whenReady().then(() => {
   mainWindow.on("closed", () => {
     mainWindow = null;
   });
-});
-app.on("before-quit", () => {
-  console.log("Quitting application...");
-  app.exit(); // Ensures process exits properly
 });
 
 app.on("window-all-closed", () => {

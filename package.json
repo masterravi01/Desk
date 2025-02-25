@@ -7,7 +7,8 @@
     "start": "ng serve",
     "build": "ng build",
     "electron": "electron .",
-    "package": "electron-builder --win"
+    "package": "electron-builder --win",
+    "postinstall": "electron-builder install-app-deps"
   },
   "build": {
     "appId": "com.yourapp.id",
@@ -18,17 +19,7 @@
     "files": [
       "dist/**/*",
       "electron/**/*",
-      "backend/**/*",
-      "node_modules/**/*"
-    ],
-    "extraResources": [
-      {
-        "from": "backend",
-        "to": "backend"
-      }
-    ],
-    "asarUnpack": [
-      "backend/**"
+      "backend/**/*"
     ]
   },
   "private": true,
