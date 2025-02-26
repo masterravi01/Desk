@@ -1,27 +1,39 @@
 {
-  "name": "my-ang",
+  "name": "alfa",
   "version": "0.0.0",
   "main": "electron/main.js",
+  "author": "Master Ravi",
+"description": "this is desktop app",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
     "electron": "electron .",
-    "package": "electron-builder --win",
+    "package": "ng build --base-href ./ && electron-builder --win",
     "postinstall": "electron-builder install-app-deps"
   },
-  "build": {
-    "appId": "com.yourapp.id",
-    "productName": "Alfaone",
-    "directories": {
-      "output": "dist-electron"
-    },
-    "files": [
-      "dist/**/*",
-      "electron/**/*",
-      "backend/**/*"
-    ]
+"build": {
+  "appId": "com.master.alfa",
+  "productName": "Alfa",
+  "directories": {
+    "output": "release-builds"
   },
+  "files": [
+    "dist/alfa/**/*",
+    "electron/**/*",
+    "package.json"
+  ],
+  "asar": true,  
+  "win": {
+    "target": "nsis",
+    "icon": "assets/icon.ico"
+  },
+  "nsis": {
+    "oneClick": false,
+    "allowToChangeInstallationDirectory": true
+  }
+}
+,
   "private": true,
   "dependencies": {
     "@angular/animations": "^17.3.0",

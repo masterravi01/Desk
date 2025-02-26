@@ -1,20 +1,22 @@
-import { Component, OnInit } from '@angular/core';
-import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
-import { MatCardModule } from '@angular/material/card'
-import { MatButtonModule } from '@angular/material/button'
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { RouterLink } from '@angular/router';
+import { MatCardModule } from '@angular/material/card';
+import { MatButtonModule } from '@angular/material/button';
 import { User, UserService } from '../../services/user.service';
-import { MatDialog, } from '@angular/material/dialog';
+import { MatDialog } from '@angular/material/dialog';
 import { ConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.component';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-user',
   standalone: true,
   imports: [RouterLink, MatCardModule, MatButtonModule],
   templateUrl: './user.component.html',
-  styleUrl: './user.component.css'
+  styleUrl: './user.component.css',
 })
-export class UserComponent implements OnInit {
+export class UserComponent implements OnInit, OnDestroy {
   users: User[] = [];
+  private subscriptions: Subscription = new Subscription();
 
   constructor(private userService: UserService, private dialog: MatDialog) { }
 
@@ -23,16 +25,20 @@ export class UserComponent implements OnInit {
   }
 
   fetchUsers() {
-    this.userService.getUsers().subscribe((data) => {
+    const sub = this.userService.getUsers().subscribe((data) => {
       this.users = data;
     });
+    this.subscriptions.add(sub);
   }
+
   deleteUser(userId: number) {
     console.log(`User with ID ${userId} deleted`);
-    this.userService.deleteUser(userId).subscribe(() => {
+    const sub = this.userService.deleteUser(userId).subscribe(() => {
       this.fetchUsers();
     });
+    this.subscriptions.add(sub);
   }
+
   confirmDelete(userId: any) {
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
       width: '350px',
@@ -44,5 +50,9 @@ export class UserComponent implements OnInit {
         this.deleteUser(userId);
       }
     });
+  }
+
+  ngOnDestroy(): void {
+    this.subscriptions.unsubscribe(); // Prevent memory leaks
   }
 }

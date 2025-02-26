@@ -19,9 +19,8 @@ export class ProductsComponent {
 
   constructor(private userService: UserService, private router: Router) { }
 
-  createUser() {
-    this.userService.createUser(this.user).subscribe(() => {
-      this.router.navigate(['/']);
-    });
+  async createUser() {
+    await this.userService.addUser(this.user)
+    this.router.navigate(['/']);
   }
 }

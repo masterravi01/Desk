@@ -1,97 +1,54 @@
-const { app, BrowserWindow, globalShortcut, Menu } = require("electron");
+const { app, BrowserWindow, ipcMain, globalShortcut, Menu } = require("electron");
 const path = require("path");
-const { spawn } = require("child_process");
-
 const isDev = !app.isPackaged;
+const { setupIpcHandlers } = require("./ipcHandlers");
 
-// ✅ Ensure the backend is correctly referenced
-const backendPath = isDev
-  ? path.join(__dirname, "../backend/server.js") // Development mode
-  : path.join(process.resourcesPath, "backend", "server.js"); // Production mode
-
-let backendProcess;
 let mainWindow;
 
-// ✅ Function to start the backend server
-function startBackend() {
-  backendProcess = spawn("node", [backendPath], {
-    cwd: isDev ? path.join(__dirname, "../backend") : process.resourcesPath,
-    stdio: "inherit",
-    shell: true,
-    detached: true, // ✅ Keeps the process running independently
-  });
-
-  backendProcess.on("exit", (code) => {
-    console.log(`Backend process exited with code ${code}`);
-  });
-}
-
-// ✅ Stop backend when the app closes
-app.on("before-quit", () => {
-  console.log("Quitting application...");
-  if (backendProcess) backendProcess.kill();
-  app.exit();
-});
-
-app.whenReady().then(() => {
-  startBackend(); // ✅ Start backend server
-
+function createWindow() {
   mainWindow = new BrowserWindow({
     width: 1200,
     height: 800,
     webPreferences: {
-      preload: path.join(__dirname, "preload.js"),
       nodeIntegration: false,
       contextIsolation: true,
+      preload: path.join(app.getAppPath(), "electron", "preload.js"), // FIXED PATH
     },
   });
 
-  // ✅ Load the Angular app
-  const appURL = `file://${path.join(
-    __dirname,
-    "../dist/my-ang/browser/index.html"
-  )}`;
+  const startURL = isDev
+    ? "http://localhost:4200"
+    : `file://${path.resolve(app.getAppPath(), "dist/alfa/browser/index.html")}`; // FIXED PATH
 
-  mainWindow.loadURL(appURL);
+  mainWindow.loadURL(startURL);
 
-  // ✅ Handle refresh issues in production
+  // Handle load failure (retry)
   mainWindow.webContents.on("did-fail-load", () => {
-    mainWindow.loadURL(appURL);
+    mainWindow.loadURL(startURL);
   });
 
-  // ✅ Enable DevTools in development mode only
-  if (isDev) {
-    mainWindow.webContents.openDevTools();
-  }
+  // Open DevTools only in dev mode
+  mainWindow.webContents.openDevTools();
 
-  // ✅ Reload shortcuts
+  // Reload shortcuts
   globalShortcut.register("F5", () => mainWindow.reload());
   globalShortcut.register("CommandOrControl+R", () => mainWindow.reload());
 
-  // ✅ Prevent full refresh issues but allow file:// navigations
+  // Prevent external navigation in production
   mainWindow.webContents.on("will-navigate", (event, url) => {
     if (!url.startsWith("file://") && !isDev) {
       event.preventDefault();
     }
   });
 
-  // ✅ Custom menu for Angular routes
+  // Custom application menu
   const menuTemplate = [
     {
       label: "Navigation",
       submenu: [
-        {
-          label: "Home",
-          click: () => mainWindow.webContents.send("navigate", "/home"),
-        },
-        {
-          label: "Products",
-          click: () => mainWindow.webContents.send("navigate", "/products"),
-        },
-        {
-          label: "Users",
-          click: () => mainWindow.webContents.send("navigate", "/users"),
-        },
+        { label: "Home", click: () => mainWindow.webContents.send("navigate", "/home") },
+        { label: "Products", click: () => mainWindow.webContents.send("navigate", "/products") },
+        { label: "Users", click: () => mainWindow.webContents.send("navigate", "/users") },
         { type: "separator" },
         { label: "Exit", role: "quit" },
       ],
@@ -103,10 +60,17 @@ app.whenReady().then(() => {
   mainWindow.on("closed", () => {
     mainWindow = null;
   });
+}
+
+app.whenReady().then(() => {
+  createWindow();
+  setupIpcHandlers();
 });
 
 app.on("window-all-closed", () => {
-  if (process.platform !== "darwin") {
-    app.quit();
-  }
+  if (process.platform !== "darwin") app.quit();
+});
+
+app.on("activate", () => {
+  if (BrowserWindow.getAllWindows().length === 0) createWindow();
 });

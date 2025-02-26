@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, from } from 'rxjs';
 
 export interface User {
     id?: number;
@@ -9,26 +8,24 @@ export interface User {
 }
 
 @Injectable({
-    providedIn: 'root'
+    providedIn: 'root',
 })
 export class UserService {
-    private apiUrl = 'http://localhost:5000/api/users';
-
-    constructor(private http: HttpClient) { }
+    constructor() { }
 
     getUsers(): Observable<User[]> {
-        return this.http.get<User[]>(this.apiUrl);
+        return from(window.electron.invoke('db:getUsers'));
     }
 
-    createUser(user: User): Observable<User> {
-        return this.http.post<User>(this.apiUrl, user);
-    }
-    updateUser(id: number, user: User): Observable<any> {
-        return this.http.put(`${this.apiUrl}/${id}`, user);
+    addUser(user: { name: string; email: string }): Observable<any> {
+        return from(window.electron.invoke('db:addUser', user));
     }
 
-    deleteUser(id: number): Observable<any> {
-        return this.http.delete(`${this.apiUrl}/${id}`);
+    updateUser(user: { id?: number; name: string; email: string }): Observable<any> {
+        return from(window.electron.invoke('db:updateUser', user));
     }
 
+    deleteUser(userId: number): Observable<any> {
+        return from(window.electron.invoke('db:deleteUser', userId));
+    }
 }

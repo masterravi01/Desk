@@ -11,7 +11,7 @@ declare const window: any;
   styleUrl: './app.component.css'
 })
 export class AppComponent {
-  title = 'my-ang';
+  title = 'alfa';
 
 
   constructor(private router: Router, private ngZone: NgZone) {

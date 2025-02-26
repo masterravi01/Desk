@@ -1,5 +1,6 @@
 const { contextBridge, ipcRenderer } = require('electron');
 
 contextBridge.exposeInMainWorld('electron', {
-    navigate: (callback) => ipcRenderer.on('navigate', (_event, route) => callback(route))
+    invoke: (channel, ...args) => ipcRenderer.invoke(channel, ...args),
+    navigate: (callback) => ipcRenderer.on('navigate', (_, route) => callback(route)),
 });
