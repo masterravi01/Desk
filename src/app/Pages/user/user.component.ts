@@ -6,6 +6,7 @@ import { User, UserService } from '../../services/user.service';
 import { MatDialog } from '@angular/material/dialog';
 import { ConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.component';
 import { Subscription } from 'rxjs';
+import { DocumentGeneratorService } from '../../services/document-generator.service';
 
 @Component({
   selector: 'app-user',
@@ -18,7 +19,7 @@ export class UserComponent implements OnInit, OnDestroy {
   users: User[] = [];
   private subscriptions: Subscription = new Subscription();
 
-  constructor(private userService: UserService, private dialog: MatDialog) { }
+  constructor(private userService: UserService, private dialog: MatDialog, private documentService: DocumentGeneratorService) { }
 
   ngOnInit(): void {
     this.fetchUsers();
@@ -51,7 +52,9 @@ export class UserComponent implements OnInit, OnDestroy {
       }
     });
   }
-
+  downloadWord() {
+    this.documentService.generateWordFile();
+  }
   ngOnDestroy(): void {
     this.subscriptions.unsubscribe(); // Prevent memory leaks
   }

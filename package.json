@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "main": "electron/main.js",
   "author": "Master Ravi",
-"description": "this is desktop app",
+  "description": "this is desktop app",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
@@ -12,28 +12,27 @@
     "package": "ng build --base-href ./ && electron-builder --win",
     "postinstall": "electron-builder install-app-deps"
   },
-"build": {
-  "appId": "com.master.alfa",
-  "productName": "Alfa",
-  "directories": {
-    "output": "release-builds"
+  "build": {
+    "appId": "com.master.alfa",
+    "productName": "Alfa",
+    "directories": {
+      "output": "release-builds"
+    },
+    "files": [
+      "dist/alfa/**/*",
+      "electron/**/*",
+      "package.json"
+    ],
+    "asar": true,
+    "win": {
+      "target": "nsis",
+      "icon": "assets/icon.ico"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true
+    }
   },
-  "files": [
-    "dist/alfa/**/*",
-    "electron/**/*",
-    "package.json"
-  ],
-  "asar": true,  
-  "win": {
-    "target": "nsis",
-    "icon": "assets/icon.ico"
-  },
-  "nsis": {
-    "oneClick": false,
-    "allowToChangeInstallationDirectory": true
-  }
-}
-,
   "private": true,
   "dependencies": {
     "@angular/animations": "^17.3.0",
@@ -47,8 +46,10 @@
     "@angular/platform-browser-dynamic": "^17.3.0",
     "@angular/router": "^17.3.0",
     "cors": "^2.8.5",
+    "docx": "^9.2.0",
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
+    "file-saver": "^2.0.5",
     "rxjs": "~7.8.0",
     "sqlite3": "^5.1.7",
     "tslib": "^2.3.0",
@@ -59,6 +60,7 @@
     "@angular-devkit/build-angular": "^17.3.2",
     "@angular/cli": "^17.3.2",
     "@angular/compiler-cli": "^17.3.0",
+    "@types/file-saver": "^2.0.7",
     "@types/jasmine": "~5.1.0",
     "electron": "^34.2.0",
     "electron-builder": "^25.1.8",
