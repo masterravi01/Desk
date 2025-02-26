@@ -11,6 +11,7 @@ import {
     WidthType,
     ImageRun,
 } from 'docx';
+import * as XLSX from 'xlsx';
 
 @Injectable({
     providedIn: 'root',
@@ -132,5 +133,28 @@ export class DocumentGeneratorService {
     // Convert Image to ArrayBuffer
     getImageAsArrayBuffer(url: string): Promise<ArrayBuffer> {
         return fetch(url).then((response) => response.arrayBuffer());
+    }
+
+    generateExcel() {
+        // Data to export
+        const data = [
+            ['ID', 'Name', 'Amount'], // Header row
+            ['001', 'John Doe', 500],
+            ['002', 'Jane Smith', 700],
+        ];
+
+        // Create a new worksheet
+        const worksheet: XLSX.WorkSheet = XLSX.utils.aoa_to_sheet(data);
+
+        // Create a new workbook
+        const workbook: XLSX.WorkBook = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(workbook, worksheet, 'Sheet1');
+
+        // Generate Excel file
+        const excelBuffer: any = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+
+        // Save the file
+        const excelBlob = new Blob([excelBuffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+        saveAs(excelBlob, 'data.xlsx');
     }
 }

@@ -55,6 +55,9 @@ export class UserComponent implements OnInit, OnDestroy {
   downloadWord() {
     this.documentService.generateWordFile();
   }
+  downloadExcel() {
+    this.documentService.generateExcel();
+  }
   ngOnDestroy(): void {
     this.subscriptions.unsubscribe(); // Prevent memory leaks
   }
