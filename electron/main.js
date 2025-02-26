@@ -3,6 +3,7 @@ const path = require("path");
 const isDev = !app.isPackaged;
 const { setupIpcHandlers } = require("./ipcHandlers");
 
+
 let mainWindow;
 
 function createWindow() {

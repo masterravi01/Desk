@@ -1,12 +1,19 @@
-const fs = require("fs");
+const { createLogger, format, transports } = require("winston");
 const path = require("path");
 
-const logFilePath = path.join(require("electron").app.getPath("userData"), "app.log");
+// Configure logger
+const logger = createLogger({
+    level: "info", // Levels: error, warn, info, http, verbose, debug, silly
+    format: format.combine(
+        format.timestamp({ format: "YYYY-MM-DD HH:mm:ss" }),
+        format.printf(({ timestamp, level, message }) => {
+            return `${timestamp} [${level.toUpperCase()}]: ${message}`;
+        })
+    ),
+    transports: [
+        new transports.File({ filename: path.join(__dirname, "logs", "app.log") }),
+        new transports.Console()
+    ]
+});
 
-function log(message) {
-    const timestamp = new Date().toISOString();
-    const logMessage = `[${timestamp}] ${message}\n`;
-    fs.appendFileSync(logFilePath, logMessage);
-}
-
-module.exports = { log };
+module.exports = logger;

@@ -1,32 +1,6 @@
-const sqlite3 = require("sqlite3").verbose();
-const path = require("path");
-const fs = require("fs");
+const db = require("../database");
 
-const dbPath = path.join(require("electron").app.getPath("userData"), "database.sqlite");
-
-// Ensure database file exists
-if (!fs.existsSync(dbPath)) {
-    fs.writeFileSync(dbPath, "");
-}
-
-const db = new sqlite3.Database(dbPath, (err) => {
-    if (err) console.error("Database Error:", err);
-    else console.log("Connected to SQLite Database");
-});
-
-// Create table
-db.serialize(() => {
-    db.run(
-        `CREATE TABLE IF NOT EXISTS users (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      name TEXT,
-      email TEXT UNIQUE
-    )`
-    );
-});
-
-// CRUD Functions
-function getUsers() {
+function getAllUsers() {
     return new Promise((resolve, reject) => {
         db.all("SELECT * FROM users", [], (err, rows) => {
             if (err) reject(err);
@@ -62,4 +36,4 @@ function deleteUser(userId) {
     });
 }
 
-module.exports = { getUsers, addUser, updateUser, deleteUser };
+module.exports = { getAllUsers, addUser, updateUser, deleteUser };

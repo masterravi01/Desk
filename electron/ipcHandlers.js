@@ -1,9 +1,9 @@
 const { ipcMain } = require("electron");
-const { getUsers, addUser, updateUser, deleteUser } = require("./utils/db");
+const { getAllUsers, addUser, updateUser, deleteUser } = require('./database/models/userModel')
 
 function setupIpcHandlers() {
     ipcMain.handle("db:getUsers", async () => {
-        return await getUsers();
+        return await getAllUsers();
     });
 
     ipcMain.handle("db:addUser", async (event, user) => {
