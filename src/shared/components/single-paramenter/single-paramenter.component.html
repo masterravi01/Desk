@@ -1,0 +1,25 @@
+<div class="d-flex">
+  <h5 mat-dialog-title>Single Parameter</h5>
+  <button
+    mat-button
+    (click)="onCancel()"
+    style="margin-top: 10px; margin-right: 10px"
+  >
+    ❌
+  </button>
+</div>
+<form [formGroup]="singleForm" class="modal-content">
+  <mat-divider></mat-divider>
+
+  <div class="full-width form-field">
+    <label>Value:</label>
+    <mat-form-field appearance="outline" class="full-width">
+      <textarea matInput rows="2" formControlName="value"></textarea>
+    </mat-form-field>
+  </div>
+
+  <div class="actions">
+    <button mat-button (click)="onCancel()">Cancel</button>
+    <button mat-raised-button color="primary" (click)="onSave()">Save</button>
+  </div>
+</form>

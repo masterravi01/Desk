@@ -14,6 +14,9 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { MatTableModule } from '@angular/material/table';
 import { NewCustomerComponent } from '../new-customer/new-customer.component';
 import { ModalService } from '../../../core/services/modal.service';
+import { ContainerModalComponent } from '../container-modal/container-modal.component';
+import { NewCurrencyModalComponent } from '../new-currency-modal/new-currency-modal.component';
+import { SingleParamenterComponent } from '../single-paramenter/single-paramenter.component';
 
 @Component({
   selector: 'app-business-master-modal',
@@ -138,6 +141,42 @@ export class BusinessMasterModalComponent {
     this.modalService.openModal(NewCustomerComponent, {
       width: '80%',
       height: '90%',
+    });
+  }
+  openContainerModal() {
+    this.modalService.openModal(ContainerModalComponent, {
+      width: '50%',
+      height: '90%',
+      position: {
+        top: '40px',
+      },
+    });
+  }
+  openCurrencyModal() {
+    this.modalService.openModal(NewCurrencyModalComponent, {
+      width: '50%',
+      height: '90%',
+      position: {
+        top: '40px',
+      },
+    });
+  }
+  openBottomNoteModal() {
+    this.modalService.openModal(SingleParamenterComponent, {
+      width: '50%',
+      height: '300px',
+      position: {
+        top: '40px',
+      },
+    });
+  }
+  openInstructionModal() {
+    this.modalService.openModal(SingleParamenterComponent, {
+      width: '50%',
+      height: '300px',
+      position: {
+        top: '40px',
+      },
     });
   }
 }

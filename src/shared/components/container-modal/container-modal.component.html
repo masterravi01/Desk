@@ -1,0 +1,62 @@
+<div class="d-flex">
+  <h5 mat-dialog-title>New Container</h5>
+  <button
+    mat-button
+    (click)="onCancel()"
+    style="margin-top: 10px; margin-right: 10px"
+  >
+    ❌
+  </button>
+</div>
+<form [formGroup]="customerForm" class="modal-content">
+  <mat-divider></mat-divider>
+
+  <!-- Basic Details -->
+  <div class="section">
+    <div class="grid">
+      <div class="form-field">
+        <label>Name:</label>
+        <mat-form-field appearance="outline">
+          <input matInput formControlName="name" />
+        </mat-form-field>
+      </div>
+
+      <div class="form-field">
+        <label>type:</label>
+        <mat-form-field appearance="outline">
+          <input matInput formControlName="type" />
+        </mat-form-field>
+      </div>
+      <div class="form-field">
+        <label>length:</label>
+        <mat-form-field appearance="outline">
+          <input matInput formControlName="length" />
+        </mat-form-field>
+      </div>
+      <div class="form-field">
+        <label>width:</label>
+        <mat-form-field appearance="outline">
+          <input matInput formControlName="width" />
+        </mat-form-field>
+      </div>
+
+      <div class="form-field">
+        <label>height:</label>
+        <mat-form-field appearance="outline">
+          <input matInput formControlName="height" />
+        </mat-form-field>
+      </div>
+
+      <div class="form-field">
+        <label>weight:</label>
+        <mat-form-field appearance="outline">
+          <input matInput formControlName="weight" />
+        </mat-form-field>
+      </div>
+    </div>
+  </div>
+  <div class="actions">
+    <button mat-button (click)="onCancel()">Cancel</button>
+    <button mat-raised-button color="primary" (click)="onSave()">Save</button>
+  </div>
+</form>
