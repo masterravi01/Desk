@@ -19,7 +19,11 @@ export class UserComponent implements OnInit, OnDestroy {
   users: User[] = [];
   private subscriptions: Subscription = new Subscription();
 
-  constructor(private userService: UserService, private dialog: MatDialog, private documentService: DocumentGeneratorService) { }
+  constructor(
+    private userService: UserService,
+    private dialog: MatDialog,
+    private documentService: DocumentGeneratorService
+  ) {}
 
   ngOnInit(): void {
     this.fetchUsers();
@@ -28,6 +32,7 @@ export class UserComponent implements OnInit, OnDestroy {
   fetchUsers() {
     const sub = this.userService.getUsers().subscribe((data) => {
       this.users = data;
+      this.confirmDelete(this.users[0].id);
     });
     this.subscriptions.add(sub);
   }
@@ -43,7 +48,10 @@ export class UserComponent implements OnInit, OnDestroy {
   confirmDelete(userId: any) {
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
       width: '350px',
-      data: { title: 'Confirm Delete', message: 'Are you sure you want to delete this user?' },
+      data: {
+        title: 'Confirm Delete',
+        message: 'Are you sure you want to delete this user?',
+      },
     });
 
     dialogRef.afterClosed().subscribe((result) => {

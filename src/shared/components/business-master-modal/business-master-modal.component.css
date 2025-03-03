@@ -1,0 +1,18 @@
+.modal-content {
+  padding: 10px;
+}
+
+.table-container {
+  max-height: 400px;
+  overflow-x: auto;
+  margin: 0 20px;
+}
+
+.d-flex {
+  display: flex;
+  justify-content: space-between;
+}
+
+table {
+  width: 100%;
+}

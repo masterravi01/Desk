@@ -1,8 +1,13 @@
-const { app, BrowserWindow, ipcMain, globalShortcut, Menu } = require("electron");
+const {
+  app,
+  BrowserWindow,
+  ipcMain,
+  globalShortcut,
+  Menu,
+} = require("electron");
 const path = require("path");
 const isDev = !app.isPackaged;
 const { setupIpcHandlers } = require("./ipcHandlers");
-
 
 let mainWindow;
 
@@ -19,7 +24,10 @@ function createWindow() {
 
   const startURL = isDev
     ? "http://localhost:4200"
-    : `file://${path.resolve(app.getAppPath(), "dist/alfa/browser/index.html")}`; // FIXED PATH
+    : `file://${path.resolve(
+        app.getAppPath(),
+        "dist/alfa/browser/index.html"
+      )}`; // FIXED PATH
 
   mainWindow.loadURL(startURL);
 
@@ -45,13 +53,50 @@ function createWindow() {
   // Custom application menu
   const menuTemplate = [
     {
-      label: "Navigation",
+      label: "Master",
       submenu: [
-        { label: "Home", click: () => mainWindow.webContents.send("navigate", "/home") },
-        { label: "Products", click: () => mainWindow.webContents.send("navigate", "/products") },
-        { label: "Users", click: () => mainWindow.webContents.send("navigate", "/users") },
+        {
+          label: "System Parameter",
+          click: () =>
+            mainWindow.webContents.send("navigate", "/systemParameter"),
+        },
+        {
+          label: "Business Master",
+          click: () =>
+            mainWindow.webContents.send("navigate", "/businessMaster"),
+        },
+        {
+          label: "Users",
+          click: () => mainWindow.webContents.send("navigate", "/users"),
+        },
         { type: "separator" },
         { label: "Exit", role: "quit" },
+      ],
+    },
+    {
+      label: "Transactions",
+      submenu: [
+        {
+          label: "Order Confirmation",
+          click: () => mainWindow.webContents.send("navigate", "/home"),
+        },
+        {
+          label: "Confirm Invoice",
+          click: () => mainWindow.webContents.send("navigate", "/products"),
+        },
+      ],
+    },
+    {
+      label: "Report",
+      submenu: [
+        {
+          label: "Order Confirmation",
+          click: () => mainWindow.webContents.send("navigate", "/home"),
+        },
+        {
+          label: "Final Invoice",
+          click: () => mainWindow.webContents.send("navigate", "/products"),
+        },
       ],
     },
   ];
