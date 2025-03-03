@@ -1,5 +1,5 @@
 import { Component, NgZone } from '@angular/core';
-import { Router, RouterOutlet } from '@angular/router';
+import { Router, RouterOutlet, NavigationEnd } from '@angular/router';
 
 declare const window: any;
 
@@ -8,17 +8,25 @@ declare const window: any;
   standalone: true,
   imports: [RouterOutlet],
   templateUrl: './app.component.html',
-  styleUrl: './app.component.css'
+  styleUrl: './app.component.css',
 })
 export class AppComponent {
   title = 'alfa';
 
-
   constructor(private router: Router, private ngZone: NgZone) {
-    if ((window as any).electron) {
-      (window as any).electron.navigate((route: string) => {
+    if (window.electron) {
+      window.electron.navigate((route: string) => {
         this.ngZone.run(() => {
-          this.router.navigateByUrl(route);
+          if (this.router.url === route) {
+            // Force reload when navigating to the same route
+            this.router
+              .navigateByUrl('/', { skipLocationChange: true })
+              .then(() => {
+                this.router.navigateByUrl(route);
+              });
+          } else {
+            this.router.navigateByUrl(route);
+          }
         });
       });
     }
