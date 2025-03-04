@@ -1,1 +1,245 @@
-<p>system-parameter-modal works!</p>
+<!-- <h2 mat-dialog-title>{{ data.title }}</h2>
+<mat-dialog-content>{{ data.message }}</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-button (click)="onCancel()">Cancel</button>
+  <button mat-button color="warn" (click)="onConfirm()">Confirm</button>
+</mat-dialog-actions> -->
+<div class="d-flex">
+  <h5 mat-dialog-title>System Parameter</h5>
+  <button
+    mat-button
+    (click)="onCancel()"
+    style="margin-top: 10px; margin-right: 10px"
+  >
+    ❌
+  </button>
+</div>
+
+<mat-tab-group>
+  <mat-tab label="Customer">
+    <div class="modal-content">
+      <form [formGroup]="companyForm" class="modal-content">
+        <!-- Basic Details -->
+        <div class="section">
+          <h3>Company Details</h3>
+          <div class="grid">
+            <div class="form-field">
+              <label>Name:</label>
+              <mat-form-field appearance="outline">
+                <input matInput formControlName="name" />
+              </mat-form-field>
+            </div>
+
+            <div class="form-field">
+              <label>Short Name</label>
+              <mat-form-field appearance="outline">
+                <input matInput formControlName="shortName" />
+              </mat-form-field>
+            </div>
+
+            <div class="full-width form-field">
+              <label>Address:</label>
+              <mat-form-field appearance="outline" class="full-width">
+                <textarea
+                  matInput
+                  rows="2"
+                  formControlName="address"
+                ></textarea>
+              </mat-form-field>
+            </div>
+            <div class="form-field">
+              <label>City:</label>
+              <mat-form-field appearance="outline">
+                <input matInput formControlName="city" />
+              </mat-form-field>
+            </div>
+
+            <div class="form-field">
+              <label>State:</label>
+              <mat-form-field appearance="outline">
+                <input matInput formControlName="state" />
+              </mat-form-field>
+            </div>
+
+            <div class="form-field">
+              <label>Zip:</label>
+              <mat-form-field appearance="outline">
+                <input matInput formControlName="zip" />
+              </mat-form-field>
+            </div>
+
+            <div class="form-field">
+              <label>Country:</label>
+              <mat-form-field appearance="outline">
+                <input matInput formControlName="country" />
+              </mat-form-field>
+            </div>
+            <div class="form-field">
+              <label>Currency:</label>
+              <mat-form-field appearance="outline">
+                <input matInput formControlName="currency" />
+              </mat-form-field>
+            </div>
+            <div class="form-field">
+              <label>Remark:</label>
+              <mat-form-field appearance="outline">
+                <input matInput formControlName="remark" />
+              </mat-form-field>
+            </div>
+          </div>
+        </div>
+
+        <mat-divider></mat-divider>
+
+        <!-- Bank Address -->
+        <div class="section" formGroupName="bankDetails">
+          <h3>Bank Address</h3>
+          <div class="form-field">
+            <label>Bank Name:</label>
+            <mat-form-field appearance="outline">
+              <input matInput formControlName="bankName" />
+            </mat-form-field>
+          </div>
+          <div class="form-field">
+            <label>Address:</label>
+            <mat-form-field appearance="outline" class="full-width">
+              <textarea
+                matInput
+                rows="2"
+                formControlName="bankAddress"
+              ></textarea>
+            </mat-form-field>
+          </div>
+
+          <div class="grid">
+            <div class="form-field">
+              <label>Branch:</label>
+              <mat-form-field appearance="outline">
+                <input matInput formControlName="bankBranch" />
+              </mat-form-field>
+            </div>
+
+            <div class="form-field">
+              <label>City:</label>
+              <mat-form-field appearance="outline">
+                <input matInput formControlName="bankCity" />
+              </mat-form-field>
+            </div>
+
+            <div class="form-field">
+              <label>State:</label>
+              <mat-form-field appearance="outline">
+                <input matInput formControlName="bankState" />
+              </mat-form-field>
+            </div>
+
+            <div class="form-field">
+              <label>Zip:</label>
+              <mat-form-field appearance="outline">
+                <input matInput formControlName="bankZip" />
+              </mat-form-field>
+            </div>
+
+            <div class="form-field">
+              <label>Country:</label>
+              <mat-form-field appearance="outline">
+                <input matInput formControlName="bankCountry" />
+              </mat-form-field>
+            </div>
+            <div class="form-field">
+              <label>AccountNo:</label>
+              <mat-form-field appearance="outline">
+                <input matInput formControlName="bankAccountNo" />
+              </mat-form-field>
+            </div>
+            <div class="form-field">
+              <label>SwiftCode:</label>
+              <mat-form-field appearance="outline">
+                <input matInput formControlName="bankSwiftCode" />
+              </mat-form-field>
+            </div>
+            <div class="form-field">
+              <label>IEC Code:</label>
+              <mat-form-field appearance="outline">
+                <input matInput formControlName="bankIecCode" />
+              </mat-form-field>
+            </div>
+            <div class="form-field">
+              <label>AD Code:</label>
+              <mat-form-field appearance="outline">
+                <input matInput formControlName="bankAdCode" />
+              </mat-form-field>
+            </div>
+            <div class="form-field">
+              <label>PanNo:</label>
+              <mat-form-field appearance="outline">
+                <input matInput formControlName="bankPanNo" />
+              </mat-form-field>
+            </div>
+          </div>
+        </div>
+
+        <mat-divider></mat-divider>
+
+        <div class="actions">
+          <button mat-button (click)="onCancel()">Cancel</button>
+          <button mat-raised-button color="primary" (click)="onSave()">
+            Save
+          </button>
+        </div>
+      </form>
+    </div>
+  </mat-tab>
+
+  <mat-tab label="Currency">
+    <div class="modal-content">
+      <div class="d-flex">
+        <h4
+          class="primary"
+          style="margin-left: 20px; margin-top: 10px; padding: 0"
+        >
+          Currency
+        </h4>
+        <button
+          mat-raised-button
+          color="primary"
+          style="margin-right: 20px"
+          (click)="openCurrencyModal()"
+        >
+          New Currency
+        </button>
+      </div>
+
+      <div class="table-container">
+        <table mat-table [dataSource]="currency" class="mat-elevation-z8">
+          <ng-container matColumnDef="id">
+            <th mat-header-cell *matHeaderCellDef>Id</th>
+            <td mat-cell *matCellDef="let element">{{ element.id }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="name">
+            <th mat-header-cell *matHeaderCellDef>Currency Name</th>
+            <td mat-cell *matCellDef="let element">{{ element.name }}</td>
+          </ng-container>
+          <ng-container matColumnDef="char">
+            <th mat-header-cell *matHeaderCellDef>Currency Char</th>
+            <td mat-cell *matCellDef="let element">{{ element.char }}</td>
+          </ng-container>
+          <ng-container matColumnDef="country">
+            <th mat-header-cell *matHeaderCellDef>Currency country</th>
+            <td mat-cell *matCellDef="let element">{{ element.country }}</td>
+          </ng-container>
+
+          <tr
+            mat-header-row
+            *matHeaderRowDef="['id', 'name', 'char', 'country']"
+          ></tr>
+          <tr
+            mat-row
+            *matRowDef="let row; columns: ['id', 'name', 'char', 'country']"
+          ></tr>
+        </table>
+      </div>
+    </div>
+  </mat-tab>
+</mat-tab-group>

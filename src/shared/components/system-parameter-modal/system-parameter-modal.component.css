@@ -1,0 +1,68 @@
+.modal-content {
+  padding: 10px;
+}
+
+.table-container {
+  max-height: 400px;
+  overflow-x: auto;
+  margin: 0 20px;
+}
+
+.d-flex {
+  display: flex;
+  justify-content: space-between;
+}
+
+table {
+  width: 100%;
+}
+.section {
+  margin-top: 20px;
+}
+.modal-content {
+  padding: 0 20px;
+}
+h5 {
+  padding: 0 20px;
+  margin: 0;
+}
+h3 {
+  color: #1e88e5;
+  margin-bottom: 8px;
+  font-weight: 500;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0 16px;
+}
+
+.form-field {
+  display: flex;
+  flex-direction: column;
+  margin-top: 8px;
+}
+
+label {
+  font-weight: 600;
+  margin-bottom: 4px;
+  color: #333;
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 10px;
+}
+
+button {
+  margin-left: 10px;
+}
+
+:host ::ng-deep .mat-mdc-form-field-subscript-wrapper {
+  display: none !important;
+}
+mat-divider {
+  margin-top: 20px;
+}

@@ -20,6 +20,7 @@ export class SystemParameterComponent implements OnInit {
     this.modalService.openModal(SystemParameterModalComponent, {
       data: {},
       width: '80%',
+      height: '90%',
       position: {
         top: '20px',
       },
