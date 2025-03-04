@@ -1,5 +1,5 @@
 const db = require("./database");
-const logger = require("../../logger");
+const logger = require("../logger");
 
 // Migration scripts (starting with BottomNote and Company tables)
 const migrations = [
@@ -182,5 +182,4 @@ function applyMigrations() {
   });
 }
 
-// Apply Migrations
-applyMigrations();
+module.exports = { applyMigrations };

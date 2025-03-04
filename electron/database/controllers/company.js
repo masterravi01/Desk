@@ -17,40 +17,44 @@ function addCompany(company) {
       bankName, bankAddressLine1, bankAddressLine2, bankCity, bankPostalCode, bankCountry, swiftCode,
       accountNumber, additionalNumber, importExportCode, bankState, taxIdentificationNumber,
       companyAddressLine1, companyAddressLine2, companyCity, companyPostalCode, companyCountry, companyState
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
   `;
     db.run(
       query,
       [
-        company.companyCode,
-        company.companyName,
-        company.entryDate,
-        company.currencyCode,
-        company.createdBy,
-        company.remarks,
-        company.isCurrentCompany,
-        company.bankName,
-        company.bankAddressLine1,
-        company.bankAddressLine2,
-        company.bankCity,
-        company.bankPostalCode,
-        company.bankCountry,
-        company.swiftCode,
-        company.accountNumber,
-        company.additionalNumber,
-        company.importExportCode,
-        company.bankState,
-        company.taxIdentificationNumber,
-        company.companyAddressLine1,
-        company.companyAddressLine2,
-        company.companyCity,
-        company.companyPostalCode,
-        company.companyCountry,
-        company.companyState,
+        company.companyCode ?? null,
+        company.companyName ?? null,
+        company.entryDate ?? null,
+        company.currencyCode ?? null,
+        company.createdBy ?? null,
+        company.remarks ?? null,
+        company.isCurrentCompany ?? null,
+        company.bankName ?? null,
+        company.bankAddressLine1 ?? null,
+        company.bankAddressLine2 ?? null,
+        company.bankCity ?? null,
+        company.bankPostalCode ?? null,
+        company.bankCountry ?? null,
+        company.swiftCode ?? null,
+        company.accountNumber ?? null,
+        company.additionalNumber ?? null,
+        company.importExportCode ?? null,
+        company.bankState ?? null,
+        company.taxIdentificationNumber ?? null,
+        company.companyAddressLine1 ?? null,
+        company.companyAddressLine2 ?? null,
+        company.companyCity ?? null,
+        company.companyPostalCode ?? null,
+        company.companyCountry ?? null,
+        company.companyState ?? null,
       ],
       function (err) {
-        if (err) reject(err);
-        else resolve({ id: this.lastID, ...company });
+        if (err) {
+          console.error("SQL Error:", err.message);
+          reject(err);
+        } else {
+          resolve({ id: this.lastID, ...company });
+        }
       }
     );
   });

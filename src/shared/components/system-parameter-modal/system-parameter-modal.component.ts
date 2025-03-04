@@ -113,11 +113,11 @@ export class SystemParameterModalComponent implements OnDestroy {
       importExportCode: [''], // Matches importExportCode
       taxIdentificationNumber: [''], // Matches taxIdentificationNumber
     });
-    // const sub = this.masterService.invoke('getCompany', 1).subscribe((data) => {
-    //   console.log(data);
-    // });
+    const sub = this.masterService.invoke('getCompany', 1).subscribe((data) => {
+      console.log(data);
+    });
 
-    // this.subscriptions.add(sub);
+    this.subscriptions.add(sub);
   }
   onCancel(): void {
     this.dialogRef.close(false); // Return false on cancel
