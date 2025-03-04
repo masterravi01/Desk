@@ -226,15 +226,21 @@
 
           <ng-container matColumnDef="name">
             <th mat-header-cell *matHeaderCellDef>Currency Name</th>
-            <td mat-cell *matCellDef="let element">{{ element.name }}</td>
+            <td mat-cell *matCellDef="let element">
+              {{ element.currencyName }}
+            </td>
           </ng-container>
           <ng-container matColumnDef="char">
             <th mat-header-cell *matHeaderCellDef>Currency Char</th>
-            <td mat-cell *matCellDef="let element">{{ element.char }}</td>
+            <td mat-cell *matCellDef="let element">
+              {{ element.currencyChar }}
+            </td>
           </ng-container>
           <ng-container matColumnDef="country">
             <th mat-header-cell *matHeaderCellDef>Currency country</th>
-            <td mat-cell *matCellDef="let element">{{ element.country }}</td>
+            <td mat-cell *matCellDef="let element">
+              {{ element.currencyCountry }}
+            </td>
           </ng-container>
 
           <tr

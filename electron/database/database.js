@@ -131,23 +131,23 @@ const migrations = [
   },
   {
     version: 4,
-    description: "Create CurrencyMST Table",
+    description: "Create currency Table",
     script: `
-        DROP TABLE IF EXISTS currencymst;
-        CREATE TABLE currencymst (
-          id INTEGER PRIMARY KEY AUTOINCREMENT,
-          CrName TEXT DEFAULT NULL,
-          CrChar TEXT DEFAULT NULL,
-          CrCountry TEXT DEFAULT NULL
-        );
-        INSERT INTO currencymst (id, CrName, CrChar, CrCountry) VALUES 
-        (1, NULL, 'SIN $', NULL),
-        (2, 'AUD', 'AUD $', NULL),
-        (3, 'euro', 'EURO', NULL),
-        (4, 'INR', 'Rs', 'India'),
-        (5, 'USD', 'US $', NULL),
-        (6, 'GBP', 'GBP', 'U.K.');
-      `,
+      DROP TABLE IF EXISTS currency;
+      CREATE TABLE currency (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        currencyName TEXT DEFAULT NULL,
+        currencyChar TEXT DEFAULT NULL,
+        currencyCountry TEXT DEFAULT NULL
+      );
+      INSERT INTO currency (id, currencyName, currencyChar, currencyCountry) VALUES 
+      (1, NULL, 'SIN $', NULL),
+      (2, 'AUD', 'AUD $', NULL),
+      (3, 'euro', 'EURO', NULL),
+      (4, 'INR', 'Rs', 'India'),
+      (5, 'USD', 'US $', NULL),
+      (6, 'GBP', 'GBP', 'U.K.');
+    `,
   },
   {
     version: 5,

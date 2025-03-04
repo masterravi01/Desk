@@ -9,7 +9,7 @@
     ❌
   </button>
 </div>
-<form [formGroup]="customerForm" class="modal-content">
+<form [formGroup]="currencyForm" class="modal-content">
   <mat-divider></mat-divider>
 
   <!-- Basic Details -->
@@ -18,20 +18,20 @@
       <div class="form-field">
         <label class="label">Name:</label>
         <mat-form-field appearance="outline">
-          <input matInput formControlName="name" />
+          <input matInput formControlName="currencyName" />
         </mat-form-field>
       </div>
 
       <div class="form-field">
-        <label class="label">Symbol:</label>
+        <label class="label">Char:</label>
         <mat-form-field appearance="outline">
-          <input matInput formControlName="symbol" />
+          <input matInput formControlName="currencyChar" />
         </mat-form-field>
       </div>
       <div class="form-field">
-        <label class="label">country:</label>
+        <label class="label">Country:</label>
         <mat-form-field appearance="outline">
-          <input matInput formControlName="country" />
+          <input matInput formControlName="currencyCountry" />
         </mat-form-field>
       </div>
     </div>

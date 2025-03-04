@@ -103,16 +103,16 @@ INSERT INTO company (
   },
   {
     version: 4,
-    description: "Create CurrencyMST Table",
+    description: "Create currency Table",
     script: `
-      DROP TABLE IF EXISTS currencymst;
-      CREATE TABLE currencymst (
+      DROP TABLE IF EXISTS currency;
+      CREATE TABLE currency (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
-        CrName TEXT DEFAULT NULL,
-        CrChar TEXT DEFAULT NULL,
-        CrCountry TEXT DEFAULT NULL
+        currencyName TEXT DEFAULT NULL,
+        currencyChar TEXT DEFAULT NULL,
+        currencyCountry TEXT DEFAULT NULL
       );
-      INSERT INTO currencymst (id, CrName, CrChar, CrCountry) VALUES 
+      INSERT INTO currency (id, currencyName, currencyChar, currencyCountry) VALUES 
       (1, NULL, 'SIN $', NULL),
       (2, 'AUD', 'AUD $', NULL),
       (3, 'euro', 'EURO', NULL),

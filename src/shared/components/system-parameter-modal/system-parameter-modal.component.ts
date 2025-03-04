@@ -49,32 +49,7 @@ export class SystemParameterModalComponent implements OnDestroy {
   readonly data = inject<any>(MAT_DIALOG_DATA);
   displayedColumns: string[] = ['name', 'email', 'phone'];
   companyForm!: FormGroup;
-  currency = [
-    {
-      id: '4',
-      name: 'US Dollar',
-      char: '$',
-      country: 'USA',
-    },
-    {
-      id: '4',
-      name: 'US Dollar',
-      char: '$',
-      country: 'USA',
-    },
-    {
-      id: '4',
-      name: 'US Dollar',
-      char: '$',
-      country: 'USA',
-    },
-    {
-      id: '4',
-      name: 'US Dollar',
-      char: '$',
-      country: 'USA',
-    },
-  ];
+  currency = [];
   private subscriptions: Subscription = new Subscription();
 
   constructor(
@@ -83,6 +58,7 @@ export class SystemParameterModalComponent implements OnDestroy {
     private masterService: MasterService
   ) {
     this.companyForm = this.fb.group({
+      id: [1],
       companyCode: [''], // Matches companyCode
       companyName: [''], // Matches companyName
       entryDate: [''], // Matches entryDate
@@ -113,10 +89,19 @@ export class SystemParameterModalComponent implements OnDestroy {
       importExportCode: [''], // Matches importExportCode
       taxIdentificationNumber: [''], // Matches taxIdentificationNumber
     });
-    const sub = this.masterService.invoke('getCompany', 1).subscribe((data) => {
-      console.log(data);
-    });
-
+    const sub = this.masterService
+      .invoke('getCompany', 1)
+      .subscribe((data: any) => {
+        console.log(data);
+        this.companyForm.patchValue(data);
+      });
+    const sub1 = this.masterService
+      .invoke('getAllCurrencies')
+      .subscribe((data: any) => {
+        console.log(data);
+        this.currency = data;
+      });
+    this.subscriptions.add(sub1);
     this.subscriptions.add(sub);
   }
   onCancel(): void {
@@ -145,7 +130,7 @@ export class SystemParameterModalComponent implements OnDestroy {
   onSave() {
     console.log(this.companyForm.value);
     const sub = this.masterService
-      .invoke('addCompany', this.companyForm.value)
+      .invoke('updateCompany', this.companyForm.value)
       .subscribe((data) => {
         console.log(data);
       });

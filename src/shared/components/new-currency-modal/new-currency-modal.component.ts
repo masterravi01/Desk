@@ -14,6 +14,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
+import { MasterService } from '../../../core/services/master.service';
 
 @Component({
   selector: 'app-new-currency-modal',
@@ -33,16 +34,17 @@ import { MatButtonModule } from '@angular/material/button';
   styleUrl: './new-currency-modal.component.css',
 })
 export class NewCurrencyModalComponent {
-  customerForm: FormGroup;
+  currencyForm: FormGroup;
 
   constructor(
     private fb: FormBuilder,
-    private dialogRef: MatDialogRef<NewCurrencyModalComponent>
+    private dialogRef: MatDialogRef<NewCurrencyModalComponent>,
+    private masterService: MasterService
   ) {
-    this.customerForm = this.fb.group({
-      name: [''],
-      symbol: [''],
-      country: [''],
+    this.currencyForm = this.fb.group({
+      currencyName: [''],
+      currencyChar: [''],
+      currencyCountry: [''],
     });
   }
 
@@ -51,7 +53,13 @@ export class NewCurrencyModalComponent {
   }
 
   onSave() {
-    console.log(this.customerForm.value);
-    this.dialogRef.close(this.customerForm.value);
+    console.log(this.currencyForm.value);
+    const sub = this.masterService
+      .invoke('addCurrency', this.currencyForm.value)
+      .subscribe((data) => {
+        console.log(data);
+      });
+
+    this.dialogRef.close(this.currencyForm.value);
   }
 }
