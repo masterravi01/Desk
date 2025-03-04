@@ -1,6 +1,7 @@
 <div class="d-flex">
-  <h5 mat-dialog-title>New Customer</h5>
+  <h5 mat-dialog-title class="h5">New Customer</h5>
   <button
+    class="btn"
     mat-button
     (click)="onCancel()"
     style="margin-top: 10px; margin-right: 10px"
@@ -13,66 +14,66 @@
 
   <!-- Basic Details -->
   <div class="section">
-    <h3>Basic Details</h3>
+    <h3 class="h3">Basic Details</h3>
     <div class="grid">
       <div class="form-field">
-        <label>Name:</label>
+        <label class="label">Name:</label>
         <mat-form-field appearance="outline">
           <input matInput formControlName="name" />
         </mat-form-field>
       </div>
 
       <div class="form-field">
-        <label>Other Phone:</label>
+        <label class="label">Other Phone:</label>
         <mat-form-field appearance="outline">
           <input matInput formControlName="otherPhone" />
         </mat-form-field>
       </div>
 
       <div class="form-field">
-        <label>Phone:</label>
+        <label class="label">Phone:</label>
         <mat-form-field appearance="outline">
           <input matInput formControlName="phone" />
         </mat-form-field>
       </div>
 
       <div class="form-field">
-        <label>URL:</label>
+        <label class="label">URL:</label>
         <mat-form-field appearance="outline">
           <input matInput formControlName="url" />
         </mat-form-field>
       </div>
 
       <div class="form-field">
-        <label>Email:</label>
+        <label class="label">Email:</label>
         <mat-form-field appearance="outline">
           <input matInput formControlName="email" />
         </mat-form-field>
       </div>
 
       <div class="form-field">
-        <label>Fax:</label>
+        <label class="label">Fax:</label>
         <mat-form-field appearance="outline">
           <input matInput formControlName="fax" />
         </mat-form-field>
       </div>
 
       <div class="form-field">
-        <label>Contact:</label>
+        <label class="label">Contact:</label>
         <mat-form-field appearance="outline">
           <input matInput formControlName="contact" />
         </mat-form-field>
       </div>
 
       <div class="form-field">
-        <label>Remark:</label>
+        <label class="label">Remark:</label>
         <mat-form-field appearance="outline">
           <input matInput formControlName="remark" />
         </mat-form-field>
       </div>
 
       <div class="form-field">
-        <label>Designation:</label>
+        <label class="label">Designation:</label>
         <mat-form-field appearance="outline">
           <input matInput formControlName="designation" />
         </mat-form-field>
@@ -86,9 +87,9 @@
   <div class="section">
     <div class="grid">
       <div>
-        <h3>Customer Address</h3>
+        <h3 class="h3">Customer Address</h3>
         <div class="full-width form-field">
-          <label>Address:</label>
+          <label class="label">Address:</label>
           <mat-form-field appearance="outline" class="full-width">
             <textarea
               matInput
@@ -99,28 +100,28 @@
         </div>
         <div class="grid">
           <div class="form-field">
-            <label>City:</label>
+            <label class="label">City:</label>
             <mat-form-field appearance="outline">
               <input matInput formControlName="customerCity" />
             </mat-form-field>
           </div>
 
           <div class="form-field">
-            <label>State:</label>
+            <label class="label">State:</label>
             <mat-form-field appearance="outline">
               <input matInput formControlName="customerState" />
             </mat-form-field>
           </div>
 
           <div class="form-field">
-            <label>Zip:</label>
+            <label class="label">Zip:</label>
             <mat-form-field appearance="outline">
               <input matInput formControlName="customerZip" />
             </mat-form-field>
           </div>
 
           <div class="form-field">
-            <label>Country:</label>
+            <label class="label">Country:</label>
             <mat-form-field appearance="outline">
               <input matInput formControlName="customerCountry" />
             </mat-form-field>
@@ -128,10 +129,10 @@
         </div>
       </div>
       <div>
-        <h3>Buyer Address</h3>
+        <h3 class="h3">Buyer Address</h3>
 
         <div class="full-width form-field">
-          <label>Address:</label>
+          <label class="label">Address:</label>
           <mat-form-field appearance="outline" class="full-width">
             <textarea
               matInput
@@ -142,28 +143,28 @@
         </div>
         <div class="grid">
           <div class="form-field">
-            <label>City:</label>
+            <label class="label">City:</label>
             <mat-form-field appearance="outline">
               <input matInput formControlName="buyerCity" />
             </mat-form-field>
           </div>
 
           <div class="form-field">
-            <label>State:</label>
+            <label class="label">State:</label>
             <mat-form-field appearance="outline">
               <input matInput formControlName="buyerState" />
             </mat-form-field>
           </div>
 
           <div class="form-field">
-            <label>Zip:</label>
+            <label class="label">Zip:</label>
             <mat-form-field appearance="outline">
               <input matInput formControlName="buyerZip" />
             </mat-form-field>
           </div>
 
           <div class="form-field">
-            <label>Country:</label>
+            <label class="label">Country:</label>
             <mat-form-field appearance="outline">
               <input matInput formControlName="buyerCountry" />
             </mat-form-field>
@@ -177,17 +178,17 @@
 
   <!-- Bank Address -->
   <div class="section">
-    <h3>Bank Address</h3>
+    <h3 class="h3">Bank Address</h3>
     <div class="grid">
       <div>
         <div class="form-field">
-          <label>Bank Name:</label>
+          <label class="label">Bank Name:</label>
           <mat-form-field appearance="outline">
             <input matInput formControlName="bankName" />
           </mat-form-field>
         </div>
         <div class="form-field">
-          <label>Address:</label>
+          <label class="label">Address:</label>
           <mat-form-field appearance="outline" class="full-width">
             <textarea
               matInput
@@ -200,35 +201,35 @@
 
       <div class="grid">
         <div class="form-field">
-          <label>Branch:</label>
+          <label class="label">Branch:</label>
           <mat-form-field appearance="outline">
             <input matInput formControlName="bankBranch" />
           </mat-form-field>
         </div>
 
         <div class="form-field">
-          <label>City:</label>
+          <label class="label">City:</label>
           <mat-form-field appearance="outline">
             <input matInput formControlName="bankCity" />
           </mat-form-field>
         </div>
 
         <div class="form-field">
-          <label>State:</label>
+          <label class="label">State:</label>
           <mat-form-field appearance="outline">
             <input matInput formControlName="bankState" />
           </mat-form-field>
         </div>
 
         <div class="form-field">
-          <label>Zip:</label>
+          <label class="label">Zip:</label>
           <mat-form-field appearance="outline">
             <input matInput formControlName="bankZip" />
           </mat-form-field>
         </div>
 
         <div class="form-field">
-          <label>Country:</label>
+          <label class="label">Country:</label>
           <mat-form-field appearance="outline">
             <input matInput formControlName="bankCountry" />
           </mat-form-field>
@@ -240,7 +241,9 @@
   <mat-divider></mat-divider>
 
   <div class="actions">
-    <button mat-button (click)="onCancel()">Cancel</button>
-    <button mat-raised-button color="primary" (click)="onSave()">Save</button>
+    <button class="btn" mat-button (click)="onCancel()">Cancel</button>
+    <button class="btn" mat-raised-button color="primary" (click)="onSave()">
+      Save
+    </button>
   </div>
 </form>

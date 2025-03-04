@@ -1,12 +1,13 @@
 <!-- <h2 mat-dialog-title>{{ data.title }}</h2>
 <mat-dialog-content>{{ data.message }}</mat-dialog-content>
 <mat-dialog-actions align="end">
-  <button mat-button (click)="onCancel()">Cancel</button>
-  <button mat-button color="warn" (click)="onConfirm()">Confirm</button>
+  <button class='btn' mat-button (click)="onCancel()">Cancel</button>
+  <button class='btn' mat-button color="warn" (click)="onConfirm()">Confirm</button>
 </mat-dialog-actions> -->
 <div class="d-flex">
-  <h5 mat-dialog-title>Business Master</h5>
+  <h5 mat-dialog-title class="h5">Business Master</h5>
   <button
+    class="btn"
     mat-button
     (click)="onCancel()"
     style="margin-top: 10px; margin-right: 10px"
@@ -26,6 +27,7 @@
           Customers
         </h4>
         <button
+          class="btn"
           mat-raised-button
           color="primary"
           style="margin-right: 20px"
@@ -36,7 +38,11 @@
       </div>
 
       <div class="table-container">
-        <table mat-table [dataSource]="customers" class="mat-elevation-z8">
+        <table
+          mat-table
+          [dataSource]="customers"
+          class="mat-elevation-z8 table"
+        >
           <ng-container matColumnDef="name">
             <th mat-header-cell *matHeaderCellDef>Name</th>
             <td mat-cell *matCellDef="let element">{{ element.name }}</td>
@@ -68,6 +74,7 @@
           Instructions
         </h4>
         <button
+          class="btn"
           mat-raised-button
           color="primary"
           style="margin-right: 20px"
@@ -78,7 +85,11 @@
       </div>
 
       <div class="table-container">
-        <table mat-table [dataSource]="instructions" class="mat-elevation-z8">
+        <table
+          mat-table
+          [dataSource]="instructions"
+          class="mat-elevation-z8 table"
+        >
           <ng-container matColumnDef="id">
             <th mat-header-cell *matHeaderCellDef>Id</th>
             <td mat-cell *matCellDef="let element">{{ element.id }}</td>
@@ -105,6 +116,7 @@
           Containers
         </h4>
         <button
+          class="btn"
           mat-raised-button
           color="primary"
           style="margin-right: 20px"
@@ -115,7 +127,11 @@
       </div>
 
       <div class="table-container">
-        <table mat-table [dataSource]="containers" class="mat-elevation-z8">
+        <table
+          mat-table
+          [dataSource]="containers"
+          class="mat-elevation-z8 table"
+        >
           <ng-container matColumnDef="id">
             <th mat-header-cell *matHeaderCellDef>Id</th>
             <td mat-cell *matCellDef="let element">{{ element.id }}</td>
@@ -187,6 +203,7 @@
           Currency
         </h4>
         <button
+          class="btn"
           mat-raised-button
           color="primary"
           style="margin-right: 20px"
@@ -197,7 +214,7 @@
       </div>
 
       <div class="table-container">
-        <table mat-table [dataSource]="currency" class="mat-elevation-z8">
+        <table mat-table [dataSource]="currency" class="mat-elevation-z8 table">
           <ng-container matColumnDef="id">
             <th mat-header-cell *matHeaderCellDef>Id</th>
             <td mat-cell *matCellDef="let element">{{ element.id }}</td>
@@ -238,6 +255,7 @@
           Bottom Notes
         </h4>
         <button
+          class="btn"
           mat-raised-button
           color="primary"
           style="margin-right: 20px"
@@ -248,7 +266,11 @@
       </div>
 
       <div class="table-container">
-        <table mat-table [dataSource]="bottomNote" class="mat-elevation-z8">
+        <table
+          mat-table
+          [dataSource]="bottomNote"
+          class="mat-elevation-z8 table"
+        >
           <ng-container matColumnDef="id">
             <th mat-header-cell *matHeaderCellDef>Id</th>
             <td mat-cell *matCellDef="let element">{{ element.id }}</td>
