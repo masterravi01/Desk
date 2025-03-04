@@ -24,16 +24,16 @@
           <h3>Company Details</h3>
           <div class="grid">
             <div class="form-field">
-              <label>Name:</label>
+              <label>Company Name:</label>
               <mat-form-field appearance="outline">
-                <input matInput formControlName="name" />
+                <input matInput formControlName="companyName" />
               </mat-form-field>
             </div>
 
             <div class="form-field">
-              <label>Short Name</label>
+              <label>Short Code:</label>
               <mat-form-field appearance="outline">
-                <input matInput formControlName="shortName" />
+                <input matInput formControlName="companyCode" />
               </mat-form-field>
             </div>
 
@@ -43,47 +43,47 @@
                 <textarea
                   matInput
                   rows="2"
-                  formControlName="address"
+                  formControlName="companyAddressLine1"
                 ></textarea>
               </mat-form-field>
             </div>
             <div class="form-field">
               <label>City:</label>
               <mat-form-field appearance="outline">
-                <input matInput formControlName="city" />
+                <input matInput formControlName="companyCity" />
               </mat-form-field>
             </div>
 
             <div class="form-field">
               <label>State:</label>
               <mat-form-field appearance="outline">
-                <input matInput formControlName="state" />
+                <input matInput formControlName="companyState" />
               </mat-form-field>
             </div>
 
             <div class="form-field">
               <label>Zip:</label>
               <mat-form-field appearance="outline">
-                <input matInput formControlName="zip" />
+                <input matInput formControlName="companyPostalCode" />
               </mat-form-field>
             </div>
 
             <div class="form-field">
               <label>Country:</label>
               <mat-form-field appearance="outline">
-                <input matInput formControlName="country" />
+                <input matInput formControlName="companyCountry" />
               </mat-form-field>
             </div>
             <div class="form-field">
               <label>Currency:</label>
               <mat-form-field appearance="outline">
-                <input matInput formControlName="currency" />
+                <input matInput formControlName="currencyCode" />
               </mat-form-field>
             </div>
             <div class="form-field">
               <label>Remark:</label>
               <mat-form-field appearance="outline">
-                <input matInput formControlName="remark" />
+                <input matInput formControlName="remarks" />
               </mat-form-field>
             </div>
           </div>
@@ -92,7 +92,7 @@
         <mat-divider></mat-divider>
 
         <!-- Bank Address -->
-        <div class="section" formGroupName="bankDetails">
+        <div class="section">
           <h3>Bank Address</h3>
           <div class="form-field">
             <label>Bank Name:</label>
@@ -106,7 +106,7 @@
               <textarea
                 matInput
                 rows="2"
-                formControlName="bankAddress"
+                formControlName="bankAddressLine1"
               ></textarea>
             </mat-form-field>
           </div>
@@ -115,7 +115,7 @@
             <div class="form-field">
               <label>Branch:</label>
               <mat-form-field appearance="outline">
-                <input matInput formControlName="bankBranch" />
+                <input matInput formControlName="bankAddressLine2" />
               </mat-form-field>
             </div>
 
@@ -136,7 +136,7 @@
             <div class="form-field">
               <label>Zip:</label>
               <mat-form-field appearance="outline">
-                <input matInput formControlName="bankZip" />
+                <input matInput formControlName="bankPostalCode" />
               </mat-form-field>
             </div>
 
@@ -149,31 +149,31 @@
             <div class="form-field">
               <label>AccountNo:</label>
               <mat-form-field appearance="outline">
-                <input matInput formControlName="bankAccountNo" />
+                <input matInput formControlName="accountNumber" />
               </mat-form-field>
             </div>
             <div class="form-field">
               <label>SwiftCode:</label>
               <mat-form-field appearance="outline">
-                <input matInput formControlName="bankSwiftCode" />
+                <input matInput formControlName="swiftCode" />
               </mat-form-field>
             </div>
             <div class="form-field">
               <label>IEC Code:</label>
               <mat-form-field appearance="outline">
-                <input matInput formControlName="bankIecCode" />
+                <input matInput formControlName="importExportCode" />
               </mat-form-field>
             </div>
             <div class="form-field">
               <label>AD Code:</label>
               <mat-form-field appearance="outline">
-                <input matInput formControlName="bankAdCode" />
+                <input matInput formControlName="additionalNumber" />
               </mat-form-field>
             </div>
             <div class="form-field">
               <label>PanNo:</label>
               <mat-form-field appearance="outline">
-                <input matInput formControlName="bankPanNo" />
+                <input matInput formControlName="taxIdentificationNumber" />
               </mat-form-field>
             </div>
           </div>

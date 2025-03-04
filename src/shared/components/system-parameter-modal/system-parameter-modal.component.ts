@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnDestroy } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import {
   MAT_DIALOG_DATA,
@@ -21,6 +21,8 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatDividerModule } from '@angular/material/divider';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
+import { MasterService } from '../../../core/services/master.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-system-parameter-modal',
@@ -42,7 +44,7 @@ import { MatInputModule } from '@angular/material/input';
   templateUrl: './system-parameter-modal.component.html',
   styleUrl: './system-parameter-modal.component.css',
 })
-export class SystemParameterModalComponent {
+export class SystemParameterModalComponent implements OnDestroy {
   readonly dialogRef = inject(MatDialogRef<SystemParameterModalComponent>);
   readonly data = inject<any>(MAT_DIALOG_DATA);
   displayedColumns: string[] = ['name', 'email', 'phone'];
@@ -73,34 +75,49 @@ export class SystemParameterModalComponent {
       country: 'USA',
     },
   ];
+  private subscriptions: Subscription = new Subscription();
 
-  constructor(private modalService: ModalService, private fb: FormBuilder) {
+  constructor(
+    private modalService: ModalService,
+    private fb: FormBuilder,
+    private masterService: MasterService
+  ) {
     this.companyForm = this.fb.group({
-      name: [''],
-      shortName: [''],
-      address: [''],
-      city: [''],
-      state: [''],
-      country: [''],
-      zip: [''],
-      currency: [''],
-      remark: [''],
+      companyCode: [''], // Matches companyCode
+      companyName: [''], // Matches companyName
+      entryDate: [''], // Matches entryDate
+      currencyCode: [''], // Matches currencyCode
+      createdBy: [''], // Matches createdBy
+      remarks: [''], // Matches remarks
+      isCurrentCompany: [0], // Matches isCurrentCompany
 
-      bankDetails: this.fb.group({
-        bankName: [''],
-        bankBranch: [''],
-        bankAddress: [''],
-        bankCity: [''],
-        bankZip: [''],
-        bankState: [''],
-        bankCountry: [''],
-        bankAccountNo: [''],
-        bankSwiftCode: [''],
-        bankIecCode: [''],
-        bankAdCode: [''],
-        bankPanNo: [''],
-      }),
+      // Company Address
+      companyAddressLine1: [''], // Matches companyAddressLine1
+      companyAddressLine2: [''], // Matches companyAddressLine2
+      companyCity: [''], // Matches companyCity
+      companyPostalCode: [''], // Matches companyPostalCode
+      companyCountry: [''], // Matches companyCountry
+      companyState: [''], // Matches companyState
+
+      // Bank Details
+      bankName: [''], // Matches bankName
+      bankAddressLine1: [''], // Matches bankAddressLine1
+      bankAddressLine2: [''], // Matches bankAddressLine2
+      bankCity: [''], // Matches bankCity
+      bankPostalCode: [''], // Matches bankPostalCode
+      bankCountry: [''], // Matches bankCountry
+      bankState: [''], // Matches bankState
+      swiftCode: [''], // Matches swiftCode
+      accountNumber: [''], // Matches accountNumber
+      additionalNumber: [''], // Matches additionalNumber
+      importExportCode: [''], // Matches importExportCode
+      taxIdentificationNumber: [''], // Matches taxIdentificationNumber
     });
+    // const sub = this.masterService.invoke('getCompany', 1).subscribe((data) => {
+    //   console.log(data);
+    // });
+
+    // this.subscriptions.add(sub);
   }
   onCancel(): void {
     this.dialogRef.close(false); // Return false on cancel
@@ -127,6 +144,16 @@ export class SystemParameterModalComponent {
   }
   onSave() {
     console.log(this.companyForm.value);
+    const sub = this.masterService
+      .invoke('addCompany', this.companyForm.value)
+      .subscribe((data) => {
+        console.log(data);
+      });
+    this.subscriptions.add(sub);
+
     this.dialogRef.close(this.companyForm.value);
+  }
+  ngOnDestroy(): void {
+    this.subscriptions.unsubscribe(); // Prevent memory leaks
   }
 }
