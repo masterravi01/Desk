@@ -37,11 +37,17 @@ function createWindow() {
   });
 
   // Open DevTools only in dev mode
-  mainWindow.webContents.openDevTools();
+  // mainWindow.webContents.openDevTools();
+
+  globalShortcut.register("F12", () => mainWindow.webContents.openDevTools());
 
   // Reload shortcuts
   globalShortcut.register("F5", () => mainWindow.reload());
-  globalShortcut.register("CommandOrControl+R", () => mainWindow.reload());
+  globalShortcut.register("CommandOrControl+Shift+I", () => {
+    if (mainWindow) {
+      mainWindow.webContents.toggleDevTools(); // Toggle instead of open
+    }
+  });
 
   // Prevent external navigation in production
   mainWindow.webContents.on("will-navigate", (event, url) => {
