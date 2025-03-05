@@ -149,17 +149,6 @@ const migrations = [
       (6, 'GBP', 'GBP', 'U.K.');
     `,
   },
-  {
-    version: 5,
-    description: "Create Users Table",
-    script: `
-          CREATE TABLE IF NOT EXISTS users (
-              id INTEGER PRIMARY KEY AUTOINCREMENT,
-              name TEXT NOT NULL,
-              email TEXT UNIQUE NOT NULL
-          )
-      `,
-  },
 ];
 
 // Ensure Migrations Table Exists

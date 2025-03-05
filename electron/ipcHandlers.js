@@ -1,10 +1,5 @@
 const { ipcMain } = require("electron");
-const {
-  getAllUsers,
-  addUser,
-  updateUser,
-  deleteUser,
-} = require("./database/models/userModel");
+
 const {
   getCompany,
   addCompany,
@@ -21,23 +16,6 @@ const {
 } = require("./database/controllers/currency");
 
 function setupIpcHandlers() {
-  // User APIs
-  ipcMain.handle("getUsers", async () => {
-    return await getAllUsers();
-  });
-
-  ipcMain.handle("addUser", async (event, user) => {
-    return await addUser(user);
-  });
-
-  ipcMain.handle("updateUser", async (event, user) => {
-    return await updateUser(user);
-  });
-
-  ipcMain.handle("deleteUser", async (event, userId) => {
-    return await deleteUser(userId);
-  });
-
   // Company APIs
   ipcMain.handle("getCompany", async (event, id) => {
     return await getCompany(id);
