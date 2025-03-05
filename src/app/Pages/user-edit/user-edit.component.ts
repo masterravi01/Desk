@@ -29,11 +29,11 @@ export class UserEditComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.userId = Number(this.route.snapshot.paramMap.get('id'));
 
-    const sub = this.userService.getUsers().subscribe((users) => {
-      this.user = users.find((u) => u.id === this.userId) || { name: '', email: '' };
-    });
+    // const sub = this.userService.getUsers().subscribe((users) => {
+    //   this.user = users.find((u) => u.id === this.userId) || { name: '', email: '' };
+    // });
 
-    this.subscriptions.add(sub);
+    // this.subscriptions.add(sub);
   }
 
   updateUser() {

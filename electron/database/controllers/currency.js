@@ -3,7 +3,7 @@ const db = require("../database");
 // Get a currency by ID
 function getCurrency(id) {
   return new Promise((resolve, reject) => {
-    db.get("SELECT * FROM currency WHERE id = ?", [id], (err, row) => {
+    db.get("SELECT * FROM Currency WHERE id = ?", [id], (err, row) => {
       if (err) reject(err);
       else resolve(row);
     });
@@ -13,7 +13,7 @@ function getCurrency(id) {
 // Get all currencies
 function getAllCurrencies() {
   return new Promise((resolve, reject) => {
-    db.all("SELECT * FROM currency", [], (err, rows) => {
+    db.all("SELECT * FROM Currency", [], (err, rows) => {
       if (err) reject(err);
       else resolve(rows);
     });
@@ -24,7 +24,7 @@ function getAllCurrencies() {
 function addCurrency(currency) {
   return new Promise((resolve, reject) => {
     const query = `
-      INSERT INTO currency (currencyName, currencyChar, currencyCountry)
+      INSERT INTO Currency (currencyName, currencyChar, currencyCountry)
       VALUES (?, ?, ?)
     `;
     db.run(
@@ -46,7 +46,7 @@ function addCurrency(currency) {
 function updateCurrency(currency) {
   return new Promise((resolve, reject) => {
     const query = `
-      UPDATE currency SET currencyName = ?, currencyChar = ?, currencyCountry = ?
+      UPDATE Currency SET currencyName = ?, currencyChar = ?, currencyCountry = ?
       WHERE id = ?
     `;
     db.run(
@@ -68,7 +68,7 @@ function updateCurrency(currency) {
 // Delete a currency by ID
 function deleteCurrency(id) {
   return new Promise((resolve, reject) => {
-    db.run("DELETE FROM currency WHERE id = ?", [id], function (err) {
+    db.run("DELETE FROM Currency WHERE id = ?", [id], function (err) {
       if (err) reject(err);
       else resolve({ changes: this.changes });
     });

@@ -56,14 +56,14 @@ function createWindow() {
       label: "Master",
       submenu: [
         {
-          label: "System Parameter",
-          click: () =>
-            mainWindow.webContents.send("navigate", "/systemParameter"),
-        },
-        {
           label: "Business Master",
           click: () =>
             mainWindow.webContents.send("navigate", "/businessMaster"),
+        },
+        {
+          label: "System Parameter",
+          click: () =>
+            mainWindow.webContents.send("navigate", "/systemParameter"),
         },
         {
           label: "Users",

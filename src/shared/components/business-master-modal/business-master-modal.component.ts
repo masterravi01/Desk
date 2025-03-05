@@ -129,7 +129,23 @@ export class BusinessMasterModalComponent {
     { id: '5', value: 'this is base bottom note !' },
     { id: '9', value: 'this is base bottom note !' },
   ];
-  constructor(private modalService: ModalService) {}
+  constructor(private modalService: ModalService) { }
+
+  onTabChange(event: any) {
+    let tab = event.tab.textLabel || "Customer";
+    if (tab == "Customer") this.loadCustomers();
+    if (tab == "Bottom Note") this.loadBottomNote();
+
+  }
+
+  loadCustomers() {
+
+  }
+
+  loadBottomNote() {
+
+  }
+
   onCancel(): void {
     this.dialogRef.close(false); // Return false on cancel
   }
