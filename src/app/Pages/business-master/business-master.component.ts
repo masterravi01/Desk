@@ -24,6 +24,7 @@ export class BusinessMasterComponent implements OnInit {
       position: {
         top: '20px',
       },
+      autoFocus: false,
     });
   }
 }

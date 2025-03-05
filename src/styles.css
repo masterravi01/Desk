@@ -7,6 +7,16 @@ body {
 body {
   margin: 0;
   font-family: Roboto, "Helvetica Neue", sans-serif;
+  background: url("/assets/back.jpg");
+}
+.img {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  margin: 0;
+  mix-blend-mode: multiply;
+  opacity: 0.8;
 }
 
 .modal-content {
