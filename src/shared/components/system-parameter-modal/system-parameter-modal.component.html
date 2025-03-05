@@ -18,7 +18,7 @@
 </div>
 
 <mat-tab-group>
-  <mat-tab label="Customer">
+  <mat-tab label="Company Information">
     <div class="modal-content">
       <form [formGroup]="companyForm" class="modal-content">
         <!-- Basic Details -->
@@ -184,7 +184,9 @@
         <mat-divider></mat-divider>
 
         <div class="actions">
-          <button class="btn" mat-button (click)="onCancel()">Cancel</button>
+          <button class="btn" mat-raised-button (click)="onCancel()">
+            Cancel
+          </button>
           <button
             class="btn"
             mat-raised-button
