@@ -44,19 +44,19 @@ body {
   padding: 0 20px;
 }
 .h5 {
-  padding: 0 20px;
-  margin: 0;
+  padding: 0 20px !important;
+  margin: 0 !important;
 }
 .h3 {
   color: #1e88e5;
-  margin-bottom: 8px;
-  font-weight: 500;
+  margin-bottom: 8px !important;
+  font-weight: 500 !important;
 }
 
 .grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 0 16px;
+  gap: 0 24px;
 }
 
 .form-field {
@@ -69,6 +69,8 @@ body {
   font-weight: 600;
   margin-bottom: 4px;
   color: #333;
+  letter-spacing: 0.5px;
+  font-size: 12px;
 }
 
 .actions {
@@ -85,5 +87,25 @@ body {
   display: none !important;
 }
 mat-divider {
-  margin-top: 20px;
+  margin-top: 24px !important;
+}
+@layer reset, base, overrides;
+
+@layer overrides {
+  mat-form-field {
+    font-size: 12px !important;
+  }
+  mat-form-field:not(.full-width) {
+    height: 32px;
+  }
+
+  mat-form-field .mat-mdc-text-field-wrapper {
+    padding: 4px !important; /* Reduce padding */
+    min-height: 32px;
+  }
+
+  mat-form-field .mat-mdc-form-field-infix {
+    min-height: 22px;
+    padding: 0 0 0 2px !important;
+  }
 }

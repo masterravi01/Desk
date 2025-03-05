@@ -39,7 +39,7 @@ function createWindow() {
   // Open DevTools only in dev mode
   // mainWindow.webContents.openDevTools();
 
-  globalShortcut.register("F12", () => mainWindow.webContents.openDevTools());
+  globalShortcut.register("CommandOrControl+R", () => mainWindow.reload());
 
   // Reload shortcuts
   globalShortcut.register("F5", () => mainWindow.reload());
