@@ -1,5 +1,7 @@
 <div class="d-flex">
-  <h5 mat-dialog-title class="h5">New Currency</h5>
+  <h5 mat-dialog-title class="h5">
+    {{ currencyForm.get("id")?.value ? "Edit" : "Add" }} Currency
+  </h5>
   <button
     class="btn"
     mat-button
@@ -40,7 +42,7 @@
   <div class="actions">
     <button class="btn" mat-button (click)="onCancel()">Cancel</button>
     <button class="btn" mat-raised-button color="primary" (click)="onSave()">
-      Save
+      {{ currencyForm.get("id")?.value ? "Edit" : "Add" }}
     </button>
   </div>
 </form>

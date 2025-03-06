@@ -45,6 +45,7 @@
     "@angular/platform-browser": "^17.3.0",
     "@angular/platform-browser-dynamic": "^17.3.0",
     "@angular/router": "^17.3.0",
+    "@ngneat/until-destroy": "^10.0.0",
     "cors": "^2.8.5",
     "docx": "^9.2.0",
     "dotenv": "^16.4.7",
