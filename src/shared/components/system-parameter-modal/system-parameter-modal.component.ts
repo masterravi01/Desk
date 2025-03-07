@@ -21,6 +21,7 @@ import { NewCustomerComponent } from '../new-customer/new-customer.component';
 import { ModalService } from '../../../core/services/modal.service';
 import { NewCurrencyModalComponent } from '../new-currency-modal/new-currency-modal.component';
 import { MasterService } from '../../../core/services/master.service';
+import { MatCardModule } from '@angular/material/card';
 
 @UntilDestroy()
 @Component({
@@ -39,6 +40,7 @@ import { MasterService } from '../../../core/services/master.service';
     MatDividerModule,
     ReactiveFormsModule,
     MatInputModule,
+    MatCardModule,
   ],
   templateUrl: './system-parameter-modal.component.html',
   styleUrl: './system-parameter-modal.component.css',
