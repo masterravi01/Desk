@@ -18,8 +18,9 @@ import { ContainerModalComponent } from '../container-modal/container-modal.comp
 import { NewCurrencyModalComponent } from '../new-currency-modal/new-currency-modal.component';
 import { SingleParamenterComponent } from '../single-paramenter/single-paramenter.component';
 import { MasterService } from '../../../core/services/master.service';
+import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 
-
+@UntilDestroy()
 @Component({
   selector: 'app-business-master-modal',
   standalone: true,
@@ -145,6 +146,7 @@ export class BusinessMasterModalComponent {
   loadBottomNote() {
     this.masterService
       .invoke('getAllBottomNote')
+      .pipe(untilDestroyed(this))
       .subscribe((data: any) => {
         this.bottomNote = data;
       });
@@ -198,15 +200,21 @@ export class BusinessMasterModalComponent {
       if (result) {
         if (result.delete) {
           console.log('Deleting Bottom Note:', result);
-          this.masterService.invoke('deleteBottomNote', result).subscribe(() => {
-            this.loadBottomNote();
-          });
+          this.masterService
+            .invoke('deleteBottomNote', result)
+            .pipe(untilDestroyed(this))
+            .subscribe(() => {
+              this.loadBottomNote();
+            });
         } else {
           let action = note ? 'updateBottomNote' : 'addBottomNote';
           console.log('Bottom Note Saved:', result);
-          this.masterService.invoke(action, result).subscribe(() => {
-            this.loadBottomNote();
-          });
+          this.masterService
+            .invoke(action, result)
+            .pipe(untilDestroyed(this))
+            .subscribe(() => {
+              this.loadBottomNote();
+            });
         }
       }
     });

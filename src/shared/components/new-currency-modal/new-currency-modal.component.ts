@@ -24,7 +24,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MasterService } from '../../../core/services/master.service';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 
-@UntilDestroy(this)
+@UntilDestroy()
 @Component({
   selector: 'app-new-currency-modal',
   standalone: true,
