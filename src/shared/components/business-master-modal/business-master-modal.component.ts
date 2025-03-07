@@ -17,6 +17,8 @@ import { ModalService } from '../../../core/services/modal.service';
 import { ContainerModalComponent } from '../container-modal/container-modal.component';
 import { NewCurrencyModalComponent } from '../new-currency-modal/new-currency-modal.component';
 import { SingleParamenterComponent } from '../single-paramenter/single-paramenter.component';
+import { MasterService } from '../../../core/services/master.service';
+
 
 @Component({
   selector: 'app-business-master-modal',
@@ -122,14 +124,12 @@ export class BusinessMasterModalComponent {
       country: 'USA',
     },
   ];
-  bottomNote = [
-    { id: '1', value: 'this is base bottom note !' },
-    { id: '2', value: 'this is base bottom note !' },
-    { id: '4', value: 'this is base bottom note !' },
-    { id: '5', value: 'this is base bottom note !' },
-    { id: '9', value: 'this is base bottom note !' },
-  ];
-  constructor(private modalService: ModalService) { }
+  bottomNote = [];
+
+  constructor(
+    private modalService: ModalService,
+    private masterService: MasterService
+  ) { }
 
   onTabChange(event: any) {
     let tab = event.tab.textLabel || "Customer";
@@ -143,7 +143,11 @@ export class BusinessMasterModalComponent {
   }
 
   loadBottomNote() {
-
+    this.masterService
+      .invoke('getAllBottomNote')
+      .subscribe((data: any) => {
+        this.bottomNote = data;
+      });
   }
 
   onCancel(): void {
@@ -177,22 +181,51 @@ export class BusinessMasterModalComponent {
       },
     });
   }
-  openBottomNoteModal() {
-    this.modalService.openModal(SingleParamenterComponent, {
+
+  openBottomNoteModal(note?: any) {
+    const dialogRef = this.modalService.openModal(SingleParamenterComponent, {
       width: '50%',
       height: '300px',
-      position: {
-        top: '40px',
+      position: { top: '40px' },
+      data: {
+        title: note ? 'Edit Bottom Note' : 'New Bottom Note',
+        parameter: 'Bottom Note',
+        info: note ? note : '',
       },
     });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        if (result.delete) {
+          console.log('Deleting Bottom Note:', result);
+          this.masterService.invoke('deleteBottomNote', result).subscribe(() => {
+            this.loadBottomNote();
+          });
+        } else {
+          let action = note ? 'updateBottomNote' : 'addBottomNote';
+          console.log('Bottom Note Saved:', result);
+          this.masterService.invoke(action, result).subscribe(() => {
+            this.loadBottomNote();
+          });
+        }
+      }
+    });
   }
+
+
   openInstructionModal() {
-    this.modalService.openModal(SingleParamenterComponent, {
+    const dialogRef = this.modalService.openModal(SingleParamenterComponent, {
       width: '50%',
       height: '300px',
-      position: {
-        top: '40px',
-      },
+      position: { top: '40px' },
+      data: { title: 'New Instruction', parameter: 'Instruction' },
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        console.log('Instruction Saved:', result);
+        // this.saveBottomNote(result);
+      }
     });
   }
 }

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Inject } from '@angular/core';
 import { FormGroup, FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import {
   MAT_DIALOG_DATA,
@@ -32,21 +32,34 @@ import { MatButtonModule } from '@angular/material/button';
   styleUrl: './single-paramenter.component.css',
 })
 export class SingleParamenterComponent {
+
   singleForm!: FormGroup;
+  title = '';
+  parameter = '';
+
   constructor(
     private fb: FormBuilder,
-    private dialogRef: MatDialogRef<SingleParamenterComponent>
+    private dialogRef: MatDialogRef<SingleParamenterComponent>,
+    @Inject(MAT_DIALOG_DATA) public data: any
   ) {
+    this.title = data?.title || this.title;
+    this.parameter = data?.parameter || this.parameter;
+    let info = data?.info;
     this.singleForm = this.fb.group({
-      value: [''],
+      id: [info?.BID ? info?.BID : ''],
+      value: [info?.BottomNote ? info?.BottomNote : ''],
     });
   }
+
   onCancel() {
-    this.dialogRef.close();
+    this.dialogRef.close(null);
   }
 
   onSave() {
-    console.log(this.singleForm.value);
     this.dialogRef.close(this.singleForm.value);
+  }
+
+  onDelete() {
+    this.dialogRef.close({ ...this.singleForm.value, delete: true });
   }
 }

@@ -1,10 +1,10 @@
 const db = require("../database");
 
-function getBottomNote(BID) {
+function getAllBottomNote() {
   return new Promise((resolve, reject) => {
-    db.get("SELECT * FROM bottomnote WHERE BID = ?", [BID], (err, row) => {
+    db.all("SELECT * FROM bottomnote", [], (err, rows) => {
       if (err) reject(err);
-      else resolve(row);
+      else resolve(rows);
     });
   });
 }
@@ -14,12 +14,12 @@ function addBottomNote(bottomNote) {
     const query = `
       INSERT INTO bottomnote (BottomNote) VALUES (?)
     `;
-    db.run(query, [bottomNote.BottomNote ?? null], function (err) {
+    db.run(query, [bottomNote.value ?? null], function (err) {
       if (err) {
         console.error("SQL Error:", err.message);
         reject(err);
       } else {
-        resolve({ BID: this.lastID, ...bottomNote });
+        resolve({ BID: this.lastID, bottomNote: bottomNote.value });
       }
     });
   });
@@ -30,24 +30,28 @@ function updateBottomNote(bottomNote) {
     const query = `
       UPDATE bottomnote SET BottomNote = ? WHERE BID = ?
     `;
-    db.run(query, [bottomNote.BottomNote, bottomNote.BID], function (err) {
+    db.run(query, [bottomNote.value, bottomNote.id], function (err) {
       if (err) reject(err);
       else resolve({ changes: this.changes });
     });
   });
 }
 
-function deleteBottomNote(BID) {
+function deleteBottomNote(bottomNote) {
   return new Promise((resolve, reject) => {
-    db.run("DELETE FROM bottomnote WHERE BID = ?", [BID], function (err) {
-      if (err) reject(err);
-      else resolve({ changes: this.changes });
-    });
+    db.run(
+      "DELETE FROM bottomnote WHERE BID = ?",
+      [bottomNote.id],
+      function (err) {
+        if (err) reject(err);
+        else resolve({ changes: this.changes });
+      }
+    );
   });
 }
 
 module.exports = {
-  getBottomNote,
+  getAllBottomNote,
   addBottomNote,
   updateBottomNote,
   deleteBottomNote,

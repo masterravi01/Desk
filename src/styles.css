@@ -79,6 +79,12 @@ body {
   margin-top: 10px;
 }
 
+.edit-actions {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 10px;
+}
+
 .btn {
   margin-left: 10px;
 }

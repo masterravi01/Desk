@@ -1,5 +1,5 @@
 <div class="d-flex">
-  <h5 mat-dialog-title class="h5">Single Parameter</h5>
+  <h5 mat-dialog-title class="h5">{{ title }}</h5>
   <button
     class="btn"
     mat-button
@@ -13,17 +13,33 @@
 <form [formGroup]="singleForm" class="modal-content">
   <mat-divider></mat-divider>
 
+  @if(singleForm.get("id")?.value != '') {
   <div class="full-width form-field">
-    <label class="label">Value:</label>
+    <label class="label">ID:</label>
+    <h3>{{ singleForm.get("id")?.value }}</h3>
+  </div>
+  }
+
+  <div class="full-width form-field">
+    <label class="label">{{ parameter }}:</label>
     <mat-form-field appearance="outline" class="full-width">
       <textarea matInput rows="2" formControlName="value"></textarea>
     </mat-form-field>
   </div>
 
-  <div class="actions">
-    <button class="btn" mat-button (click)="onCancel()">Cancel</button>
-    <button class="btn" mat-raised-button color="primary" (click)="onSave()">
-      Save
-    </button>
+  <div class="edit-actions">
+    <div>
+      @if(singleForm.get("id")?.value != '') {
+      <button class="btn" mat-raised-button color="warn" (click)="onDelete()">
+        Delete
+      </button>
+      }
+    </div>
+    <div>
+      <button class="btn" mat-button (click)="onCancel()">Cancel</button>
+      <button class="btn" mat-raised-button color="primary" (click)="onSave()">
+        Save
+      </button>
+    </div>
   </div>
 </form>

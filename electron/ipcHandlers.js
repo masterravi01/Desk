@@ -15,6 +15,13 @@ const {
   getAllCurrencies,
 } = require("./database/controllers/currency");
 
+const {
+  getAllBottomNote,
+  addBottomNote,
+  updateBottomNote,
+  deleteBottomNote,
+} = require("./database/controllers/bottomnote");
+
 function setupIpcHandlers() {
   // Company APIs
   ipcMain.handle("getCompany", async (event, id) => {
@@ -47,6 +54,19 @@ function setupIpcHandlers() {
   });
   ipcMain.handle("deleteCurrency", async (event, id) => {
     return await deleteCurrency(id);
+  });
+
+  ipcMain.handle("getAllBottomNote", async (event) => {
+    return await getAllBottomNote();
+  });
+  ipcMain.handle("addBottomNote", async (event, bottomNote) => {
+    return await addBottomNote(bottomNote);
+  });
+  ipcMain.handle("updateBottomNote", async (event, bottomNote) => {
+    return await updateBottomNote(bottomNote);
+  });
+  ipcMain.handle("deleteBottomNote", async (event, id) => {
+    return await deleteBottomNote(id);
   });
 }
 
