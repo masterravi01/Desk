@@ -79,4 +79,7 @@ export class NewParameterComponent {
 
     this.dialogRef.close(this.parameterForm.value);
   }
+  onDelete() {
+    this.dialogRef.close({ ...this.parameterForm.value, delete: true });
+  }
 }

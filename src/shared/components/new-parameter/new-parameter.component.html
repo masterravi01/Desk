@@ -34,7 +34,13 @@
     </div>
   </div>
   <div class="actions">
-    <button class="btn" mat-button (click)="onCancel()">Cancel</button>
+    @if(parameterForm.get("id")?.value ){
+    <button class="btn" mat-raised-button color="warn" (click)="onDelete()">
+      Delete
+    </button>
+    }
+
+    <button class="btn" mat-raised-button (click)="onCancel()">Cancel</button>
     <button class="btn" mat-raised-button color="primary" (click)="onSave()">
       {{ parameterForm.get("id")?.value ? "Edit" : "Add" }}
     </button>
