@@ -19,10 +19,6 @@ body {
   opacity: 0.8;
 }
 
-.modal-content {
-  padding: 10px;
-}
-
 .table-container {
   max-height: 400px;
   overflow-x: auto;
@@ -38,7 +34,7 @@ body {
   width: 100%;
 }
 .section {
-  margin-top: 20px;
+  margin-top: 10px;
 }
 .modal-content {
   padding: 0 20px;
@@ -48,8 +44,8 @@ body {
   margin: 0 !important;
 }
 .h3 {
-  color: #1e88e5;
-  margin-bottom: 8px !important;
+  color: hsl(208, 79%, 51%);
+  margin-bottom: 4px !important;
   font-weight: 500 !important;
 }
 
@@ -89,6 +85,41 @@ body {
 mat-divider {
   margin-top: 24px !important;
 }
+mat-card-content {
+  padding-top: 6px !important;
+}
+.form-card {
+  padding: 0 20px 20px 20px;
+}
+
+.form-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.label-cell {
+  min-width: 70px;
+  font-weight: 500;
+  padding: 6px 0px;
+  text-align: left;
+  font-size: 12px;
+  letter-spacing: 0.5px;
+}
+
+.input-cell {
+  width: 100%;
+  padding: 6px 0;
+}
+
+mat-form-field {
+  width: 100%;
+}
+
+mat-card {
+  background: #f3f3f3 !important;
+  margin-top: 20px;
+}
+
 @layer reset, base, overrides;
 
 @layer overrides {
@@ -102,10 +133,14 @@ mat-divider {
   mat-form-field .mat-mdc-text-field-wrapper {
     padding: 4px !important; /* Reduce padding */
     min-height: 32px;
+    background: #fff;
   }
 
   mat-form-field .mat-mdc-form-field-infix {
     min-height: 22px;
     padding: 0 0 0 2px !important;
+  }
+  .mat-mdc-dialog-surface {
+    background: #f3f3f3 !important;
   }
 }

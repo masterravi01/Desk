@@ -21,6 +21,7 @@ export class SystemParameterComponent implements OnInit {
       data: {},
       width: '80%',
       height: '90%',
+      maxWidth: '800px',
       position: {
         top: '20px',
       },

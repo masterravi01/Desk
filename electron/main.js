@@ -71,10 +71,7 @@ function createWindow() {
           click: () =>
             mainWindow.webContents.send("navigate", "/systemParameter"),
         },
-        {
-          label: "Users",
-          click: () => mainWindow.webContents.send("navigate", "/users"),
-        },
+
         { type: "separator" },
         { label: "Exit", role: "quit" },
       ],
