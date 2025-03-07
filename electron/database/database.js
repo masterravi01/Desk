@@ -149,6 +149,23 @@ const migrations = [
       (6, 'GBP', 'GBP', 'U.K.');
     `,
   },
+  {
+    version: 5,
+    description: "Create System Parameter",
+    script: `
+      DROP TABLE IF EXISTS systemparameter;
+      CREATE TABLE systemparameter (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        parameterName TEXT DEFAULT NULL,
+        parameterValue TEXT DEFAULT NULL
+      );
+      INSERT INTO systemparameter (id, parameterName, parameterValue) VALUES 
+      (1, 'SystemVersion', '2'),
+      (2, 'WtConstant', '1.41'),
+      (3, 'BoxHMargin', '3'),
+      (4, 'BoxLWMargin', '5');
+    `,
+  },
 ];
 
 // Ensure Migrations Table Exists
@@ -176,10 +193,7 @@ db.all("SELECT version FROM migrations", (err, rows) => {
       if (!appliedVersions.includes(migration.version)) {
         db.exec(migration.script, (err) => {
           if (err) {
-            logger.error(
-              `❌ Migration ${migration.version} Failed:`,
-              err.message
-            );
+            logger.error(`❌ Migration ${migration.version} Failed:`, err);
           } else {
             logger.info(
               `✅ Migration ${migration.version}: ${migration.description}`
