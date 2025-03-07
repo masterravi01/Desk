@@ -339,4 +339,66 @@
       </div>
     </div>
   </mat-tab>
+
+  <mat-tab label="Parameters">
+    <div class="modal-content">
+      <div class="d-flex" style="margin-top: 10px">
+        <h4
+          class="primary"
+          style="margin-left: 20px; margin-top: 10px; padding: 0"
+        >
+          Parameters
+        </h4>
+        <button
+          class="btn"
+          mat-raised-button
+          color="primary"
+          style="margin-right: 20px"
+          (click)="openParameterModal()"
+        >
+          New Parameter
+        </button>
+      </div>
+
+      <div class="table-container">
+        <table
+          mat-table
+          [dataSource]="parameters"
+          class="mat-elevation-z8 table"
+        >
+          <ng-container matColumnDef="id">
+            <th mat-header-cell *matHeaderCellDef>Id</th>
+            <td mat-cell *matCellDef="let element">{{ element.id }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="parameterName">
+            <th mat-header-cell *matHeaderCellDef>Parameter Name</th>
+            <td mat-cell *matCellDef="let element">
+              <a mat-button (click)="openParameterModal(element)">
+                {{ element.parameterName }}</a
+              >
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="parameterValue">
+            <th mat-header-cell *matHeaderCellDef>Parameter Value</th>
+            <td mat-cell *matCellDef="let element">
+              {{ element.parameterValue }}
+            </td>
+          </ng-container>
+
+          <tr
+            mat-header-row
+            *matHeaderRowDef="['id', 'parameterName', 'parameterValue']"
+          ></tr>
+          <tr
+            mat-row
+            *matRowDef="
+              let row;
+              columns: ['id', 'parameterName', 'parameterValue']
+            "
+          ></tr>
+        </table>
+      </div>
+    </div>
+  </mat-tab>
 </mat-tab-group>

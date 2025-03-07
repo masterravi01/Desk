@@ -53,3 +53,23 @@
 2025-03-05 12:21:24 [INFO]: 🔗 Foreign Key support enabled.
 2025-03-05 12:45:04 [INFO]: ✅ Connected to SQLite Database at: C:\Users\Harun\AppData\Roaming\alfa\database.sqlite
 2025-03-05 12:45:05 [INFO]: 🔗 Foreign Key support enabled.
+2025-03-07 11:44:52 [INFO]: ✅ Connected to SQLite Database at: C:\Users\Harun\AppData\Roaming\alfa\database.sqlite
+2025-03-07 11:44:52 [INFO]: 🔗 Foreign Key support enabled.
+2025-03-07 11:48:03 [INFO]: ✅ Connected to SQLite Database at: C:\Users\Harun\AppData\Roaming\alfa\database.sqlite
+2025-03-07 11:48:03 [INFO]: 🔗 Foreign Key support enabled.
+2025-03-07 11:48:03 [ERROR]: ❌ Migration 5 Failed:
+2025-03-07 11:48:50 [INFO]: ✅ Connected to SQLite Database at: C:\Users\Harun\AppData\Roaming\alfa\database.sqlite
+2025-03-07 11:48:51 [INFO]: 🔗 Foreign Key support enabled.
+2025-03-07 11:48:51 [ERROR]: ❌ Migration 5 Failed:
+2025-03-07 11:49:07 [INFO]: ✅ Connected to SQLite Database at: C:\Users\Harun\AppData\Roaming\alfa\database.sqlite
+2025-03-07 11:49:07 [INFO]: 🔗 Foreign Key support enabled.
+2025-03-07 11:49:07 [ERROR]: ❌ Migration 5 Failed: SQLITE_ERROR: table Currency already exists
+2025-03-07 11:49:42 [INFO]: ✅ Connected to SQLite Database at: C:\Users\Harun\AppData\Roaming\alfa\database.sqlite
+2025-03-07 11:49:42 [INFO]: 🔗 Foreign Key support enabled.
+2025-03-07 11:49:42 [ERROR]: ❌ Migration 5 Failed: SQLITE_ERROR: near ")": syntax error
+2025-03-07 11:50:29 [INFO]: ✅ Connected to SQLite Database at: C:\Users\Harun\AppData\Roaming\alfa\database.sqlite
+2025-03-07 11:50:29 [INFO]: 🔗 Foreign Key support enabled.
+2025-03-07 11:50:29 [ERROR]: ❌ Migration 5 Failed: SQLITE_ERROR: near ")": syntax error
+2025-03-07 11:51:36 [INFO]: ✅ Connected to SQLite Database at: C:\Users\Harun\AppData\Roaming\alfa\database.sqlite
+2025-03-07 11:51:36 [INFO]: 🔗 Foreign Key support enabled.
+2025-03-07 11:51:36 [INFO]: ✅ Migration 5: Create System Parameter

@@ -22,6 +22,7 @@ import { ModalService } from '../../../core/services/modal.service';
 import { NewCurrencyModalComponent } from '../new-currency-modal/new-currency-modal.component';
 import { MasterService } from '../../../core/services/master.service';
 import { MatCardModule } from '@angular/material/card';
+import { NewParameterComponent } from '../new-parameter/new-parameter.component';
 
 @UntilDestroy()
 @Component({
@@ -52,6 +53,7 @@ export class SystemParameterModalComponent implements OnInit {
   displayedColumns: string[] = ['name', 'email', 'phone'];
   companyForm!: FormGroup;
   currency: any[] = [];
+  parameters: any[] = [];
 
   constructor(
     private modalService: ModalService,
@@ -63,6 +65,7 @@ export class SystemParameterModalComponent implements OnInit {
     this.initForm();
     this.loadCompanyData();
     this.loadCurrencies();
+    this.loadParameters();
   }
   private initForm() {
     this.companyForm = this.fb.group({
@@ -117,6 +120,16 @@ export class SystemParameterModalComponent implements OnInit {
       });
   }
 
+  private loadParameters() {
+    this.masterService
+      .invoke('getAllSystemParameters')
+      .pipe(untilDestroyed(this))
+      .subscribe((data: any) => {
+        console.log(data);
+        this.parameters = data;
+      });
+  }
+
   onCancel(): void {
     this.dialogRef.close(false);
   }
@@ -145,6 +158,20 @@ export class SystemParameterModalComponent implements OnInit {
       .afterClosed()
       .subscribe((result) => {
         if (result) this.loadCurrencies();
+      });
+  }
+
+  openParameterModal(data?: any) {
+    this.modalService
+      .openModal(NewParameterComponent, {
+        width: '50%',
+        minHeight: '220px',
+        position: { top: '40px' },
+        data,
+      })
+      .afterClosed()
+      .subscribe((result) => {
+        if (result) this.loadParameters();
       });
   }
 

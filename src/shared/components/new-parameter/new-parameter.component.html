@@ -1,0 +1,42 @@
+<div class="d-flex">
+  <h5 mat-dialog-title class="h5">
+    {{ parameterForm.get("id")?.value ? "Edit" : "Add" }} Parameter
+  </h5>
+  <button
+    class="btn"
+    mat-button
+    (click)="onCancel()"
+    tabindex="-1"
+    style="margin-top: 10px; margin-right: 10px"
+  >
+    ❌
+  </button>
+</div>
+<form [formGroup]="parameterForm" class="modal-content">
+  <mat-divider></mat-divider>
+
+  <!-- Basic Details -->
+  <div class="section">
+    <div class="grid">
+      <div class="form-field">
+        <label class="label">Name:</label>
+        <mat-form-field appearance="outline">
+          <input matInput formControlName="parameterName" />
+        </mat-form-field>
+      </div>
+
+      <div class="form-field">
+        <label class="label">Value:</label>
+        <mat-form-field appearance="outline">
+          <input matInput formControlName="parameterValue" />
+        </mat-form-field>
+      </div>
+    </div>
+  </div>
+  <div class="actions">
+    <button class="btn" mat-button (click)="onCancel()">Cancel</button>
+    <button class="btn" mat-raised-button color="primary" (click)="onSave()">
+      {{ parameterForm.get("id")?.value ? "Edit" : "Add" }}
+    </button>
+  </div>
+</form>

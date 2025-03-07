@@ -15,6 +15,14 @@ const {
   getAllCurrencies,
 } = require("./database/controllers/currency");
 
+const {
+  getSystemParameter,
+  getAllSystemParameters,
+  addSystemParameter,
+  updateSystemParameter,
+  deleteSystemParameter,
+} = require("./database/controllers/systemParameter");
+
 function setupIpcHandlers() {
   // Company APIs
   ipcMain.handle("getCompany", async (event, id) => {
@@ -39,6 +47,24 @@ function setupIpcHandlers() {
   ipcMain.handle("getAllCurrencies", async (event, companyId) => {
     return await getAllCurrencies(companyId);
   });
+
+  ipcMain.handle("getSystemParameter", async (event, id) => {
+    return await getSystemParameter(id);
+  });
+  ipcMain.handle("getAllSystemParameters", async (event) => {
+    return await getAllSystemParameters();
+  });
+  ipcMain.handle("updateSystemParameter", async (event, parameter) => {
+    return await updateSystemParameter(parameter);
+  });
+  ipcMain.handle("addSystemParameter", async (event, parameter) => {
+    return await addSystemParameter(parameter);
+  });
+
+  ipcMain.handle("deleteSystemParameter", async (event, id) => {
+    return await deleteSystemParameter(id);
+  });
+
   ipcMain.handle("addCurrency", async (event, currency) => {
     return await addCurrency(currency);
   });
