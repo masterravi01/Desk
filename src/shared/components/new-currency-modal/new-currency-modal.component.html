@@ -39,10 +39,19 @@
       </div>
     </div>
   </div>
-  <div class="actions">
-    <button class="btn" mat-button (click)="onCancel()">Cancel</button>
-    <button class="btn" mat-raised-button color="primary" (click)="onSave()">
-      {{ currencyForm.get("id")?.value ? "Edit" : "Add" }}
-    </button>
+  <div class="edit-actions">
+    <div>
+      @if(currencyForm.get("id")?.value != '') {
+      <button class="btn" mat-raised-button color="warn" (click)="onDelete()">
+        Delete
+      </button>
+      }
+    </div>
+    <div>
+      <button class="btn" mat-button (click)="onCancel()">Cancel</button>
+      <button class="btn" mat-raised-button color="primary" (click)="onSave()">
+        Save
+      </button>
+    </div>
   </div>
 </form>

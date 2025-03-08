@@ -80,4 +80,15 @@ export class NewCurrencyModalComponent {
 
     this.dialogRef.close(this.currencyForm.value);
   }
+  onDelete() {
+    this.masterService
+      .invoke('deleteCurrency', this.currencyForm.get('id')?.value)
+      .pipe(untilDestroyed(this))
+      .subscribe((data) => {
+        console.log(data);
+      });
+
+    this.dialogRef.close(this.currencyForm.value);
+
+  }
 }

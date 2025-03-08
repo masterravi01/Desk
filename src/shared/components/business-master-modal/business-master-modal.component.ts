@@ -99,32 +99,7 @@ export class BusinessMasterModalComponent {
     },
   ];
 
-  currency = [
-    {
-      id: '4',
-      name: 'US Dollar',
-      char: '$',
-      country: 'USA',
-    },
-    {
-      id: '4',
-      name: 'US Dollar',
-      char: '$',
-      country: 'USA',
-    },
-    {
-      id: '4',
-      name: 'US Dollar',
-      char: '$',
-      country: 'USA',
-    },
-    {
-      id: '4',
-      name: 'US Dollar',
-      char: '$',
-      country: 'USA',
-    },
-  ];
+  currency = [];
   bottomNote = [];
 
   constructor(
@@ -136,6 +111,7 @@ export class BusinessMasterModalComponent {
     let tab = event.tab.textLabel || "Customer";
     if (tab == "Customer") this.loadCustomers();
     if (tab == "Bottom Note") this.loadBottomNote();
+    if (tab == "Currency") this.loadCurrency();
 
   }
 
@@ -149,6 +125,16 @@ export class BusinessMasterModalComponent {
       .pipe(untilDestroyed(this))
       .subscribe((data: any) => {
         this.bottomNote = data;
+      });
+  }
+
+  loadCurrency() {
+    this.masterService
+      .invoke('getAllCurrencies')
+      .pipe(untilDestroyed(this))
+      .subscribe((data: any) => {
+        console.log(data);
+        this.currency = data;
       });
   }
 
@@ -174,14 +160,19 @@ export class BusinessMasterModalComponent {
       },
     });
   }
-  openCurrencyModal() {
-    this.modalService.openModal(NewCurrencyModalComponent, {
-      width: '50%',
-      height: '90%',
-      position: {
-        top: '40px',
-      },
-    });
+
+  openCurrencyModal(data?: any) {
+    this.modalService
+      .openModal(NewCurrencyModalComponent, {
+        width: '50%',
+        minHeight: '300px',
+        position: { top: '40px' },
+        data,
+      })
+      .afterClosed()
+      .subscribe((result) => {
+        if (result) this.loadCurrency();
+      });
   }
 
   openBottomNoteModal(note?: any) {

@@ -13,19 +13,31 @@
 <form [formGroup]="singleForm" class="modal-content">
   <mat-divider></mat-divider>
 
-  @if(singleForm.get("id")?.value != '') {
-  <div class="full-width form-field">
-    <label class="label">ID:</label>
-    <h3>{{ singleForm.get("id")?.value }}</h3>
-  </div>
-  }
+  <table class="form-table">
+    <tbody>
+      @if(singleForm.get("id")?.value != '') {
+      <tr>
+        <td class="label-cell">
+          <label>ID:</label>
+        </td>
+        <td class="input-cell">
+          {{ singleForm.get("id")?.value }}
+        </td>
+      </tr>
+      }
 
-  <div class="full-width form-field">
-    <label class="label">{{ parameter }}:</label>
-    <mat-form-field appearance="outline" class="full-width">
-      <textarea matInput rows="2" formControlName="value"></textarea>
-    </mat-form-field>
-  </div>
+      <tr>
+        <td class="label-cell">
+          <label class="label">{{ parameter }}:</label>
+        </td>
+        <td class="input-cell">
+          <mat-form-field appearance="outline" class="full-width">
+            <textarea matInput rows="2" formControlName="value"></textarea>
+          </mat-form-field>
+        </td>
+      </tr>
+    </tbody>
+  </table>
 
   <div class="edit-actions">
     <div>
