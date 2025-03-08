@@ -30,6 +30,13 @@ const {
   deleteSystemParameter,
 } = require("./database/controllers/systemParameter");
 
+const {
+  getAllInstruction,
+  addInstruction,
+  updateInstruction,
+  deleteInstruction,
+} = require("./database/controllers/instruction");
+
 function setupIpcHandlers() {
   // Company APIs
   ipcMain.handle("getCompany", async (event, id) => {
@@ -93,6 +100,19 @@ function setupIpcHandlers() {
   });
   ipcMain.handle("deleteBottomNote", async (event, id) => {
     return await deleteBottomNote(id);
+  });
+
+  ipcMain.handle("getAllInstruction", async (event) => {
+    return await getAllInstruction();
+  });
+  ipcMain.handle("addInstruction", async (event, bottomNote) => {
+    return await addInstruction(bottomNote);
+  });
+  ipcMain.handle("updateInstruction", async (event, bottomNote) => {
+    return await updateInstruction(bottomNote);
+  });
+  ipcMain.handle("deleteInstruction", async (event, id) => {
+    return await deleteInstruction(id);
   });
 }
 

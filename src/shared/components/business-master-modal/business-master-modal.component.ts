@@ -53,13 +53,7 @@ export class BusinessMasterModalComponent {
     { name: 'Jane Smith', email: 'jane@example.com', phone: '987-654-3210' },
     { name: 'John Doe', email: 'john@example.com', phone: '123-456-7890' },
   ];
-  instructions = [
-    { id: '1', value: 'this is base instructions' },
-    { id: '2', value: 'this is base instructions' },
-    { id: '4', value: 'this is base instructions' },
-    { id: '5', value: 'this is base instructions' },
-    { id: '9', value: 'this is base instructions' },
-  ];
+  instructions = [];
   containers = [
     {
       id: '4',
@@ -112,6 +106,7 @@ export class BusinessMasterModalComponent {
     if (tab == "Customer") this.loadCustomers();
     if (tab == "Bottom Note") this.loadBottomNote();
     if (tab == "Currency") this.loadCurrency();
+    if (tab == "Instruction") this.loadInstruction();
 
   }
 
@@ -125,6 +120,15 @@ export class BusinessMasterModalComponent {
       .pipe(untilDestroyed(this))
       .subscribe((data: any) => {
         this.bottomNote = data;
+      });
+  }
+
+  loadInstruction() {
+    this.masterService
+      .invoke('getAllInstruction')
+      .pipe(untilDestroyed(this))
+      .subscribe((data: any) => {
+        this.instructions = data;
       });
   }
 
@@ -183,7 +187,10 @@ export class BusinessMasterModalComponent {
       data: {
         title: note ? 'Edit Bottom Note' : 'New Bottom Note',
         parameter: 'Bottom Note',
-        info: note ? note : '',
+        info: note ? {
+          id: note.BID,
+          value: note.BottomNote
+        } : '',
       },
     });
 
@@ -212,18 +219,41 @@ export class BusinessMasterModalComponent {
   }
 
 
-  openInstructionModal() {
+  openInstructionModal(instruction?: any) {
     const dialogRef = this.modalService.openModal(SingleParamenterComponent, {
       width: '50%',
       height: '300px',
       position: { top: '40px' },
-      data: { title: 'New Instruction', parameter: 'Instruction' },
+      data: {
+        title: instruction ? 'Edit Instruction' : 'New Instruction',
+        parameter: 'Instruction',
+        info: instruction ? {
+          id: instruction.BID,
+          value: instruction.Instruction
+        } : '',
+      },
     });
 
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
-        console.log('Instruction Saved:', result);
-        // this.saveBottomNote(result);
+        if (result.delete) {
+          console.log('Deleting Instruction:', result);
+          this.masterService
+            .invoke('deleteInstruction', result)
+            .pipe(untilDestroyed(this))
+            .subscribe(() => {
+              this.loadInstruction();
+            });
+        } else {
+          let action = instruction ? 'updateInstruction' : 'addInstruction';
+          console.log('Instruction Saved:', result);
+          this.masterService
+            .invoke(action, result)
+            .pipe(untilDestroyed(this))
+            .subscribe(() => {
+              this.loadInstruction();
+            });
+        }
       }
     });
   }
