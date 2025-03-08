@@ -19,48 +19,57 @@
       <div class="form-field">
         <label class="label">Container Display Name:</label>
         <mat-form-field appearance="outline">
-          <input matInput formControlName="name" />
+          <input matInput formControlName="CName" />
         </mat-form-field>
       </div>
 
       <div class="form-field">
         <label class="label">Container Type:</label>
         <mat-form-field appearance="outline">
-          <input matInput formControlName="type" />
+          <input matInput formControlName="Ctype" />
         </mat-form-field>
       </div>
       <div class="form-field">
         <label class="label">Length:</label>
         <mat-form-field appearance="outline">
-          <input matInput formControlName="length" />
+          <input matInput formControlName="Length" />
         </mat-form-field>
       </div>
       <div class="form-field">
         <label class="label">Width:</label>
         <mat-form-field appearance="outline">
-          <input matInput formControlName="width" />
+          <input matInput formControlName="Width" />
         </mat-form-field>
       </div>
 
       <div class="form-field">
         <label class="label">Height:</label>
         <mat-form-field appearance="outline">
-          <input matInput formControlName="height" />
+          <input matInput formControlName="Height" />
         </mat-form-field>
       </div>
 
       <div class="form-field">
         <label class="label">Container Weight [kg]:</label>
         <mat-form-field appearance="outline">
-          <input matInput formControlName="weight" />
+          <input matInput formControlName="Weight" />
         </mat-form-field>
       </div>
     </div>
   </div>
-  <div class="actions">
-    <button class="btn" mat-button (click)="onCancel()">Cancel</button>
-    <button class="btn" mat-raised-button color="primary" (click)="onSave()">
-      Save
-    </button>
+  <div class="edit-actions">
+    <div>
+      @if(customerForm.get("id")?.value != '') {
+      <button class="btn" mat-raised-button color="warn" (click)="onDelete()">
+        Delete
+      </button>
+      }
+    </div>
+    <div>
+      <button class="btn" mat-button (click)="onCancel()">Cancel</button>
+      <button class="btn" mat-raised-button color="primary" (click)="onSave()">
+        Save
+      </button>
+    </div>
   </div>
 </form>

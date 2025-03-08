@@ -37,6 +37,13 @@ const {
   deleteInstruction,
 } = require("./database/controllers/instruction");
 
+const {
+  getAllContainer,
+  addContainer,
+  updateContainer,
+  deleteContainer,
+} = require("./database/controllers/container");
+
 function setupIpcHandlers() {
   // Company APIs
   ipcMain.handle("getCompany", async (event, id) => {
@@ -105,14 +112,27 @@ function setupIpcHandlers() {
   ipcMain.handle("getAllInstruction", async (event) => {
     return await getAllInstruction();
   });
-  ipcMain.handle("addInstruction", async (event, bottomNote) => {
-    return await addInstruction(bottomNote);
+  ipcMain.handle("addInstruction", async (event, instruction) => {
+    return await addInstruction(instruction);
   });
-  ipcMain.handle("updateInstruction", async (event, bottomNote) => {
-    return await updateInstruction(bottomNote);
+  ipcMain.handle("updateInstruction", async (event, instruction) => {
+    return await updateInstruction(instruction);
   });
   ipcMain.handle("deleteInstruction", async (event, id) => {
     return await deleteInstruction(id);
+  });
+
+  ipcMain.handle("getAllContainer", async (event) => {
+    return await getAllContainer();
+  });
+  ipcMain.handle("addContainer", async (event, container) => {
+    return await addContainer(container);
+  });
+  ipcMain.handle("updateContainer", async (event, container) => {
+    return await updateContainer(container);
+  });
+  ipcMain.handle("deleteContainer", async (event, ID) => {
+    return await deleteContainer(ID);
   });
 }
 

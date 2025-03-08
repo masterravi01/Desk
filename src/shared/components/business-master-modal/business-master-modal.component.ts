@@ -54,45 +54,7 @@ export class BusinessMasterModalComponent {
     { name: 'John Doe', email: 'john@example.com', phone: '123-456-7890' },
   ];
   instructions = [];
-  containers = [
-    {
-      id: '4',
-      name: 'Box 201',
-      type: 'Full Size',
-      width: '124',
-      height: '200',
-      weight: '300',
-      length: '100',
-    },
-    {
-      id: '4',
-      name: 'Box 201',
-      type: 'Full Size',
-      width: '124',
-      height: '200',
-      weight: '300',
-      length: '100',
-    },
-    {
-      id: '4',
-      name: 'Box 201',
-      type: 'Full Size',
-      width: '124',
-      height: '200',
-      weight: '300',
-      length: '100',
-    },
-    {
-      id: '4',
-      name: 'Box 201',
-      type: 'Full Size',
-      width: '124',
-      height: '200',
-      weight: '300',
-      length: '100',
-    },
-  ];
-
+  containers = [];
   currency = [];
   bottomNote = [];
 
@@ -104,10 +66,10 @@ export class BusinessMasterModalComponent {
   onTabChange(event: any) {
     let tab = event.tab.textLabel || "Customer";
     if (tab == "Customer") this.loadCustomers();
+    if (tab == "Containers") this.loadContainer();
     if (tab == "Bottom Note") this.loadBottomNote();
     if (tab == "Currency") this.loadCurrency();
     if (tab == "Instruction") this.loadInstruction();
-
   }
 
   loadCustomers() {
@@ -129,6 +91,15 @@ export class BusinessMasterModalComponent {
       .pipe(untilDestroyed(this))
       .subscribe((data: any) => {
         this.instructions = data;
+      });
+  }
+
+  loadContainer() {
+    this.masterService
+      .invoke('getAllContainer')
+      .pipe(untilDestroyed(this))
+      .subscribe((data: any) => {
+        this.containers = data;
       });
   }
 
@@ -155,14 +126,18 @@ export class BusinessMasterModalComponent {
       height: '90%',
     });
   }
-  openContainerModal() {
+  openContainerModal(data?: any) {
     this.modalService.openModal(ContainerModalComponent, {
       width: '50%',
       height: '90%',
       position: {
         top: '40px',
       },
-    });
+      data
+    }).afterClosed()
+      .subscribe((result) => {
+        if (result) this.loadContainer();
+      });
   }
 
   openCurrencyModal(data?: any) {
