@@ -9,39 +9,39 @@ function getAllInstruction() {
   });
 }
 
-function addInstruction(bottomNote) {
+function addInstruction(Instruction) {
   return new Promise((resolve, reject) => {
     const query = `
       INSERT INTO instruction (Instruction) VALUES (?)
     `;
-    db.run(query, [bottomNote.value ?? null], function (err) {
+    db.run(query, [Instruction.value ?? null], function (err) {
       if (err) {
         console.error("SQL Error:", err.message);
         reject(err);
       } else {
-        resolve({ BID: this.lastID, bottomNote: bottomNote.value });
+        resolve({ BID: this.lastID, Instruction: Instruction.value });
       }
     });
   });
 }
 
-function updateInstruction(bottomNote) {
+function updateInstruction(Instruction) {
   return new Promise((resolve, reject) => {
     const query = `
       UPDATE instruction SET Instruction = ? WHERE BID = ?
     `;
-    db.run(query, [bottomNote.value, bottomNote.id], function (err) {
+    db.run(query, [Instruction.value, Instruction.id], function (err) {
       if (err) reject(err);
       else resolve({ changes: this.changes });
     });
   });
 }
 
-function deleteInstruction(bottomNote) {
+function deleteInstruction(Instruction) {
   return new Promise((resolve, reject) => {
     db.run(
       "DELETE FROM instruction WHERE BID = ?",
-      [bottomNote.id],
+      [Instruction.id],
       function (err) {
         if (err) reject(err);
         else resolve({ changes: this.changes });
