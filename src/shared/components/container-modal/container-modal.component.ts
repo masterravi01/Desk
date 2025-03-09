@@ -36,7 +36,7 @@ import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
   styleUrl: './container-modal.component.css',
 })
 export class ContainerModalComponent {
-  customerForm: FormGroup;
+  containerForm: FormGroup;
   readonly data = inject<any>(MAT_DIALOG_DATA);
 
   constructor(
@@ -45,7 +45,7 @@ export class ContainerModalComponent {
     private masterService: MasterService
 
   ) {
-    this.customerForm = this.fb.group({
+    this.containerForm = this.fb.group({
       ID: [''],
       CName: [''],
       Ctype: [''],
@@ -55,7 +55,7 @@ export class ContainerModalComponent {
       Length: [''],
     });
     if (this.data?.ID) {
-      this.customerForm.patchValue(this.data);
+      this.containerForm.patchValue(this.data);
     }
   }
 
@@ -64,22 +64,22 @@ export class ContainerModalComponent {
   }
 
   onSave() {
-    let action = this.customerForm.get('ID')?.value ? 'updateContainer' : 'addContainer';
+    let action = this.containerForm.get('ID')?.value ? 'updateContainer' : 'addContainer';
     this.masterService
-      .invoke(action, this.customerForm.value)
+      .invoke(action, this.containerForm.value)
       .pipe(untilDestroyed(this))
       .subscribe((data) => {
         console.log(data);
       });
-    this.dialogRef.close(this.customerForm.value);
+    this.dialogRef.close(this.containerForm.value);
   }
   onDelete() {
     this.masterService
-      .invoke('deleteContainer', this.customerForm.get('ID')?.value)
+      .invoke('deleteContainer', this.containerForm.get('ID')?.value)
       .pipe(untilDestroyed(this))
       .subscribe((data) => {
         console.log(data);
       });
-    this.dialogRef.close({ ...this.customerForm.value, delete: true });
+    this.dialogRef.close({ ...this.containerForm.value, delete: true });
   }
 }

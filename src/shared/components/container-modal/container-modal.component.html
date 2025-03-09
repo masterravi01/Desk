@@ -10,7 +10,7 @@
     ❌
   </button>
 </div>
-<form [formGroup]="customerForm" class="modal-content">
+<form [formGroup]="containerForm" class="modal-content">
   <mat-divider></mat-divider>
 
   <!-- Basic Details -->
@@ -59,7 +59,7 @@
   </div>
   <div class="edit-actions">
     <div>
-      @if(customerForm.get("id")?.value != '') {
+      @if(containerForm.get("id")?.value != '') {
       <button class="btn" mat-raised-button color="warn" (click)="onDelete()">
         Delete
       </button>
