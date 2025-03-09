@@ -40,19 +40,13 @@ import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 export class BusinessMasterModalComponent {
   readonly dialogRef = inject(MatDialogRef<BusinessMasterModalComponent>);
   readonly data = inject<any>(MAT_DIALOG_DATA);
-  displayedColumns: string[] = ['name', 'email', 'phone'];
-  customers = [
-    { name: 'John Doe', email: 'john@example.com', phone: '123-456-7890' },
-    { name: 'Jane Smith', email: 'jane@example.com', phone: '987-654-3210' },
-    { name: 'John Doe', email: 'john@example.com', phone: '123-456-7890' },
-    { name: 'Jane Smith', email: 'jane@example.com', phone: '987-654-3210' },
-    { name: 'John Doe', email: 'john@example.com', phone: '123-456-7890' },
-    { name: 'Jane Smith', email: 'jane@example.com', phone: '987-654-3210' },
-    { name: 'John Doe', email: 'john@example.com', phone: '123-456-7890' },
-    { name: 'Jane Smith', email: 'jane@example.com', phone: '987-654-3210' },
-    { name: 'Jane Smith', email: 'jane@example.com', phone: '987-654-3210' },
-    { name: 'John Doe', email: 'john@example.com', phone: '123-456-7890' },
-  ];
+  displayedColumns: string[] = ['Name', 'Phone', 'Email', 'ContactPerson', 'Designation',
+    'OtherPhone', 'URL', 'Fax', 'Remark', 'Address',
+    'City', 'State', 'Zip', 'Country', 'Buyer Address',
+    'Buyer City', 'Buyer State', 'Buyer Zipcode', 'Buyer Country', 'Bank Name',
+    'Bank Branch', 'Bank City', 'Bank Address', 'Bank State', 'Bank Zip',
+    'Bank Country'];
+  customers = [];
   instructions = [];
   containers = [];
   currency = [];
@@ -62,6 +56,10 @@ export class BusinessMasterModalComponent {
     private modalService: ModalService,
     private masterService: MasterService
   ) { }
+
+  ngOnInit() {
+    this.loadCustomers();
+  }
 
   onTabChange(event: any) {
     let tab = event.tab.textLabel || "Customer";
@@ -73,7 +71,12 @@ export class BusinessMasterModalComponent {
   }
 
   loadCustomers() {
-
+    this.masterService
+      .invoke('getAllCustomers')
+      .pipe(untilDestroyed(this))
+      .subscribe((data: any) => {
+        this.customers = data;
+      });
   }
 
   loadBottomNote() {
@@ -120,11 +123,15 @@ export class BusinessMasterModalComponent {
   onConfirm(): void {
     this.dialogRef.close(true); // Return true on confirm
   }
-  openCustomerModal() {
+  openCustomerModal(data?: any) {
     this.modalService.openModal(NewCustomerComponent, {
       width: '80%',
       height: '90%',
-    });
+      data
+    }).afterClosed()
+      .subscribe((result) => {
+        if (result) this.loadCustomers();
+      });
   }
   openContainerModal(data?: any) {
     this.modalService.openModal(ContainerModalComponent, {

@@ -44,6 +44,13 @@ const {
   deleteContainer,
 } = require("./database/controllers/container");
 
+const {
+  getAllCustomers,
+  addCustomer,
+  updateCustomer,
+  deleteCustomer,
+} = require("./database/controllers/customer");
+
 function setupIpcHandlers() {
   // Company APIs
   ipcMain.handle("getCompany", async (event, id) => {
@@ -133,6 +140,19 @@ function setupIpcHandlers() {
   });
   ipcMain.handle("deleteContainer", async (event, ID) => {
     return await deleteContainer(ID);
+  });
+
+  ipcMain.handle("getAllCustomers", async (event) => {
+    return await getAllCustomers();
+  });
+  ipcMain.handle("addCustomer", async (event, customer) => {
+    return await addCustomer(customer);
+  });
+  ipcMain.handle("updateCustomer", async (event, customer) => {
+    return await updateCustomer(customer);
+  });
+  ipcMain.handle("deleteCustomer", async (event, ID) => {
+    return await deleteCustomer(ID);
   });
 }
 
