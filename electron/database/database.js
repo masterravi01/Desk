@@ -185,38 +185,33 @@ const migrations = [
     script: `
       DROP TABLE IF EXISTS customers;
       CREATE TABLE customers (
-        ID INTEGER PRIMARY KEY AUTOINCREMENT,
+          ID INTEGER PRIMARY KEY AUTOINCREMENT,
           Name TEXT DEFAULT NULL,
           Phone TEXT DEFAULT NULL,
           Email TEXT DEFAULT NULL,
           ContactPerson TEXT DEFAULT NULL,
           Designation TEXT DEFAULT NULL,
-
           OtherPhone TEXT DEFAULT NULL,
           URL TEXT DEFAULT NULL,
           Fax TEXT DEFAULT NULL,
           Remark TEXT DEFAULT NULL,
           Address TEXT DEFAULT NULL,
-
           City TEXT DEFAULT NULL,
           State TEXT DEFAULT NULL,
           Zip TEXT DEFAULT NULL,
           Country TEXT DEFAULT NULL,
           BuyerAddress TEXT DEFAULT NULL,
-
           BuyerCity TEXT DEFAULT NULL,
           BuyerState TEXT DEFAULT NULL,
           BuyerZipcode TEXT DEFAULT NULL,
           BuyerCountry TEXT DEFAULT NULL,
           BnkName TEXT DEFAULT NULL,
-
           BnkBranch TEXT DEFAULT NULL,
           BnkCity TEXT DEFAULT NULL,
-          BnkAddress TEXT DEFAULT NULL
+          BnkAddress TEXT DEFAULT NULL,
           BnkState TEXT DEFAULT NULL,
           BnkZip TEXT DEFAULT NULL,
-          
-          Bnkcountry TEXT DEFAULT NULL,
+          Bnkcountry TEXT DEFAULT NULL
       );
     `,
   },
