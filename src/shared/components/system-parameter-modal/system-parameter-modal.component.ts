@@ -52,19 +52,17 @@ export class SystemParameterModalComponent implements OnInit {
 
   displayedColumns: string[] = ['name', 'email', 'phone'];
   companyForm!: FormGroup;
-  currency: any[] = [];
   parameters: any[] = [];
 
   constructor(
     private modalService: ModalService,
     private fb: FormBuilder,
     private masterService: MasterService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.initForm();
     this.loadCompanyData();
-    this.loadCurrencies();
     this.loadParameters();
   }
   private initForm() {
@@ -110,16 +108,6 @@ export class SystemParameterModalComponent implements OnInit {
       });
   }
 
-  private loadCurrencies() {
-    this.masterService
-      .invoke('getAllCurrencies')
-      .pipe(untilDestroyed(this))
-      .subscribe((data: any) => {
-        console.log(data);
-        this.currency = data;
-      });
-  }
-
   private loadParameters() {
     this.masterService
       .invoke('getAllSystemParameters')
@@ -145,20 +133,6 @@ export class SystemParameterModalComponent implements OnInit {
       width: '80%',
       height: '90%',
     });
-  }
-
-  openCurrencyModal(data?: any) {
-    this.modalService
-      .openModal(NewCurrencyModalComponent, {
-        width: '50%',
-        minHeight: '300px',
-        position: { top: '40px' },
-        data,
-      })
-      .afterClosed()
-      .subscribe((result) => {
-        if (result) this.loadCurrencies();
-      });
   }
 
   openParameterModal(data?: any) {

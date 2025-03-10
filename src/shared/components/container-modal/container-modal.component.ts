@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { FormGroup, FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import {
   MAT_DIALOG_DATA,
@@ -14,7 +14,10 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
+import { MasterService } from '../../../core/services/master.service';
+import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 
+@UntilDestroy()
 @Component({
   selector: 'app-container-modal',
   standalone: true,
@@ -33,20 +36,27 @@ import { MatButtonModule } from '@angular/material/button';
   styleUrl: './container-modal.component.css',
 })
 export class ContainerModalComponent {
-  customerForm: FormGroup;
+  containerForm: FormGroup;
+  readonly data = inject<any>(MAT_DIALOG_DATA);
 
   constructor(
     private fb: FormBuilder,
-    private dialogRef: MatDialogRef<ContainerModalComponent>
+    private dialogRef: MatDialogRef<ContainerModalComponent>,
+    private masterService: MasterService
+
   ) {
-    this.customerForm = this.fb.group({
-      name: [''],
-      type: [''],
-      width: [''],
-      height: [''],
-      length: [''],
-      weight: [''],
+    this.containerForm = this.fb.group({
+      ID: [''],
+      CName: [''],
+      Ctype: [''],
+      Width: [''],
+      Height: [''],
+      Weight: [''],
+      Length: [''],
     });
+    if (this.data?.ID) {
+      this.containerForm.patchValue(this.data);
+    }
   }
 
   onCancel() {
@@ -54,7 +64,22 @@ export class ContainerModalComponent {
   }
 
   onSave() {
-    console.log(this.customerForm.value);
-    this.dialogRef.close(this.customerForm.value);
+    let action = this.containerForm.get('ID')?.value ? 'updateContainer' : 'addContainer';
+    this.masterService
+      .invoke(action, this.containerForm.value)
+      .pipe(untilDestroyed(this))
+      .subscribe((data) => {
+        console.log(data);
+      });
+    this.dialogRef.close(this.containerForm.value);
+  }
+  onDelete() {
+    this.masterService
+      .invoke('deleteContainer', this.containerForm.get('ID')?.value)
+      .pipe(untilDestroyed(this))
+      .subscribe((data) => {
+        console.log(data);
+      });
+    this.dialogRef.close({ ...this.containerForm.value, delete: true });
   }
 }

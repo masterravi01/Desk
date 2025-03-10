@@ -40,91 +40,16 @@ import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 export class BusinessMasterModalComponent {
   readonly dialogRef = inject(MatDialogRef<BusinessMasterModalComponent>);
   readonly data = inject<any>(MAT_DIALOG_DATA);
-  displayedColumns: string[] = ['name', 'email', 'phone'];
-  customers = [
-    { name: 'John Doe', email: 'john@example.com', phone: '123-456-7890' },
-    { name: 'Jane Smith', email: 'jane@example.com', phone: '987-654-3210' },
-    { name: 'John Doe', email: 'john@example.com', phone: '123-456-7890' },
-    { name: 'Jane Smith', email: 'jane@example.com', phone: '987-654-3210' },
-    { name: 'John Doe', email: 'john@example.com', phone: '123-456-7890' },
-    { name: 'Jane Smith', email: 'jane@example.com', phone: '987-654-3210' },
-    { name: 'John Doe', email: 'john@example.com', phone: '123-456-7890' },
-    { name: 'Jane Smith', email: 'jane@example.com', phone: '987-654-3210' },
-    { name: 'Jane Smith', email: 'jane@example.com', phone: '987-654-3210' },
-    { name: 'John Doe', email: 'john@example.com', phone: '123-456-7890' },
-  ];
-  instructions = [
-    { id: '1', value: 'this is base instructions' },
-    { id: '2', value: 'this is base instructions' },
-    { id: '4', value: 'this is base instructions' },
-    { id: '5', value: 'this is base instructions' },
-    { id: '9', value: 'this is base instructions' },
-  ];
-  containers = [
-    {
-      id: '4',
-      name: 'Box 201',
-      type: 'Full Size',
-      width: '124',
-      height: '200',
-      weight: '300',
-      length: '100',
-    },
-    {
-      id: '4',
-      name: 'Box 201',
-      type: 'Full Size',
-      width: '124',
-      height: '200',
-      weight: '300',
-      length: '100',
-    },
-    {
-      id: '4',
-      name: 'Box 201',
-      type: 'Full Size',
-      width: '124',
-      height: '200',
-      weight: '300',
-      length: '100',
-    },
-    {
-      id: '4',
-      name: 'Box 201',
-      type: 'Full Size',
-      width: '124',
-      height: '200',
-      weight: '300',
-      length: '100',
-    },
-  ];
-
-  currency = [
-    {
-      id: '4',
-      name: 'US Dollar',
-      char: '$',
-      country: 'USA',
-    },
-    {
-      id: '4',
-      name: 'US Dollar',
-      char: '$',
-      country: 'USA',
-    },
-    {
-      id: '4',
-      name: 'US Dollar',
-      char: '$',
-      country: 'USA',
-    },
-    {
-      id: '4',
-      name: 'US Dollar',
-      char: '$',
-      country: 'USA',
-    },
-  ];
+  displayedColumns: string[] = ['Name', 'Phone', 'Email', 'ContactPerson', 'Designation',
+    'OtherPhone', 'URL', 'Fax', 'Remark', 'Address',
+    'City', 'State', 'Zip', 'Country', 'Buyer Address',
+    'Buyer City', 'Buyer State', 'Buyer Zipcode', 'Buyer Country', 'Bank Name',
+    'Bank Branch', 'Bank City', 'Bank Address', 'Bank State', 'Bank Zip',
+    'Bank Country'];
+  customers = [];
+  instructions = [];
+  containers = [];
+  currency = [];
   bottomNote = [];
 
   constructor(
@@ -132,15 +57,26 @@ export class BusinessMasterModalComponent {
     private masterService: MasterService
   ) { }
 
+  ngOnInit() {
+    this.loadCustomers();
+  }
+
   onTabChange(event: any) {
     let tab = event.tab.textLabel || "Customer";
     if (tab == "Customer") this.loadCustomers();
+    if (tab == "Containers") this.loadContainer();
     if (tab == "Bottom Note") this.loadBottomNote();
-
+    if (tab == "Currency") this.loadCurrency();
+    if (tab == "Instruction") this.loadInstruction();
   }
 
   loadCustomers() {
-
+    this.masterService
+      .invoke('getAllCustomers')
+      .pipe(untilDestroyed(this))
+      .subscribe((data: any) => {
+        this.customers = data;
+      });
   }
 
   loadBottomNote() {
@@ -152,6 +88,34 @@ export class BusinessMasterModalComponent {
       });
   }
 
+  loadInstruction() {
+    this.masterService
+      .invoke('getAllInstruction')
+      .pipe(untilDestroyed(this))
+      .subscribe((data: any) => {
+        this.instructions = data;
+      });
+  }
+
+  loadContainer() {
+    this.masterService
+      .invoke('getAllContainer')
+      .pipe(untilDestroyed(this))
+      .subscribe((data: any) => {
+        this.containers = data;
+      });
+  }
+
+  loadCurrency() {
+    this.masterService
+      .invoke('getAllCurrencies')
+      .pipe(untilDestroyed(this))
+      .subscribe((data: any) => {
+        console.log(data);
+        this.currency = data;
+      });
+  }
+
   onCancel(): void {
     this.dialogRef.close(false); // Return false on cancel
   }
@@ -159,29 +123,42 @@ export class BusinessMasterModalComponent {
   onConfirm(): void {
     this.dialogRef.close(true); // Return true on confirm
   }
-  openCustomerModal() {
+  openCustomerModal(data?: any) {
     this.modalService.openModal(NewCustomerComponent, {
       width: '80%',
       height: '90%',
-    });
+      data
+    }).afterClosed()
+      .subscribe((result) => {
+        if (result) this.loadCustomers();
+      });
   }
-  openContainerModal() {
+  openContainerModal(data?: any) {
     this.modalService.openModal(ContainerModalComponent, {
       width: '50%',
       height: '90%',
       position: {
         top: '40px',
       },
-    });
+      data
+    }).afterClosed()
+      .subscribe((result) => {
+        if (result) this.loadContainer();
+      });
   }
-  openCurrencyModal() {
-    this.modalService.openModal(NewCurrencyModalComponent, {
-      width: '50%',
-      height: '90%',
-      position: {
-        top: '40px',
-      },
-    });
+
+  openCurrencyModal(data?: any) {
+    this.modalService
+      .openModal(NewCurrencyModalComponent, {
+        width: '50%',
+        minHeight: '300px',
+        position: { top: '40px' },
+        data,
+      })
+      .afterClosed()
+      .subscribe((result) => {
+        if (result) this.loadCurrency();
+      });
   }
 
   openBottomNoteModal(note?: any) {
@@ -192,7 +169,10 @@ export class BusinessMasterModalComponent {
       data: {
         title: note ? 'Edit Bottom Note' : 'New Bottom Note',
         parameter: 'Bottom Note',
-        info: note ? note : '',
+        info: note ? {
+          id: note.BID,
+          value: note.BottomNote
+        } : '',
       },
     });
 
@@ -221,18 +201,41 @@ export class BusinessMasterModalComponent {
   }
 
 
-  openInstructionModal() {
+  openInstructionModal(instruction?: any) {
     const dialogRef = this.modalService.openModal(SingleParamenterComponent, {
       width: '50%',
       height: '300px',
       position: { top: '40px' },
-      data: { title: 'New Instruction', parameter: 'Instruction' },
+      data: {
+        title: instruction ? 'Edit Instruction' : 'New Instruction',
+        parameter: 'Instruction',
+        info: instruction ? {
+          id: instruction.BID,
+          value: instruction.Instruction
+        } : '',
+      },
     });
 
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
-        console.log('Instruction Saved:', result);
-        // this.saveBottomNote(result);
+        if (result.delete) {
+          console.log('Deleting Instruction:', result);
+          this.masterService
+            .invoke('deleteInstruction', result)
+            .pipe(untilDestroyed(this))
+            .subscribe(() => {
+              this.loadInstruction();
+            });
+        } else {
+          let action = instruction ? 'updateInstruction' : 'addInstruction';
+          console.log('Instruction Saved:', result);
+          this.masterService
+            .invoke(action, result)
+            .pipe(untilDestroyed(this))
+            .subscribe(() => {
+              this.loadInstruction();
+            });
+        }
       }
     });
   }

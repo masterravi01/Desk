@@ -279,67 +279,6 @@
     </div>
   </mat-tab>
 
-  <mat-tab label="Currency">
-    <div class="modal-content">
-      <div class="d-flex" style="margin-top: 10px">
-        <h4
-          class="primary"
-          style="margin-left: 20px; margin-top: 10px; padding: 0"
-        >
-          Currency
-        </h4>
-        <button
-          class="btn"
-          mat-raised-button
-          color="primary"
-          style="margin-right: 20px"
-          (click)="openCurrencyModal()"
-        >
-          New Currency
-        </button>
-      </div>
-
-      <div class="table-container">
-        <table mat-table [dataSource]="currency" class="mat-elevation-z8 table">
-          <ng-container matColumnDef="id">
-            <th mat-header-cell *matHeaderCellDef>Id</th>
-            <td mat-cell *matCellDef="let element">{{ element.id }}</td>
-          </ng-container>
-
-          <ng-container matColumnDef="name">
-            <th mat-header-cell *matHeaderCellDef>Currency Name</th>
-            <td mat-cell *matCellDef="let element">
-              <a mat-button (click)="openCurrencyModal(element)">
-                {{ element.currencyName }}</a
-              >
-            </td>
-          </ng-container>
-          <ng-container matColumnDef="char">
-            <th mat-header-cell *matHeaderCellDef>Currency Char</th>
-            <td mat-cell *matCellDef="let element">
-              {{ element.currencyChar }}
-            </td>
-          </ng-container>
-          <ng-container matColumnDef="country">
-            <th mat-header-cell *matHeaderCellDef>Currency country</th>
-            <td mat-cell *matCellDef="let element">
-              {{ element.currencyCountry }}
-            </td>
-          </ng-container>
-
-          <tr
-            mat-header-row
-            *matHeaderRowDef="['id', 'name', 'char', 'country']"
-          ></tr>
-          <tr
-            mat-row
-            *matRowDef="let row; columns: ['id', 'name', 'char', 'country']"
-          ></tr>
-        </table>
-      </div>
-    </div>
-  </mat-tab>
-
   <mat-tab label="Parameters">
     <div class="modal-content">
       <div class="d-flex" style="margin-top: 10px">

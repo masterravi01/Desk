@@ -46,8 +46,8 @@ export class SingleParamenterComponent {
     this.parameter = data?.parameter || this.parameter;
     let info = data?.info;
     this.singleForm = this.fb.group({
-      id: [info?.BID ? info?.BID : ''],
-      value: [info?.BottomNote ? info?.BottomNote : ''],
+      id: [info?.id ? info?.id : ''],
+      value: [info?.value ? info?.value : ''],
     });
   }
 

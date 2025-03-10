@@ -31,6 +31,26 @@ const {
 } = require("./database/controllers/systemParameter");
 
 const {
+  getAllInstruction,
+  addInstruction,
+  updateInstruction,
+  deleteInstruction,
+} = require("./database/controllers/instruction");
+
+const {
+  getAllContainer,
+  addContainer,
+  updateContainer,
+  deleteContainer,
+} = require("./database/controllers/container");
+
+const {
+  getAllCustomers,
+  addCustomer,
+  updateCustomer,
+  deleteCustomer,
+} = require("./database/controllers/customer");
+const {
   getInvoice,
   getAllInvoices,
   updateInvoice,
@@ -103,6 +123,44 @@ function setupIpcHandlers() {
     return await deleteBottomNote(id);
   });
 
+  ipcMain.handle("getAllInstruction", async (event) => {
+    return await getAllInstruction();
+  });
+  ipcMain.handle("addInstruction", async (event, instruction) => {
+    return await addInstruction(instruction);
+  });
+  ipcMain.handle("updateInstruction", async (event, instruction) => {
+    return await updateInstruction(instruction);
+  });
+  ipcMain.handle("deleteInstruction", async (event, id) => {
+    return await deleteInstruction(id);
+  });
+
+  ipcMain.handle("getAllContainer", async (event) => {
+    return await getAllContainer();
+  });
+  ipcMain.handle("addContainer", async (event, container) => {
+    return await addContainer(container);
+  });
+  ipcMain.handle("updateContainer", async (event, container) => {
+    return await updateContainer(container);
+  });
+  ipcMain.handle("deleteContainer", async (event, ID) => {
+    return await deleteContainer(ID);
+  });
+
+  ipcMain.handle("getAllCustomers", async (event) => {
+    return await getAllCustomers();
+  });
+  ipcMain.handle("addCustomer", async (event, customer) => {
+    return await addCustomer(customer);
+  });
+  ipcMain.handle("updateCustomer", async (event, customer) => {
+    return await updateCustomer(customer);
+  });
+  ipcMain.handle("deleteCustomer", async (event, ID) => {
+    return await deleteCustomer(ID);
+  });
   ipcMain.handle("getInvoice", async (event, id) => {
     return await getInvoice(id);
   });
