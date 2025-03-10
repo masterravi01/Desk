@@ -30,6 +30,14 @@ const {
   deleteSystemParameter,
 } = require("./database/controllers/systemParameter");
 
+const {
+  getInvoice,
+  getAllInvoices,
+  updateInvoice,
+  deleteInvoice,
+  addInvoice,
+} = require("./database/controllers/invoiceMaster");
+
 function setupIpcHandlers() {
   // Company APIs
   ipcMain.handle("getCompany", async (event, id) => {
@@ -93,6 +101,25 @@ function setupIpcHandlers() {
   });
   ipcMain.handle("deleteBottomNote", async (event, id) => {
     return await deleteBottomNote(id);
+  });
+
+  ipcMain.handle("getInvoice", async (event, id) => {
+    return await getInvoice(id);
+  });
+
+  ipcMain.handle("getAllInvoices", async (event) => {
+    return await getAllInvoices();
+  });
+
+  ipcMain.handle("updateInvoice", async (event, invoice) => {
+    return await updateInvoice(invoice);
+  });
+
+  ipcMain.handle("addInvoice", async (event, invoice) => {
+    return await addInvoice(invoice);
+  });
+  ipcMain.handle("deleteInvoice", async (event, id) => {
+    return await deleteInvoice(id);
   });
 }
 

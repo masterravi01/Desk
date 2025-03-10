@@ -1,0 +1,277 @@
+<div class="d-flex">
+  <h5 mat-dialog-title class="h5">Invoice</h5>
+  <button
+    class="btn"
+    mat-button
+    (click)="onCancel()"
+    tabindex="-1"
+    style="margin-top: 14px; margin-right: 0"
+  >
+    ❌
+  </button>
+</div>
+
+<mat-tab-group [formGroup]="invoiceForm">
+  <mat-tab label="Header">
+    <div class="outer-div">
+      <table class="form-table">
+        <tbody>
+          <tr>
+            <td class="input-cell" colspan="2">
+              <div class="grid">
+                <div class="d-flex">
+                  <div class="label-cell">Customer Order No.</div>
+                  <mat-form-field appearance="outline">
+                    <input matInput formControlName="customerOrderNo" />
+                  </mat-form-field>
+                </div>
+
+                <div class="d-flex">
+                  <div class="label-cell">Date</div>
+                  <mat-form-field appearance="outline">
+                    <input
+                      matInput
+                      formControlName="invoiceDate"
+                      [matDatepicker]="picker"
+                    />
+
+                    <mat-datepicker-toggle
+                      matIconSuffix
+                      [for]="picker"
+                      style="position: relative; top: -14px"
+                    ></mat-datepicker-toggle>
+                    <mat-datepicker #picker></mat-datepicker>
+                  </mat-form-field>
+                </div>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td class="input-cell" colspan="2">
+              <div class="grid">
+                <div class="d-flex">
+                  <div class="label-cell">Serial No.</div>
+                  <mat-form-field appearance="outline">
+                    <input matInput formControlName="invoiceSerial" />
+                  </mat-form-field>
+                </div>
+
+                <div class="d-flex">
+                  <div class="label-cell">PI No.</div>
+                  <mat-form-field appearance="outline">
+                    <input matInput formControlName="invoicePiNo" />
+                  </mat-form-field>
+                </div>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td class="label-cell">
+              <label>Customer Name</label>
+            </td>
+            <td class="input-cell">
+              <div
+                class="grid"
+                style="
+                  display: grid;
+                  grid-template-columns: calc(70% - 8px) calc(30% - 8px);
+                  gap: 16px;
+                "
+              >
+                <mat-form-field appearance="outline">
+                  <input matInput formControlName="customerName" />
+                </mat-form-field>
+                <button class="btn" mat-raised-button>Select Customer</button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="grid" style="margin: 0 20px">
+      <mat-card appearance="outlined">
+        <mat-card-content>
+          <h3 class="section-title h3">Customer Address</h3>
+
+          <table class="form-table">
+            <tbody>
+              <tr>
+                <td class="label-cell">
+                  <label>Address</label>
+                </td>
+                <td class="input-cell">
+                  <mat-form-field appearance="outline">
+                    <input matInput formControlName="customerAddress" />
+                  </mat-form-field>
+                </td>
+              </tr>
+              <tr>
+                <td class="input-cell" colspan="2">
+                  <div class="grid">
+                    <div class="d-flex">
+                      <div class="label-cell">City</div>
+                      <mat-form-field appearance="outline">
+                        <input matInput formControlName="customerCity" />
+                      </mat-form-field>
+                    </div>
+
+                    <div class="d-flex">
+                      <div class="label-cell">State</div>
+                      <mat-form-field appearance="outline">
+                        <input matInput formControlName="customerState" />
+                      </mat-form-field>
+                    </div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td class="input-cell" colspan="2">
+                  <div class="grid">
+                    <div class="d-flex">
+                      <div class="label-cell">Zip</div>
+                      <mat-form-field appearance="outline">
+                        <input matInput formControlName="customerZip" />
+                      </mat-form-field>
+                    </div>
+
+                    <div class="d-flex">
+                      <div class="label-cell">Country</div>
+                      <mat-form-field appearance="outline">
+                        <input matInput formControlName="customerCountry" />
+                      </mat-form-field>
+                    </div>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </mat-card-content>
+      </mat-card>
+      <mat-card appearance="outlined">
+        <mat-card-content>
+          <h3 class="section-title h3">Buyer Adress</h3>
+          <table class="form-table">
+            <tbody>
+              <tr>
+                <td class="label-cell">
+                  <label>Address</label>
+                </td>
+                <td class="input-cell">
+                  <mat-form-field appearance="outline">
+                    <input matInput formControlName="billingAddress" />
+                  </mat-form-field>
+                </td>
+              </tr>
+              <tr>
+                <td class="input-cell" colspan="2">
+                  <div class="grid">
+                    <div class="d-flex">
+                      <div class="label-cell">City</div>
+                      <mat-form-field appearance="outline">
+                        <input matInput formControlName="billingCity" />
+                      </mat-form-field>
+                    </div>
+
+                    <div class="d-flex">
+                      <div class="label-cell">State</div>
+                      <mat-form-field appearance="outline">
+                        <input matInput formControlName="billingState" />
+                      </mat-form-field>
+                    </div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td class="input-cell" colspan="2">
+                  <div class="grid">
+                    <div class="d-flex">
+                      <div class="label-cell">Zip</div>
+                      <mat-form-field appearance="outline">
+                        <input matInput formControlName="billingZip" />
+                      </mat-form-field>
+                    </div>
+
+                    <div class="d-flex">
+                      <div class="label-cell">Country</div>
+                      <mat-form-field appearance="outline">
+                        <input matInput formControlName="billingCountry" />
+                      </mat-form-field>
+                    </div>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </mat-card-content>
+      </mat-card>
+    </div>
+    <div class="outer-div">
+      <table class="form-table">
+        <tbody>
+          <tr>
+            <td class="input-cell" colspan="2">
+              <div class="grid">
+                <div class="d-flex">
+                  <div class="label-cell">
+                    Rate Calculation Base
+                    <mat-radio-group
+                      aria-label="Select an option"
+                      formControlName="calculationType"
+                    >
+                      <mat-radio-button value="1">Per Sq. Mt</mat-radio-button>
+                      <mat-radio-button value="2">Per Sheet</mat-radio-button>
+                    </mat-radio-group>
+                  </div>
+                </div>
+
+                <div class="d-flex">
+                  <div class="label-cell">Currency</div>
+                  <select
+                    style="
+                      background: #fff;
+                      height: 32px;
+                      width: 100%;
+                      border-radius: 4pxd;
+                    "
+                    formControlName="currency"
+                  >
+                    @for (food of foods; track food) {
+                    <option [value]="food.value">{{ food.viewValue }}</option>
+                    }
+                  </select>
+                </div>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <mat-divider></mat-divider>
+    <div
+      class="d-flex"
+      style="justify-content: center; margin-top: 20px; margin-bottom: 10px"
+    >
+      <button class="btn" mat-raised-button mat-button (click)="onCancel()">
+        New
+      </button>
+      <button class="btn" mat-raised-button mat-button (click)="onCancel()">
+        Add
+      </button>
+      <button class="btn" mat-raised-button mat-button (click)="onCancel()">
+        Select
+      </button>
+      <button class="btn" mat-raised-button mat-button (click)="onCancel()">
+        Save
+      </button>
+      <button class="btn" mat-raised-button mat-button (click)="onCancel()">
+        Delete
+      </button>
+      <button class="btn" mat-raised-button mat-button (click)="onCancel()">
+        Clear
+      </button>
+    </div>
+  </mat-tab>
+  <mat-tab label="Item Details"> </mat-tab>
+  <mat-tab label="Instrutions"> </mat-tab>
+</mat-tab-group>

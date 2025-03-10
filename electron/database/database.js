@@ -166,6 +166,90 @@ const migrations = [
       (4, 'BoxLWMargin', '5');
     `,
   },
+  {
+    version: 6,
+    description: "Create Invoice Master",
+    script: `DROP TABLE IF EXISTS invoiceMaster;
+CREATE TABLE invoiceMaster (
+    invId INTEGER PRIMARY KEY AUTOINCREMENT,
+    customerOrderNo TEXT DEFAULT NULL,
+    invoiceDate TEXT DEFAULT NULL,
+    invoiceSerial TEXT DEFAULT NULL,
+    invoicePiNo TEXT DEFAULT NULL,
+    customerId INTEGER DEFAULT NULL,
+    customerName TEXT DEFAULT NULL,
+    customerAddress TEXT DEFAULT NULL,
+    customerCity TEXT DEFAULT NULL,
+    customerZip TEXT DEFAULT NULL,
+    customerState TEXT DEFAULT NULL,
+    customerCountry TEXT DEFAULT NULL,
+    billingAddress TEXT DEFAULT NULL,
+    billingCity TEXT DEFAULT NULL,
+    billingZip TEXT DEFAULT NULL,
+    billingState TEXT DEFAULT NULL,
+    billingCountry TEXT DEFAULT NULL,
+    currency TEXT DEFAULT NULL,
+    status TEXT DEFAULT NULL,
+    discountType TEXT DEFAULT NULL,
+    discountValue TEXT DEFAULT NULL,
+    additionalChargeType TEXT DEFAULT NULL,
+    additionalChargeValue TEXT DEFAULT NULL,
+    reference TEXT DEFAULT NULL,
+    totalQuantity TEXT DEFAULT NULL,
+    totalAmount TEXT DEFAULT NULL,
+    totalSquareMeters TEXT DEFAULT NULL,
+    rounding TEXT DEFAULT NULL,
+    netAmount TEXT DEFAULT NULL,
+    deliveryTerms TEXT DEFAULT NULL,
+    deliveryDetails TEXT DEFAULT NULL,
+    shippingDetails TEXT DEFAULT NULL,
+    paymentTerms TEXT DEFAULT NULL,
+    portOfDischarge TEXT DEFAULT NULL,
+    dispatchTerms TEXT DEFAULT NULL,
+    bankName TEXT DEFAULT NULL,
+    bankBranch TEXT DEFAULT NULL,
+    bankCity TEXT DEFAULT NULL,
+    swiftNumber TEXT DEFAULT NULL,
+    comments TEXT DEFAULT NULL,
+    calculationType INTEGER DEFAULT NULL,
+    bankAddress TEXT DEFAULT NULL
+);
+
+INSERT INTO invoiceMaster (
+    invId, customerOrderNo, invoiceDate, invoiceSerial, invoicePiNo, customerId,
+    customerName, customerAddress, customerCity, customerZip, customerState, customerCountry,
+    billingAddress, billingCity, billingZip, billingState, billingCountry, currency,
+    status, discountType, discountValue, additionalChargeType, additionalChargeValue,
+    reference, totalQuantity, totalAmount, totalSquareMeters, rounding, netAmount,
+    deliveryTerms, deliveryDetails, shippingDetails, paymentTerms, portOfDischarge,
+    dispatchTerms, bankName, bankBranch, bankCity, swiftNumber, comments, calculationType,
+    bankAddress
+) VALUES 
+(
+    20, '2488637', '06-06-2016', '49', '2488637/49', 11,
+    'INTERNATIONAL DECORATIVE SURFACES', 'ST.DAVIDS WAY, BERMUDA PARK\nNUNEATON WARWICKSHIRE\nCV10 7SD',
+    '', '', '', '',
+    'NOTIFY - NEPTUNE SHIPPING AGENCY\nHIGHER SHERWELL , SEVENSTONES\nCALLINGTON,CORNWALL,PL178H',
+    '', '', '', '', 'GBP',
+    NULL, 'None', '', 'None', '',
+    '', '5600', '32280.0', '16670.080', '0.00', '32280',
+    'CIF', 'JULY 01, 2016', '', 'ON 60 DAYS D.A. - L.C.', 'FELIXSTOWE',
+    'FELIXSTOWE (U.K)', 'FORTIS BANK S.A. / N.V.BRUSSELS', '', '', '',
+    NULL, 2, 'ALL BELGIAN OFFICES\nBRUSSELS'
+),
+(
+    23, '2487600', '10-06-2016', '52', '2487600/52', 11,
+    'INTERNATIONAL DECORATIVE SURFACES', 'ST.DAVIDS WAY, BERMUDA PARK\nNUNEATON WARWICKSHIRE\nCV10 7SD',
+    '', '', '', '',
+    'NOTIFY - NEPTUNE SHIPPING AGENCY\nHIGHER SHERWELL , SEVENSTONES\nCALLINGTON,CORNWALL,PL178H',
+    '', '', '', '', 'GBP',
+    NULL, 'None', '', 'Flat', '400',
+    'ADDITION - FREIGHT CHARGES', '3240', '39036.0', '9644.8324', '0.00', '39036',
+    'CIF', 'JULY 25, 2016', '', 'ON 60 DAYS D.A. - L.C.', 'GRANGEMOUTH',
+    'GRANGEMOUTH (U.K)', 'FORTIS BANK S.A. / N.V.BRUSSELS', '', '', '',
+    NULL, 2, 'ALL BELGIAN OFFICES\nBRUSSELS'
+);`,
+  },
 ];
 
 // Ensure Migrations Table Exists
