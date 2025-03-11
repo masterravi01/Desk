@@ -81,7 +81,14 @@
                 <mat-form-field appearance="outline">
                   <input matInput formControlName="customerName" />
                 </mat-form-field>
-                <button class="btn" mat-raised-button>Select Customer</button>
+                <button
+                  class="btn"
+                  mat-raised-button
+                  style="height: 32px"
+                  [disabled]="invoiceForm.disabled"
+                >
+                  Select Customer
+                </button>
               </div>
             </td>
           </tr>
@@ -101,8 +108,12 @@
                   <label>Address</label>
                 </td>
                 <td class="input-cell">
-                  <mat-form-field appearance="outline">
-                    <input matInput formControlName="customerAddress" />
+                  <mat-form-field appearance="outline" class="full-width">
+                    <textarea
+                      matInput
+                      rows="2"
+                      formControlName="customerAddress"
+                    ></textarea>
                   </mat-form-field>
                 </td>
               </tr>
@@ -158,8 +169,12 @@
                   <label>Address</label>
                 </td>
                 <td class="input-cell">
-                  <mat-form-field appearance="outline">
-                    <input matInput formControlName="billingAddress" />
+                  <mat-form-field appearance="outline" class="full-width">
+                    <textarea
+                      matInput
+                      rows="2"
+                      formControlName="billingAddress"
+                    ></textarea>
                   </mat-form-field>
                 </td>
               </tr>
@@ -219,8 +234,12 @@
                       aria-label="Select an option"
                       formControlName="calculationType"
                     >
-                      <mat-radio-button value="1">Per Sq. Mt</mat-radio-button>
-                      <mat-radio-button value="2">Per Sheet</mat-radio-button>
+                      <mat-radio-button value="Per Sq. Mt"
+                        >Per Sq. Mt</mat-radio-button
+                      >
+                      <mat-radio-button value="Per Sheet"
+                        >Per Sheet</mat-radio-button
+                      >
                     </mat-radio-group>
                   </div>
                 </div>
@@ -232,12 +251,14 @@
                       background: #fff;
                       height: 32px;
                       width: 100%;
-                      border-radius: 4pxd;
+                      border-radius: 4px;
                     "
                     formControlName="currency"
                   >
-                    @for (food of foods; track food) {
-                    <option [value]="food.value">{{ food.viewValue }}</option>
+                    @for (cur of currency; track cur) {
+                    <option [value]="cur.currencyName">
+                      {{ cur.currencyChar }}
+                    </option>
                     }
                   </select>
                 </div>
@@ -252,26 +273,572 @@
       class="d-flex"
       style="justify-content: center; margin-top: 20px; margin-bottom: 10px"
     >
-      <button class="btn" mat-raised-button mat-button (click)="onCancel()">
+      <button class="btn" mat-raised-button mat-button (click)="initForm()">
         New
       </button>
-      <button class="btn" mat-raised-button mat-button (click)="onCancel()">
+      <button
+        class="btn"
+        mat-raised-button
+        mat-button
+        [disabled]="invoiceForm.invalid"
+        (click)="onCancel()"
+      >
         Add
       </button>
-      <button class="btn" mat-raised-button mat-button (click)="onCancel()">
+      <button
+        class="btn"
+        mat-raised-button
+        mat-button
+        (click)="openSelectModal()"
+      >
         Select
       </button>
-      <button class="btn" mat-raised-button mat-button (click)="onCancel()">
+      <button
+        class="btn"
+        mat-raised-button
+        mat-button
+        [disabled]="invoiceForm.invalid"
+        (click)="onSave()"
+      >
         Save
       </button>
-      <button class="btn" mat-raised-button mat-button (click)="onCancel()">
+      <button
+        class="btn"
+        mat-raised-button
+        mat-button
+        [disabled]="!invoiceForm?.get('invId')?.value"
+        (click)="onDelete()"
+      >
         Delete
       </button>
-      <button class="btn" mat-raised-button mat-button (click)="onCancel()">
+      <button class="btn" mat-raised-button mat-button (click)="initForm()">
         Clear
       </button>
     </div>
   </mat-tab>
-  <mat-tab label="Item Details"> </mat-tab>
-  <mat-tab label="Instrutions"> </mat-tab>
+  <mat-tab label="Item Details" [formGroup]="invoiceDetailsForm">
+    <div
+      class="grid"
+      style="
+        grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+        gap: 0 8px;
+        margin: 0 20px;
+      "
+    >
+      <div class="form-field">
+        <label class="label">Container Type</label>
+        <select
+          style="
+            background: #fff;
+            height: 32px;
+            border-radius: 4px;
+            min-width: 100px;
+          "
+          formControlName="containerType"
+        >
+          @for (c of containers; track c) {
+          <option [value]="c.name">
+            {{ c.name }}
+          </option>
+          }
+        </select>
+      </div>
+      <div class="form-field">
+        <label class="label">From</label>
+        <mat-form-field appearance="outline">
+          <input matInput formControlName="containerFrom" />
+        </mat-form-field>
+      </div>
+      <div class="form-field">
+        <label class="label">To</label>
+        <mat-form-field appearance="outline">
+          <input matInput formControlName="containerTo" />
+        </mat-form-field>
+      </div>
+      <div class="form-field">
+        <label class="label">Length</label>
+        <mat-form-field appearance="outline">
+          <input matInput formControlName="length" />
+        </mat-form-field>
+      </div>
+      <div class="form-field">
+        <label class="label">Width</label>
+        <mat-form-field appearance="outline">
+          <input matInput formControlName="width" />
+        </mat-form-field>
+      </div>
+      <div class="form-field">
+        <label class="label">Thickness</label>
+        <mat-form-field appearance="outline">
+          <input matInput formControlName="thickness" />
+        </mat-form-field>
+      </div>
+      <div class="form-field">
+        <label class="label">Sq.Mt.</label>
+        <mat-form-field appearance="outline">
+          <input matInput formControlName="squareMeter" />
+        </mat-form-field>
+      </div>
+      <div class="form-field">
+        <label class="label">Grade</label>
+        <mat-form-field appearance="outline">
+          <input matInput formControlName="materialGrade" />
+        </mat-form-field>
+      </div>
+      <div class="form-field">
+        <label class="label">Brand</label>
+        <mat-form-field appearance="outline">
+          <input matInput formControlName="brandName" />
+        </mat-form-field>
+      </div>
+      <div class="form-field">
+        <label class="label">Design</label>
+        <mat-form-field appearance="outline">
+          <input matInput formControlName="designType" />
+        </mat-form-field>
+      </div>
+      <div class="form-field">
+        <label class="label">Finish</label>
+        <mat-form-field appearance="outline">
+          <input matInput formControlName="finishType" />
+        </mat-form-field>
+      </div>
+      <div class="form-field">
+        <label class="label">Description:</label>
+        <select
+          style="
+            background: #fff;
+            height: 32px;
+            border-radius: 4px;
+            min-width: 100px;
+          "
+          formControlName="thicknessDetail"
+        >
+          <option value="Single Side">Single Side</option>
+          <option value="Double Side">Double Side</option>
+        </select>
+      </div>
+      <div class="form-field">
+        <label class="label">Qty</label>
+        <mat-form-field appearance="outline">
+          <input matInput formControlName="quantity" />
+        </mat-form-field>
+      </div>
+      <div class="form-field">
+        <label class="label">Rate</label>
+        <mat-form-field appearance="outline">
+          <input matInput formControlName="rate" />
+        </mat-form-field>
+      </div>
+      <div class="form-field">
+        <label class="label">Prefix</label>
+        <mat-form-field appearance="outline">
+          <input matInput formControlName="prefixCode" />
+        </mat-form-field>
+      </div>
+      <div class="form-field">
+        <label class="label">&nbsp;</label>
+        <button
+          class="btn"
+          mat-raised-button
+          style="height: 32px"
+          [disabled]="invoiceDetailsForm.disabled"
+        >
+          Add
+        </button>
+      </div>
+
+      <div class="form-field">
+        <label class="label">&nbsp;</label>
+      </div>
+      <div class="form-field">
+        <label class="label">&nbsp;</label>
+      </div>
+      <div class="form-field">
+        <label class="label">&nbsp;</label>
+        <button class="btn" mat-raised-button style="height: 32px; padding: 0">
+          Move Up
+        </button>
+      </div>
+      <div class="form-field">
+        <label class="label">&nbsp;</label>
+        <button class="btn" mat-raised-button style="height: 32px; padding: 0">
+          Move Down
+        </button>
+      </div>
+      <div class="form-field">
+        <label class="label">&nbsp;</label>
+        <button class="btn" mat-raised-button style="height: 32px">Copy</button>
+      </div>
+      <div class="form-field">
+        <label class="label">&nbsp;</label>
+        <button class="btn" mat-raised-button style="height: 32px">
+          Delete
+        </button>
+      </div>
+    </div>
+    <div class="table-container" style="margin-top: 16px; min-height: 200px">
+      <table mat-table [dataSource]="boxes" class="mat-elevation-z8">
+        <ng-container
+          *ngFor="let column of displayedColumns"
+          [matColumnDef]="column"
+        >
+          <th mat-header-cell *matHeaderCellDef>{{ column | titlecase }}</th>
+          <td mat-cell *matCellDef="let element">{{ element[column] }}</td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+      </table>
+    </div>
+    <ng-container [formGroup]="invoiceForm">
+      <div
+        class="d-flex"
+        style="justify-content: start; margin: 20px 20px 0 20px"
+      >
+        <div class="d-flex">
+          <div class="label-cell">Discount</div>
+          <select
+            style="
+              background: #fff;
+              height: 32px;
+              min-width: 200px;
+              border-radius: 4px;
+            "
+            formControlName="discountType"
+          >
+            <option value="Flat">Flat</option>
+            <option value="Percentage">Percentage</option>
+          </select>
+          <mat-form-field appearance="outline" style="margin-left: 16px">
+            <input matInput formControlName="discountValue" />
+          </mat-form-field>
+        </div>
+        <div class="d-flex" style="margin-left: 8px">
+          <div class="label-cell">Discount</div>
+          <select
+            style="
+              background: #fff;
+              height: 32px;
+              min-width: 200px;
+              border-radius: 4px;
+            "
+            formControlName="additionalChargeType"
+          >
+            <option value="Flat">Flat</option>
+            <option value="Percentage">Percentage</option>
+          </select>
+          <mat-form-field appearance="outline" style="margin-left: 16px">
+            <input matInput formControlName="additionalChargeValue" />
+          </mat-form-field>
+        </div>
+        <div class="d-flex" style="margin-left: 8px">
+          <div class="label-cell">
+            Total Qty:{{ invoiceForm.get("totalQuantity")?.value }}
+          </div>
+          <div class="label-cell" style="margin-left: 20px">
+            Total SqMt:{{ invoiceForm.get("totalSquareMeters")?.value }}
+          </div>
+        </div>
+      </div>
+      <mat-divider></mat-divider>
+      <div class="outer-div">
+        <table class="form-table">
+          <tbody>
+            <tr>
+              <td>
+                <label class="label">Amount</label>
+                <div>{{ invoiceForm.get("totalAmount")?.value }}</div>
+              </td>
+              <td>
+                <label class="label">Discount</label>
+                <div>0</div>
+              </td>
+              <td>
+                <label class="label">Addition</label>
+                <div>0</div>
+              </td>
+              <td>
+                <label class="label">Total Amount</label>
+                <div>{{ invoiceForm.get("totalAmount")?.value }}</div>
+              </td>
+              <td>
+                <label class="label">Round Off</label>
+                <div>{{ invoiceForm.get("rounding")?.value || 0 }}</div>
+              </td>
+              <td>
+                <label class="label">Net Amount</label>
+                <div>{{ invoiceForm.get("netAmount")?.value || 0 }}</div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <mat-divider></mat-divider>
+      <div class="d-flex" style="max-width: 600px; margin: 20px 20px 0 20px">
+        <div class="label-cell">Reference</div>
+
+        <mat-form-field appearance="outline" style="margin-left: 16px">
+          <input matInput formControlName="reference" />
+        </mat-form-field>
+      </div>
+    </ng-container>
+
+    <mat-divider></mat-divider>
+    <div
+      class="d-flex"
+      style="justify-content: center; margin-top: 20px; margin-bottom: 10px"
+    >
+      <button class="btn" mat-raised-button mat-button (click)="initForm()">
+        New
+      </button>
+      <button
+        class="btn"
+        mat-raised-button
+        mat-button
+        [disabled]="invoiceForm.invalid"
+        (click)="onCancel()"
+      >
+        Add
+      </button>
+      <button
+        class="btn"
+        mat-raised-button
+        mat-button
+        (click)="openSelectModal()"
+      >
+        Select
+      </button>
+      <button
+        class="btn"
+        mat-raised-button
+        mat-button
+        [disabled]="invoiceForm.invalid"
+        (click)="onSave()"
+      >
+        Save
+      </button>
+      <button
+        class="btn"
+        mat-raised-button
+        mat-button
+        [disabled]="!invoiceForm?.get('invId')?.value"
+        (click)="onDelete()"
+      >
+        Delete
+      </button>
+      <button class="btn" mat-raised-button mat-button (click)="initForm()">
+        Clear
+      </button>
+    </div>
+  </mat-tab>
+  <mat-tab label="Instrutions">
+    <div class="outer-div" [formGroup]="invoiceForm">
+      <h3 class="section-title h3">Payment Term</h3>
+      <table class="form-table">
+        <tbody>
+          <tr>
+            <td class="input-cell" colspan="2">
+              <div class="grid">
+                <div class="d-flex">
+                  <div class="label-cell">Delivery Term</div>
+                  <select
+                    style="
+                      background: #fff;
+                      height: 32px;
+                      width: 100%;
+                      border-radius: 4px;
+                    "
+                    formControlName="deliveryTerms"
+                  >
+                    <option value="FOB">FOB</option>
+                  </select>
+                </div>
+
+                <div class="d-flex">
+                  <div class="label-cell">Bank Name</div>
+                  <mat-form-field appearance="outline">
+                    <input matInput formControlName="bankName" />
+                  </mat-form-field>
+                </div>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td class="input-cell" colspan="2">
+              <div class="grid">
+                <div class="d-flex">
+                  <div class="label-cell">Delivery</div>
+                  <mat-form-field appearance="outline">
+                    <input matInput formControlName="deliveryDetails" />
+                  </mat-form-field>
+                </div>
+
+                <div class="d-flex">
+                  <div class="label-cell">Bank Brach</div>
+                  <mat-form-field appearance="outline">
+                    <input matInput formControlName="bankBranch" />
+                  </mat-form-field>
+                </div>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td class="input-cell" colspan="2">
+              <div class="grid">
+                <div class="d-flex">
+                  <div class="label-cell">Shipping Line</div>
+                  <mat-form-field appearance="outline">
+                    <input matInput formControlName="shippingDetails" />
+                  </mat-form-field>
+                </div>
+
+                <div class="d-flex">
+                  <div class="label-cell">Address</div>
+                  <mat-form-field appearance="outline">
+                    <input matInput formControlName="bankAddress" />
+                  </mat-form-field>
+                </div>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td class="input-cell" colspan="2">
+              <div class="grid">
+                <div class="d-flex">
+                  <div class="label-cell">Payment</div>
+                  <mat-form-field appearance="outline">
+                    <input matInput formControlName="paymentTerms" />
+                  </mat-form-field>
+                </div>
+
+                <div class="d-flex">
+                  <div class="label-cell">Bank City</div>
+                  <mat-form-field appearance="outline">
+                    <input matInput formControlName="bankCity" />
+                  </mat-form-field>
+                </div>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td class="input-cell" colspan="2">
+              <div class="grid">
+                <div class="d-flex">
+                  <div class="label-cell">Port Of Discharge</div>
+                  <mat-form-field appearance="outline">
+                    <input matInput formControlName="portOfDischarge" />
+                  </mat-form-field>
+                </div>
+
+                <div class="d-flex">
+                  <div class="label-cell">Swift No.</div>
+                  <mat-form-field appearance="outline">
+                    <input matInput formControlName="swiftNumber" />
+                  </mat-form-field>
+                </div>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td class="input-cell" colspan="2">
+              <div class="grid">
+                <div class="d-flex">
+                  <div class="label-cell">Discharge Term</div>
+                  <mat-form-field appearance="outline">
+                    <input matInput formControlName="dispatchTerms" />
+                  </mat-form-field>
+                </div>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <h3 class="section-title h3" style="margin-top: 20px">Instrutions</h3>
+      <div class="d-flex">
+        <button
+          mat-raised-button
+          style="height: 32px"
+          [disabled]="invoiceForm.disabled"
+        >
+          Select Instrutions
+        </button>
+        <button
+          mat-raised-button
+          style="height: 32px"
+          [disabled]="invoiceForm.disabled"
+        >
+          Delete
+        </button>
+      </div>
+      <div style="max-width: 800px; margin-top: 8px">
+        <table mat-table [dataSource]="boxes" class="mat-elevation-z8 table">
+          <ng-container matColumnDef="Id">
+            <th mat-header-cell *matHeaderCellDef>Id</th>
+            <td mat-cell *matCellDef="let element">{{ element.id }}</td>
+          </ng-container>
+          <ng-container matColumnDef="Instrutions">
+            <th mat-header-cell *matHeaderCellDef>Instrutions</th>
+            <td mat-cell *matCellDef="let element">
+              {{ element.instrutions }}
+            </td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="['Id', 'Instrutions']"></tr>
+          <tr
+            (click)="selectRow(row)"
+            mat-row
+            *matRowDef="let row; columns: ['Id', 'Instrutions']"
+          ></tr>
+        </table>
+      </div>
+      <mat-divider></mat-divider>
+      <div
+        class="d-flex"
+        style="justify-content: center; margin-top: 20px; margin-bottom: 10px"
+      >
+        <button class="btn" mat-raised-button mat-button (click)="initForm()">
+          New
+        </button>
+        <button
+          class="btn"
+          mat-raised-button
+          mat-button
+          [disabled]="invoiceForm.invalid"
+          (click)="onCancel()"
+        >
+          Add
+        </button>
+        <button
+          class="btn"
+          mat-raised-button
+          mat-button
+          (click)="openSelectModal()"
+        >
+          Select
+        </button>
+        <button
+          class="btn"
+          mat-raised-button
+          mat-button
+          [disabled]="invoiceForm.invalid"
+          (click)="onSave()"
+        >
+          Save
+        </button>
+        <button
+          class="btn"
+          mat-raised-button
+          mat-button
+          [disabled]="!invoiceForm?.get('invId')?.value"
+          (click)="onDelete()"
+        >
+          Delete
+        </button>
+        <button class="btn" mat-raised-button mat-button (click)="initForm()">
+          Clear
+        </button>
+      </div>
+    </div>
+  </mat-tab>
 </mat-tab-group>

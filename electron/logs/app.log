@@ -141,3 +141,39 @@
 2025-03-10 09:22:45 [INFO]: ✅ Migration 6: Create Invoice Master
 2025-03-10 09:23:05 [INFO]: ✅ Connected to SQLite Database at: C:\Users\Harun\AppData\Roaming\alfa\database.sqlite
 2025-03-10 09:23:05 [INFO]: 🔗 Foreign Key support enabled.
+2025-03-10 09:29:52 [INFO]: ✅ Connected to SQLite Database at: C:\Users\Harun\AppData\Roaming\alfa\database.sqlite
+2025-03-10 09:29:52 [INFO]: 🔗 Foreign Key support enabled.
+2025-03-10 10:00:47 [INFO]: ✅ Connected to SQLite Database at: C:\Users\Harun\AppData\Roaming\alfa\database.sqlite
+2025-03-10 10:00:47 [INFO]: 🔗 Foreign Key support enabled.
+2025-03-10 10:00:47 [INFO]: ✅ Migration 4: Create Currency Table
+2025-03-10 10:00:47 [ERROR]: ❌ Migration 7 Failed: SQLITE_ERROR: near "BnkState": syntax error
+2025-03-10 10:00:47 [INFO]: ✅ Migration 8: Create Invoice Master
+2025-03-10 10:03:25 [INFO]: ✅ Connected to SQLite Database at: C:\Users\Harun\AppData\Roaming\alfa\database.sqlite
+2025-03-10 10:03:25 [INFO]: 🔗 Foreign Key support enabled.
+2025-03-10 10:03:25 [INFO]: ✅ Migration 1: Create BottomNote Table
+2025-03-10 10:03:25 [INFO]: ✅ Migration 2: Create Company Table
+2025-03-10 10:03:25 [INFO]: ✅ Migration 3: Create Containers Table
+2025-03-10 10:03:25 [INFO]: ✅ Migration 4: Create Currency Table
+2025-03-10 10:03:25 [INFO]: ✅ Migration 5: Create System Parameter
+2025-03-10 10:03:25 [INFO]: ✅ Migration 6: Create Instruction Table
+2025-03-10 10:03:25 [ERROR]: ❌ Migration 7 Failed: SQLITE_ERROR: near ")": syntax error
+2025-03-10 10:03:25 [INFO]: ✅ Migration 8: Create Invoice Master
+2025-03-10 10:04:17 [INFO]: ✅ Connected to SQLite Database at: C:\Users\Harun\AppData\Roaming\alfa\database.sqlite
+2025-03-10 10:04:17 [INFO]: 🔗 Foreign Key support enabled.
+2025-03-10 10:04:17 [INFO]: ✅ Migration 7: Create Customer Table
+2025-03-10 10:04:30 [INFO]: ✅ Connected to SQLite Database at: C:\Users\Harun\AppData\Roaming\alfa\database.sqlite
+2025-03-10 10:04:30 [INFO]: 🔗 Foreign Key support enabled.
+2025-03-10 17:13:49 [INFO]: ✅ Connected to SQLite Database at: C:\Users\Harun\AppData\Roaming\alfa\database.sqlite
+2025-03-10 17:13:49 [INFO]: 🔗 Foreign Key support enabled.
+2025-03-10 17:21:04 [INFO]: ✅ Connected to SQLite Database at: C:\Users\Harun\AppData\Roaming\alfa\database.sqlite
+2025-03-10 17:21:05 [INFO]: 🔗 Foreign Key support enabled.
+2025-03-11 05:04:54 [INFO]: ✅ Connected to SQLite Database at: C:\Users\Harun\AppData\Roaming\alfa\database.sqlite
+2025-03-11 05:04:54 [INFO]: 🔗 Foreign Key support enabled.
+2025-03-11 05:15:31 [INFO]: ✅ Connected to SQLite Database at: C:\Users\Harun\AppData\Roaming\alfa\database.sqlite
+2025-03-11 05:15:32 [INFO]: 🔗 Foreign Key support enabled.
+2025-03-11 06:52:13 [INFO]: ✅ Connected to SQLite Database at: C:\Users\Harun\AppData\Roaming\alfa\database.sqlite
+2025-03-11 06:52:13 [INFO]: 🔗 Foreign Key support enabled.
+2025-03-11 06:52:13 [ERROR]: ❌ Migration 9 Failed: SQLITE_ERROR: 23 values for 22 columns
+2025-03-11 06:52:44 [INFO]: ✅ Connected to SQLite Database at: C:\Users\Harun\AppData\Roaming\alfa\database.sqlite
+2025-03-11 06:52:44 [INFO]: 🔗 Foreign Key support enabled.
+2025-03-11 06:52:44 [INFO]: ✅ Migration 9: Create InvoiceDetails Table

@@ -13,7 +13,12 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { MatTableModule } from '@angular/material/table';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatDividerModule } from '@angular/material/divider';
-import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import {
+  FormBuilder,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 
@@ -25,6 +30,7 @@ import { MatCardModule } from '@angular/material/card';
 import { provideNativeDateAdapter } from '@angular/material/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatRadioModule } from '@angular/material/radio';
+import { CommonModule, DatePipe, TitleCasePipe } from '@angular/common';
 @UntilDestroy()
 @Component({
   selector: 'app-order-confirm-modal',
@@ -45,6 +51,8 @@ import { MatRadioModule } from '@angular/material/radio';
     MatCardModule,
     MatDatepickerModule,
     MatRadioModule,
+    TitleCasePipe,
+    CommonModule,
   ],
   providers: [provideNativeDateAdapter()],
   templateUrl: './order-confirm-modal.component.html',
@@ -53,14 +61,55 @@ import { MatRadioModule } from '@angular/material/radio';
 export class OrderConfirmModalComponent implements OnInit {
   readonly dialogRef = inject(MatDialogRef<OrderConfirmModalComponent>);
   invoiceForm!: FormGroup;
+  invoiceDetailsForm!: FormGroup;
   currency: any[] = [];
   parameters: any[] = [];
-  foods = [
-    { value: 'steak-0', viewValue: 'Steak' },
-    { value: 'pizza-1', viewValue: 'Pizza' },
-    { value: 'tacos-2', viewValue: 'Tacos' },
+  containers: any[] = [];
+  displayedColumns: string[] = [
+    'containerType',
+    'containerTo',
+    'containerFrom',
+    'length',
+    'width',
+    'thickness',
+    'squareMeter',
+    'materialGrade',
+    'brandName',
+    'materialQuality',
+    'finishType',
+    'thicknessDetail',
+    'quantity',
+    'rate',
+    'prefixCode',
   ];
 
+  boxes: any[] = [
+    {
+      invoiceDetailId: 'INV001',
+      invoiceId: '12345',
+      containerType: 'Type A',
+      containerTo: 'Mumbai',
+      containerFrom: 'Delhi',
+      length: '12m',
+      width: '5m',
+      thickness: '3cm',
+      squareMeter: '60',
+      materialGrade: 'Grade A',
+      brandName: 'ABC Co.',
+      materialQuality: 'High',
+      finishType: 'Glossy',
+      thicknessDetail: 'Detailed Info',
+      quantity: '100',
+      rate: '200',
+      remarks: 'Urgent Delivery',
+      designType: 'Custom',
+      prefixCode: 'PRE-001',
+      grossWeight: '500kg',
+      netWeight: '450kg',
+      boxType: 'Wooden',
+      subWeight: '50kg',
+    },
+  ];
   constructor(
     private modalService: ModalService,
     private fb: FormBuilder,
@@ -69,6 +118,7 @@ export class OrderConfirmModalComponent implements OnInit {
 
   ngOnInit(): void {
     this.initForm();
+    this.invoiceForm.disable();
     this.loadCompanyData();
     this.loadCurrencies();
     this.masterService
@@ -79,11 +129,12 @@ export class OrderConfirmModalComponent implements OnInit {
         // this.invoiceForm.patchValue(data);
       });
   }
-  private initForm() {
+  initForm() {
+    const today = new DatePipe('en-US').transform(new Date(), 'yyyy-MM-dd');
     this.invoiceForm = this.fb.group({
-      invId: [null],
-      customerOrderNo: [''],
-      invoiceDate: [''],
+      invId: [''],
+      customerOrderNo: ['', Validators.required],
+      invoiceDate: [today],
       invoiceSerial: [''],
       invoicePiNo: [''],
       customerId: [null],
@@ -98,15 +149,15 @@ export class OrderConfirmModalComponent implements OnInit {
       billingZip: [''],
       billingState: [''],
       billingCountry: [''],
-      currency: [''],
+      currency: ['USD'],
       status: [''],
       discountType: [''],
       discountValue: [''],
       additionalChargeType: [''],
       additionalChargeValue: [''],
       reference: [''],
-      totalQuantity: [''],
-      totalAmount: [''],
+      totalQuantity: [0],
+      totalAmount: [0],
       totalSquareMeters: [''],
       rounding: [''],
       netAmount: [''],
@@ -121,8 +172,34 @@ export class OrderConfirmModalComponent implements OnInit {
       bankCity: [''],
       swiftNumber: [''],
       comments: [''],
-      calculationType: [null],
+      calculationType: ['Per Sq. Mt'],
       bankAddress: [''],
+    });
+
+    this.invoiceDetailsForm = this.fb.group({
+      invoiceDetailId: [''],
+      invoiceId: ['', Validators.required],
+      containerType: ['', Validators.required],
+      containerTo: [''],
+      containerFrom: [''],
+      length: [''],
+      width: [''],
+      thickness: [''],
+      squareMeter: [''],
+      materialGrade: [''],
+      brandName: [''],
+      materialQuality: [''],
+      finishType: [''],
+      thicknessDetail: [''],
+      quantity: ['', Validators.required],
+      rate: ['', Validators.required],
+      remarks: [''],
+      designType: [''],
+      prefixCode: [''],
+      grossWeight: [''],
+      netWeight: [''],
+      boxType: [''],
+      subWeight: [''],
     });
   }
   private loadCompanyData() {
@@ -155,6 +232,12 @@ export class OrderConfirmModalComponent implements OnInit {
   onConfirm(): void {
     this.dialogRef.close(true);
   }
+  openSelectModal(): void {
+    this.dialogRef.close(true);
+  }
+  onDelete(): void {
+    this.dialogRef.close(true);
+  }
   enableEdit() {
     this.invoiceForm.enable();
   }
@@ -178,21 +261,22 @@ export class OrderConfirmModalComponent implements OnInit {
         if (result) this.loadCurrencies();
       });
   }
-
+  selectRow(row: any) {}
   onSave() {
     if (this.invoiceForm.disabled) {
       this.invoiceForm.enable();
     }
-    const callUrl = this.invoiceForm.get('id')?.value
-      ? 'updateCompany'
-      : 'addCompany';
-    this.masterService
-      .invoke(callUrl, this.invoiceForm.value)
-      .pipe(untilDestroyed(this))
-      .subscribe((data) => {
-        console.log(data);
-        this.initForm();
-        this.loadCompanyData();
-      });
+    console.log(this.invoiceForm.value);
+    // const callUrl = this.invoiceForm.get('id')?.value
+    //   ? 'updateCompany'
+    //   : 'addCompany';
+    // this.masterService
+    //   .invoke(callUrl, this.invoiceForm.value)
+    //   .pipe(untilDestroyed(this))
+    //   .subscribe((data) => {
+    //     console.log(data);
+    //     this.initForm();
+    //     this.loadCompanyData();
+    //   });
   }
 }
