@@ -30,7 +30,12 @@ import { MatCardModule } from '@angular/material/card';
 import { provideNativeDateAdapter } from '@angular/material/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatRadioModule } from '@angular/material/radio';
-import { CommonModule, DatePipe, TitleCasePipe } from '@angular/common';
+import {
+  CommonModule,
+  DatePipe,
+  SlicePipe,
+  TitleCasePipe,
+} from '@angular/common';
 import { SelectCustomerComponent } from '../select-customer/select-customer.component';
 import { SelectInstructionComponent } from '../select-instruction/select-instruction.component';
 @UntilDestroy()
@@ -55,6 +60,7 @@ import { SelectInstructionComponent } from '../select-instruction/select-instruc
     MatRadioModule,
     TitleCasePipe,
     CommonModule,
+    SlicePipe,
   ],
   providers: [provideNativeDateAdapter()],
   templateUrl: './order-confirm-modal.component.html',
@@ -68,31 +74,55 @@ export class OrderConfirmModalComponent implements OnInit {
   instructions: any[] = [];
   containers: any[] = [];
   customers: any[] = [];
+  cc = { a: 1, v: 1 };
   displayedColumns: string[] = [
     'containerType',
-    'containerTo',
     'containerFrom',
+    'containerTo',
     'length',
     'width',
     'thickness',
     'squareMeter',
     'materialGrade',
     'brandName',
-    'materialQuality',
+    'designType',
     'finishType',
     'thicknessDetail',
     'quantity',
     'rate',
     'prefixCode',
   ];
+  columnHeaderMap: { [key: string]: string } = {
+    containerType: 'Container Type',
+    containerTo: 'To',
+    containerFrom: 'From',
+    length: 'Length',
+    width: 'Width',
+    thickness: 'Thickness',
+    squareMeter: 'Area',
+    materialGrade: 'Grade',
+    brandName: 'Brand',
+    finishType: 'Finish',
+    thicknessDetail: 'Description',
+    quantity: 'Quantity',
+    rate: 'Rate',
+    prefixCode: 'Prefix',
+  };
+
   selectedIndex: number = 0;
+  selectedIntructionIndex: number = 0;
 
   boxes = signal<any[]>([]); // Using signal for your `boxes` data
 
   // Computed signals for derived values
-  totalQuantity = computed(() =>
-    this.boxes().reduce((sum, box) => sum + Number(box.quantity || 0), 0)
-  );
+  totalQuantity = computed(() => {
+    const qt = this.boxes().reduce(
+      (sum, box) => sum + Number(box.quantity || 0),
+      0
+    );
+    this.invoiceForm.patchValue({ totalQuantity: qt });
+    return qt;
+  });
 
   totalAmount = computed(() => {
     const calculationType = this.invoiceForm.get('calculationType')?.value;
@@ -117,13 +147,15 @@ export class OrderConfirmModalComponent implements OnInit {
     return total;
   });
 
-  totalSquareMeters = computed(() =>
-    Number(
+  totalSquareMeters = computed(() => {
+    const sqmt = Number(
       this.boxes()
         .reduce((sum, box) => sum + Number(box.squareMeter || 0), 0)
         .toFixed(2)
-    )
-  );
+    );
+    this.invoiceForm.patchValue({ totalSquareMeters: sqmt });
+    return sqmt;
+  });
 
   netAmount = computed(() => {
     let finalAmount = this.totalAmount();
@@ -183,7 +215,7 @@ export class OrderConfirmModalComponent implements OnInit {
   ngOnInit(): void {
     this.initForm();
     this.invoiceForm.disable();
-
+    this.invoiceDetailsForm.disable();
     this.loadData();
     this.masterService
       .invoke('getInvoice', 20)
@@ -259,7 +291,6 @@ export class OrderConfirmModalComponent implements OnInit {
       squareMeter: [''],
       materialGrade: [''],
       brandName: [''],
-      materialQuality: [''],
       finishType: [''],
       thicknessDetail: ['Single Side'],
       quantity: ['', Validators.required],
@@ -348,7 +379,9 @@ export class OrderConfirmModalComponent implements OnInit {
       });
   }
 
-  selectRow(row: any) {}
+  selectRowInstruction(i: any) {
+    this.selectedIntructionIndex = i;
+  }
   addDetailsToTable() {
     this.boxes.set([...this.boxes(), this.invoiceDetailsForm.value]);
     this.initInvoiceDetailsForm(); // Reset form after adding
@@ -363,7 +396,18 @@ export class OrderConfirmModalComponent implements OnInit {
       this.selectedIndex = updatedBoxes.length - 1;
     }
   }
-
+  deleteInstruction() {
+    if (
+      this.selectedIntructionIndex !== null &&
+      this.selectedIntructionIndex >= 0
+    ) {
+      const updatedBoxes = this.instructions.filter(
+        (_, index) => index !== this.selectedIntructionIndex
+      );
+      this.instructions = updatedBoxes;
+      this.selectedIntructionIndex = updatedBoxes.length - 1;
+    }
+  }
   copyValue() {
     if (this.selectedIndex !== null && this.selectedIndex >= 0) {
       this.initInvoiceDetailsForm(this.boxes()[this.selectedIndex]);
@@ -405,6 +449,9 @@ export class OrderConfirmModalComponent implements OnInit {
     if (this.invoiceForm.disabled) {
       this.invoiceForm.enable();
     }
-    console.log(this.invoiceForm.value);
+    if (this.invoiceDetailsForm.disabled) {
+      this.invoiceDetailsForm.enable();
+    }
+    console.log(this.invoiceForm.value, this.invoiceDetailsForm.value);
   }
 }
