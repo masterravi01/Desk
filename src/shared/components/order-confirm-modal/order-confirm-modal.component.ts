@@ -62,9 +62,10 @@ export class OrderConfirmModalComponent implements OnInit {
   readonly dialogRef = inject(MatDialogRef<OrderConfirmModalComponent>);
   invoiceForm!: FormGroup;
   invoiceDetailsForm!: FormGroup;
-  currency: any[] = [];
-  parameters: any[] = [];
+  currencies: any[] = [];
+  instructions: any[] = [];
   containers: any[] = [];
+  customers: any[] = [];
   displayedColumns: string[] = [
     'containerType',
     'containerTo',
@@ -119,8 +120,8 @@ export class OrderConfirmModalComponent implements OnInit {
   ngOnInit(): void {
     this.initForm();
     this.invoiceForm.disable();
-    this.loadCompanyData();
-    this.loadCurrencies();
+
+    this.loadData();
     this.masterService
       .invoke('getInvoice', 20)
       .pipe(untilDestroyed(this))
@@ -202,26 +203,28 @@ export class OrderConfirmModalComponent implements OnInit {
       subWeight: [''],
     });
   }
-  private loadCompanyData() {
-    this.masterService
-      .invoke('getCompany', 1)
-      .pipe(untilDestroyed(this))
-      .subscribe((data: any) => {
-        console.log(data);
-        if (data) {
-          this.invoiceForm.patchValue(data);
-          // this.invoiceForm.disable();
-        }
-      });
-  }
 
-  private loadCurrencies() {
+  private loadData() {
     this.masterService
       .invoke('getAllCurrencies')
       .pipe(untilDestroyed(this))
       .subscribe((data: any) => {
         console.log(data);
-        this.currency = data;
+        this.currencies = data;
+      });
+    this.masterService
+      .invoke('getAllContainer')
+      .pipe(untilDestroyed(this))
+      .subscribe((data: any) => {
+        console.log(data);
+        this.containers = data;
+      });
+    this.masterService
+      .invoke('getAllCustomers')
+      .pipe(untilDestroyed(this))
+      .subscribe((data: any) => {
+        console.log(data);
+        this.customers = data;
       });
   }
 
@@ -248,19 +251,6 @@ export class OrderConfirmModalComponent implements OnInit {
     });
   }
 
-  openCurrencyModal(data?: any) {
-    this.modalService
-      .openModal(NewCurrencyModalComponent, {
-        width: '50%',
-        minHeight: '300px',
-        position: { top: '40px' },
-        data,
-      })
-      .afterClosed()
-      .subscribe((result) => {
-        if (result) this.loadCurrencies();
-      });
-  }
   selectRow(row: any) {}
   onSave() {
     if (this.invoiceForm.disabled) {

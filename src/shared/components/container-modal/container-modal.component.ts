@@ -43,18 +43,17 @@ export class ContainerModalComponent {
     private fb: FormBuilder,
     private dialogRef: MatDialogRef<ContainerModalComponent>,
     private masterService: MasterService
-
   ) {
     this.containerForm = this.fb.group({
-      ID: [''],
-      CName: [''],
-      Ctype: [''],
-      Width: [''],
-      Height: [''],
-      Weight: [''],
-      Length: [''],
+      id: [''],
+      containerName: [''],
+      containerType: [''],
+      width: [''],
+      height: [''],
+      weight: [''],
+      length: [''],
     });
-    if (this.data?.ID) {
+    if (this.data?.id) {
       this.containerForm.patchValue(this.data);
     }
   }
@@ -64,7 +63,9 @@ export class ContainerModalComponent {
   }
 
   onSave() {
-    let action = this.containerForm.get('ID')?.value ? 'updateContainer' : 'addContainer';
+    let action = this.containerForm.get('id')?.value
+      ? 'updateContainer'
+      : 'addContainer';
     this.masterService
       .invoke(action, this.containerForm.value)
       .pipe(untilDestroyed(this))

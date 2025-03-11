@@ -109,15 +109,15 @@ const migrations = [
     script: `
         DROP TABLE IF EXISTS containers;
         CREATE TABLE containers (
-          ID INTEGER PRIMARY KEY AUTOINCREMENT,
-          CName TEXT DEFAULT NULL,
-          Ctype TEXT DEFAULT NULL,
-          Width REAL DEFAULT NULL,
-          Height REAL DEFAULT NULL,
-          Weight REAL DEFAULT NULL,
-          Length INTEGER DEFAULT NULL
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          containerName TEXT DEFAULT NULL,
+          containerType TEXT DEFAULT NULL,
+          width REAL DEFAULT NULL,
+          height REAL DEFAULT NULL,
+          weight REAL DEFAULT NULL,
+          length INTEGER DEFAULT NULL
         );
-        INSERT INTO containers (ID, CName, Ctype, Width, Height, Weight, Length) VALUES 
+        INSERT INTO containers (id, containerName, containerType, width, height, weight, length) VALUES 
         (4, 'BOX 100 KG', 'BOX', 1220, 55, 100, 2440),
         (5, 'BOX 110 KG', 'BOX', 1220, 55, 110, 2440),
         (6, 'BOX 20 KG', 'BOX 20 KG', 1220, 8, 20, 2440),

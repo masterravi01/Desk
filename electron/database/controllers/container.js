@@ -12,24 +12,24 @@ function getAllContainer() {
 function addContainer(Container) {
   return new Promise((resolve, reject) => {
     const query = `
-      INSERT INTO containers (CName, Ctype, Width, Height, Weight, Length) VALUES (?, ?, ?, ?, ?, ?)
+      INSERT INTO containers (containerName, containerType, width, height, weight, length) VALUES (?, ?, ?, ?, ?, ?)
     `;
     db.run(
       query,
       [
-        Container.CName ?? null,
-        Container.Ctype ?? null,
-        Container.Width ?? null,
-        Container.Height ?? null,
-        Container.Weight ?? null,
-        Container.Length ?? null,
+        Container.containerName ?? null,
+        Container.containerType ?? null,
+        Container.width ?? null,
+        Container.height ?? null,
+        Container.weight ?? null,
+        Container.length ?? null,
       ],
       function (err) {
         if (err) {
           console.error("SQL Error:", err.message);
           reject(err);
         } else {
-          resolve({ ID: this.lastID, ...Container });
+          resolve({ id: this.lastid, ...Container });
         }
       }
     );
@@ -39,18 +39,18 @@ function addContainer(Container) {
 function updateContainer(Container) {
   return new Promise((resolve, reject) => {
     const query = `
-      UPDATE containers SET CName = ?, Ctype = ?, Width = ?, Height = ?, Weight = ?, Length = ? WHERE ID = ?
+      UPDATE containers SET containerName = ?, containerType = ?, width = ?, height = ?, weight = ?, length = ? WHERE id = ?
     `;
     db.run(
       query,
       [
-        Container.CName,
-        Container.Ctype,
-        Container.Width,
-        Container.Height,
-        Container.Weight,
-        Container.Length,
-        Container.ID,
+        Container.containerName,
+        Container.containerType,
+        Container.width,
+        Container.height,
+        Container.weight,
+        Container.length,
+        Container.id,
       ],
       function (err) {
         if (err) reject(err);
@@ -60,9 +60,9 @@ function updateContainer(Container) {
   });
 }
 
-function deleteContainer(ID) {
+function deleteContainer(id) {
   return new Promise((resolve, reject) => {
-    db.run("DELETE FROM containers WHERE ID = ?", [ID], function (err) {
+    db.run("DELETE FROM containers WHERE id = ?", [id], function (err) {
       if (err) reject(err);
       else resolve({ changes: this.changes });
     });
