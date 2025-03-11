@@ -1,0 +1,162 @@
+<div class="d-flex">
+  <h5 mat-dialog-title class="h5">Select Customer</h5>
+  <button
+    class="btn"
+    mat-button
+    (click)="onCancel()"
+    tabindex="-1"
+    style="margin-top: 10px; margin-right: 10px"
+  >
+    ❌
+  </button>
+</div>
+<div class="table-container">
+  <table mat-table [dataSource]="customers" class="mat-elevation-z8 table">
+    <ng-container matColumnDef="Name">
+      <th mat-header-cell *matHeaderCellDef>Name</th>
+      <td mat-cell *matCellDef="let element">{{ element.Name }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="Phone">
+      <th mat-header-cell *matHeaderCellDef>Phone</th>
+      <td mat-cell *matCellDef="let element">{{ element.Phone }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="Email">
+      <th mat-header-cell *matHeaderCellDef>Email</th>
+      <td mat-cell *matCellDef="let element">{{ element.Email }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="ContactPerson">
+      <th mat-header-cell *matHeaderCellDef>Contact Person</th>
+      <td mat-cell *matCellDef="let element">
+        {{ element.ContactPerson }}
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="Designation">
+      <th mat-header-cell *matHeaderCellDef>Designation</th>
+      <td mat-cell *matCellDef="let element">
+        {{ element.Designation }}
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="OtherPhone">
+      <th mat-header-cell *matHeaderCellDef>Other Phone</th>
+      <td mat-cell *matCellDef="let element">{{ element.OtherPhone }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="URL">
+      <th mat-header-cell *matHeaderCellDef>URL</th>
+      <td mat-cell *matCellDef="let element">{{ element.URL }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="Fax">
+      <th mat-header-cell *matHeaderCellDef>Fax</th>
+      <td mat-cell *matCellDef="let element">{{ element.Fax }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="Remark">
+      <th mat-header-cell *matHeaderCellDef>Remark</th>
+      <td mat-cell *matCellDef="let element">{{ element.Remark }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="Address">
+      <th mat-header-cell *matHeaderCellDef>Address</th>
+      <td mat-cell *matCellDef="let element">{{ element.Address }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="City">
+      <th mat-header-cell *matHeaderCellDef>City</th>
+      <td mat-cell *matCellDef="let element">{{ element.City }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="State">
+      <th mat-header-cell *matHeaderCellDef>State</th>
+      <td mat-cell *matCellDef="let element">{{ element.State }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="Zip">
+      <th mat-header-cell *matHeaderCellDef>Zip</th>
+      <td mat-cell *matCellDef="let element">{{ element.Zip }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="Country">
+      <th mat-header-cell *matHeaderCellDef>Country</th>
+      <td mat-cell *matCellDef="let element">{{ element.Country }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="Buyer Address">
+      <th mat-header-cell *matHeaderCellDef>Buyer Address</th>
+      <td mat-cell *matCellDef="let element">
+        {{ element.BuyerAddress }}
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="Buyer City">
+      <th mat-header-cell *matHeaderCellDef>Buyer City</th>
+      <td mat-cell *matCellDef="let element">{{ element.BuyerCity }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="Buyer State">
+      <th mat-header-cell *matHeaderCellDef>Buyer State</th>
+      <td mat-cell *matCellDef="let element">{{ element.BuyerState }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="Buyer Zipcode">
+      <th mat-header-cell *matHeaderCellDef>Buyer Zipcode</th>
+      <td mat-cell *matCellDef="let element">
+        {{ element.BuyerZipcode }}
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="Buyer Country">
+      <th mat-header-cell *matHeaderCellDef>Buyer Country</th>
+      <td mat-cell *matCellDef="let element">
+        {{ element.BuyerCountry }}
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="Bank Name">
+      <th mat-header-cell *matHeaderCellDef>Bank Name</th>
+      <td mat-cell *matCellDef="let element">{{ element.BnkName }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="Bank Branch">
+      <th mat-header-cell *matHeaderCellDef>Bank Branch</th>
+      <td mat-cell *matCellDef="let element">{{ element.BnkBranch }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="Bank City">
+      <th mat-header-cell *matHeaderCellDef>Bank City</th>
+      <td mat-cell *matCellDef="let element">{{ element.BnkCity }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="Bank Address">
+      <th mat-header-cell *matHeaderCellDef>Bank Address</th>
+      <td mat-cell *matCellDef="let element">{{ element.BnkAddress }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="Bank State">
+      <th mat-header-cell *matHeaderCellDef>Bank State</th>
+      <td mat-cell *matCellDef="let element">{{ element.BnkState }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="Bank Zip">
+      <th mat-header-cell *matHeaderCellDef>Bank Zip</th>
+      <td mat-cell *matCellDef="let element">{{ element.BnkZip }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="Bank Country">
+      <th mat-header-cell *matHeaderCellDef>Bank Country</th>
+      <td mat-cell *matCellDef="let element">{{ element.Bnkcountry }}</td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr
+      (click)="selectCustomer(row)"
+      mat-row
+      *matRowDef="let row; columns: displayedColumns"
+    ></tr>
+  </table>
+</div>
