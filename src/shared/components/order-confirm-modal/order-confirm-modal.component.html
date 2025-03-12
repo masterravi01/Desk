@@ -228,7 +228,7 @@
           <tr>
             <td class="input-cell" colspan="2">
               <div class="grid">
-                <div class="d-flex">
+                <div class="d-flex" [formGroup]="calculationForm">
                   <div class="label-cell">
                     Rate Calculation Base
                     <mat-radio-group
@@ -483,7 +483,7 @@
         class="d-flex"
         style="justify-content: start; margin: 20px 20px 0 20px"
       >
-        <div class="d-flex">
+        <div class="d-flex" [formGroup]="calculationForm">
           <div class="label-cell">Discount</div>
           <select
             style="
@@ -502,7 +502,11 @@
             <input matInput formControlName="discountValue" />
           </mat-form-field>
         </div>
-        <div class="d-flex" style="margin-left: 8px">
+        <div
+          class="d-flex"
+          style="margin-left: 8px"
+          [formGroup]="calculationForm"
+        >
           <div class="label-cell">Addition</div>
           <select
             style="
@@ -524,11 +528,11 @@
         <div class="d-flex" style="margin-left: 8px">
           <div class="label-cell">
             <span style="font-weight: 600; margin-right: 2px"> Total Qty:</span>
-            {{ invoiceForm.get("totalQuantity")?.value }}
+            {{ totalQuantity() }}
           </div>
           <div class="label-cell" style="margin-left: 20px">
             <span style="font-weight: 600; margin-right: 2px"> Total SqMt:</span
-            >{{ invoiceForm.get("totalSquareMeters")?.value }}
+            >{{ totalSquareMeters() }}
           </div>
         </div>
       </div>
@@ -539,7 +543,7 @@
             <tr>
               <td>
                 <label class="label">Amount</label>
-                <div>{{ invoiceForm.get("totalAmount")?.value }}</div>
+                <div>{{ totalAmount() }}</div>
               </td>
               <td>
                 <label class="label">Discount</label>
@@ -564,7 +568,7 @@
               </td>
               <td>
                 <label class="label">Net Amount</label>
-                <div>{{ invoiceForm.get("netAmount")?.value || 0 }}</div>
+                <div>{{ netAmount() || 0 }}</div>
               </td>
             </tr>
           </tbody>

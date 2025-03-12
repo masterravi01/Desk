@@ -115,20 +115,25 @@ export class OrderConfirmModalComponent implements OnInit {
     rate: 'Rate',
     prefixCode: 'Prefix',
   };
-
+  calculationForm!: FormGroup;
   selectedIndex: number = 0;
   selectedIntructionIndex: number = 0;
 
   boxes = signal<any[]>([]); // Using signal for your `boxes` data
-
+  formData = signal({
+    discountType: '',
+    discountValue: 0,
+    additionalChargeType: '',
+    additionalChargeValue: 0,
+    calculationType: 'Per Sq. Mt',
+  });
   // Remove form patching logic from computed signals
   totalQuantity = computed(() =>
     this.boxes().reduce((sum, box) => sum + Number(box.quantity || 0), 0)
   );
 
   totalAmount = computed(() => {
-    const calculationType = this.invoiceForm.get('calculationType')?.value;
-
+    const calculationType = this.formData().calculationType;
     return this.boxes().reduce((sum, box) => {
       const rate = Number(box.rate || 0);
       const quantity = Number(box.quantity || 0);
@@ -154,16 +159,12 @@ export class OrderConfirmModalComponent implements OnInit {
   netAmount = computed(() => {
     let finalAmount = this.totalAmount();
 
-    const discountType = this.invoiceForm.get('discountType')?.value;
-    const discountValue = Number(
-      this.invoiceForm.get('discountValue')?.value || 0
-    );
+    const discountType = this.formData().discountType;
+    const discountValue = Number(this.formData().discountValue || 0);
 
-    const additionalChargeType = this.invoiceForm.get(
-      'additionalChargeType'
-    )?.value;
+    const additionalChargeType = this.formData().additionalChargeType;
     const additionalChargeValue = Number(
-      this.invoiceForm.get('additionalChargeValue')?.value || 0
+      this.formData().additionalChargeValue || 0
     );
 
     const totalDiscount =
@@ -185,11 +186,16 @@ export class OrderConfirmModalComponent implements OnInit {
     const roundedAmount = Math.round(finalAmount);
     const rounding = Number((roundedAmount - finalAmount).toFixed(2));
 
-    this.invoiceForm.patchValue({
-      rounding,
-      netAmount: roundedAmount,
-      totalDiscount: Number(totalDiscount.toFixed(2)),
-      totalAddition: Number(totalAddition.toFixed(2)),
+    setTimeout(() => {
+      this.invoiceForm.patchValue({
+        rounding,
+        netAmount: roundedAmount,
+        totalDiscount: Number(totalDiscount.toFixed(2)),
+        totalAddition: Number(totalAddition.toFixed(2)),
+        totalQuantity: this.totalQuantity(),
+        totalSquareMeters: this.totalSquareMeters(),
+        totalAmount: this.totalAmount(),
+      });
     });
 
     return roundedAmount;
@@ -199,20 +205,13 @@ export class OrderConfirmModalComponent implements OnInit {
     private modalService: ModalService,
     private fb: FormBuilder,
     private masterService: MasterService
-  ) {
-    effect(() => {
-      this.invoiceForm.patchValue({
-        totalQuantity: this.totalQuantity(),
-        totalSquareMeters: this.totalSquareMeters(),
-        totalAmount: this.totalAmount(),
-      });
-    });
-  }
+  ) {}
 
   ngOnInit(): void {
     this.initForm();
     this.invoiceForm.disable();
     this.invoiceDetailsForm.disable();
+    this.calculationForm.disable();
     this.loadData();
     this.masterService
       .invoke('getInvoice', 20)
@@ -226,6 +225,7 @@ export class OrderConfirmModalComponent implements OnInit {
   initForm() {
     this.initInvoiceDetailsForm();
     this.initInvoiceForm();
+    this.initCalculationForm();
   }
   initInvoiceForm() {
     const today = new DatePipe('en-US').transform(new Date(), 'yyyy-MM-dd');
@@ -249,12 +249,9 @@ export class OrderConfirmModalComponent implements OnInit {
       billingCountry: [''],
       currency: ['USD'],
       status: [''],
-      discountType: [''],
-      discountValue: [0],
+
       totalDiscount: [0],
       totalAddition: [0],
-      additionalChargeType: [''],
-      additionalChargeValue: [0],
       reference: [''],
       totalQuantity: [0],
       totalAmount: [0],
@@ -272,8 +269,19 @@ export class OrderConfirmModalComponent implements OnInit {
       bankCity: [''],
       swiftNumber: [''],
       comments: [''],
-      calculationType: ['Per Sq. Mt'],
       bankAddress: [''],
+    });
+  }
+  initCalculationForm() {
+    this.calculationForm = this.fb.group({
+      discountType: [''],
+      discountValue: [0],
+      additionalChargeType: [''],
+      additionalChargeValue: [0],
+      calculationType: ['Per Sq. Mt'],
+    });
+    this.calculationForm.valueChanges.subscribe((data) => {
+      this.formData.set(data);
     });
   }
   initInvoiceDetailsForm(data?: any) {
@@ -333,7 +341,6 @@ export class OrderConfirmModalComponent implements OnInit {
   }
   selectRowIndex(i: any) {
     this.selectedIndex = i;
-    console.log(i);
   }
   onConfirm(): void {
     this.dialogRef.close(true);
@@ -381,7 +388,8 @@ export class OrderConfirmModalComponent implements OnInit {
     this.selectedIntructionIndex = i;
   }
   addDetailsToTable() {
-    this.boxes.set([...this.boxes(), this.invoiceDetailsForm.value]);
+    this.boxes.update((prev) => [...prev, this.invoiceDetailsForm.value]);
+
     this.initInvoiceDetailsForm(); // Reset form after adding
   }
 
@@ -451,6 +459,10 @@ export class OrderConfirmModalComponent implements OnInit {
       this.invoiceDetailsForm.enable();
     }
     if (isClose) this.dialogRef.close(false);
-    console.log(this.invoiceForm.value, this.invoiceDetailsForm.value);
+    console.log(
+      { ...this.invoiceForm.value, ...this.calculationForm.value },
+      this.invoiceDetailsForm.value,
+      this.boxes()
+    );
   }
 }
