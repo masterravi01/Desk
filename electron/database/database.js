@@ -213,7 +213,7 @@ const migrations = [
           BnkZip TEXT DEFAULT NULL,
           Bnkcountry TEXT DEFAULT NULL
       );
-    `,
+      INSERT INTO customers (ID,Name,Email,Designation,ContactPerson,Phone,Fax,OtherPhone,Remark,URL,Address,City,State,Country,Zip,BuyerAddress,BuyerCity,BuyerState,BuyerZipcode,BuyerCountry,BnkName,BnkBranch,Bnkcountry,BnkState,BnkZip,BnkCity,BnkAddress) VALUES (2,'milangohil','milangohil22@gmail.com','programmer','9974798207','9327071693','557766','12345679','this is test','www.milangohil.com','navazapa','mahuva','gujarat','india','364290','pune','mumbai','india mumbai','364242','india mumbai','SBI','darbad gadh','bank country','bank state','bank zip 569565','bank mahuva','add darbad gadg');`,
   },
   {
     version: 8,

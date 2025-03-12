@@ -270,52 +270,7 @@
       </table>
     </div>
     <mat-divider></mat-divider>
-    <div
-      class="d-flex"
-      style="justify-content: center; margin-top: 20px; margin-bottom: 10px"
-    >
-      <button class="btn" mat-raised-button mat-button (click)="initForm()">
-        New
-      </button>
-      <button
-        class="btn"
-        mat-raised-button
-        mat-button
-        [disabled]="invoiceForm.invalid || invoiceDetailsForm.invalid"
-        (click)="onCancel()"
-      >
-        Add
-      </button>
-      <button
-        class="btn"
-        mat-raised-button
-        mat-button
-        (click)="openSelectModal()"
-      >
-        Select
-      </button>
-      <button
-        class="btn"
-        mat-raised-button
-        mat-button
-        [disabled]="invoiceForm.invalid || invoiceDetailsForm.invalid"
-        (click)="onSave()"
-      >
-        Save
-      </button>
-      <button
-        class="btn"
-        mat-raised-button
-        mat-button
-        [disabled]="!invoiceForm?.get('invId')?.value"
-        (click)="onDelete()"
-      >
-        Delete
-      </button>
-      <button class="btn" mat-raised-button mat-button (click)="initForm()">
-        Clear
-      </button>
-    </div>
+    <ng-container *ngTemplateOutlet="bottomButtons"></ng-container>
   </mat-tab>
   <mat-tab label="Item Details" [formGroup]="invoiceDetailsForm">
     <div
@@ -359,25 +314,25 @@
       <div class="form-field">
         <label class="label">Length</label>
         <mat-form-field appearance="outline">
-          <input matInput formControlName="length" />
+          <input matInput formControlName="length" type="number" />
         </mat-form-field>
       </div>
       <div class="form-field">
         <label class="label">Width</label>
         <mat-form-field appearance="outline">
-          <input matInput formControlName="width" />
+          <input matInput formControlName="width" type="number" />
         </mat-form-field>
       </div>
       <div class="form-field">
         <label class="label">Thickness</label>
         <mat-form-field appearance="outline">
-          <input matInput formControlName="thickness" />
+          <input matInput formControlName="thickness" type="number" />
         </mat-form-field>
       </div>
       <div class="form-field">
         <label class="label">Sq.Mt.</label>
         <mat-form-field appearance="outline">
-          <input matInput formControlName="squareMeter" />
+          <input matInput formControlName="squareMeter" type="number" />
         </mat-form-field>
       </div>
       <div class="form-field">
@@ -626,52 +581,7 @@
     </ng-container>
 
     <mat-divider></mat-divider>
-    <div
-      class="d-flex"
-      style="justify-content: center; margin-top: 20px; margin-bottom: 10px"
-    >
-      <button class="btn" mat-raised-button mat-button (click)="initForm()">
-        New
-      </button>
-      <button
-        class="btn"
-        mat-raised-button
-        mat-button
-        [disabled]="invoiceForm.invalid || invoiceDetailsForm.invalid"
-        (click)="onCancel()"
-      >
-        Add
-      </button>
-      <button
-        class="btn"
-        mat-raised-button
-        mat-button
-        (click)="openSelectModal()"
-      >
-        Select
-      </button>
-      <button
-        class="btn"
-        mat-raised-button
-        mat-button
-        [disabled]="invoiceForm.invalid || invoiceDetailsForm.invalid"
-        (click)="onSave()"
-      >
-        Save
-      </button>
-      <button
-        class="btn"
-        mat-raised-button
-        mat-button
-        [disabled]="!invoiceForm?.get('invId')?.value"
-        (click)="onDelete()"
-      >
-        Delete
-      </button>
-      <button class="btn" mat-raised-button mat-button (click)="initForm()">
-        Clear
-      </button>
-    </div>
+    <ng-container *ngTemplateOutlet="bottomButtons"></ng-container>
   </mat-tab>
   <mat-tab label="Instrutions">
     <div class="outer-div" [formGroup]="invoiceForm">
@@ -803,6 +713,7 @@
         <button
           mat-raised-button
           style="height: 32px"
+          [disabled]="invoiceForm.disabled"
           (click)="openInstructionModal()"
         >
           Select Instrutions
@@ -852,52 +763,61 @@
         </table>
       </div>
       <mat-divider></mat-divider>
-      <div
-        class="d-flex"
-        style="justify-content: center; margin-top: 20px; margin-bottom: 10px"
-      >
-        <button class="btn" mat-raised-button mat-button (click)="initForm()">
-          New
-        </button>
-        <button
-          class="btn"
-          mat-raised-button
-          mat-button
-          [disabled]="invoiceForm.invalid || invoiceDetailsForm.invalid"
-          (click)="onCancel()"
-        >
-          Add
-        </button>
-        <button
-          class="btn"
-          mat-raised-button
-          mat-button
-          (click)="openSelectModal()"
-        >
-          Select
-        </button>
-        <button
-          class="btn"
-          mat-raised-button
-          mat-button
-          [disabled]="invoiceForm.invalid || invoiceDetailsForm.invalid"
-          (click)="onSave()"
-        >
-          Save
-        </button>
-        <button
-          class="btn"
-          mat-raised-button
-          mat-button
-          [disabled]="!invoiceForm?.get('invId')?.value"
-          (click)="onDelete()"
-        >
-          Delete
-        </button>
-        <button class="btn" mat-raised-button mat-button (click)="initForm()">
-          Clear
-        </button>
-      </div>
+      <ng-container *ngTemplateOutlet="bottomButtons"></ng-container>
     </div>
   </mat-tab>
 </mat-tab-group>
+<ng-template #bottomButtons>
+  <div
+    class="d-flex"
+    style="justify-content: center; margin-top: 20px; margin-bottom: 10px"
+  >
+    <button class="btn" mat-raised-button mat-button (click)="initForm()">
+      New
+    </button>
+    <button
+      class="btn"
+      mat-raised-button
+      mat-button
+      [disabled]="invoiceForm.disabled || invoiceForm.invalid"
+      (click)="onSave(true)"
+    >
+      Add
+    </button>
+    <button
+      class="btn"
+      mat-raised-button
+      mat-button
+      (click)="openSelectModal()"
+    >
+      Select
+    </button>
+    <button
+      class="btn"
+      mat-raised-button
+      mat-button
+      [disabled]="invoiceForm.disabled || invoiceForm.invalid"
+      (click)="onSave()"
+    >
+      Save
+    </button>
+    <button
+      class="btn"
+      mat-raised-button
+      mat-button
+      [disabled]="!invoiceForm?.get('invId')?.value"
+      (click)="onDelete()"
+    >
+      Delete
+    </button>
+    <button
+      class="btn"
+      mat-raised-button
+      mat-button
+      (click)="initForm()"
+      [disabled]="invoiceForm.disabled || invoiceDetailsForm.disable"
+    >
+      Clear
+    </button>
+  </div>
+</ng-template>

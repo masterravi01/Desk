@@ -1,4 +1,12 @@
-import { Component, computed, inject, OnInit, signal } from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  computed,
+  effect,
+  inject,
+  OnInit,
+  signal,
+} from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import {
   MAT_DIALOG_DATA,
@@ -74,7 +82,6 @@ export class OrderConfirmModalComponent implements OnInit {
   instructions: any[] = [];
   containers: any[] = [];
   customers: any[] = [];
-  cc = { a: 1, v: 1 };
   displayedColumns: string[] = [
     'containerType',
     'containerFrom',
@@ -114,48 +121,35 @@ export class OrderConfirmModalComponent implements OnInit {
 
   boxes = signal<any[]>([]); // Using signal for your `boxes` data
 
-  // Computed signals for derived values
-  totalQuantity = computed(() => {
-    const qt = this.boxes().reduce(
-      (sum, box) => sum + Number(box.quantity || 0),
-      0
-    );
-    this.invoiceForm.patchValue({ totalQuantity: qt });
-    return qt;
-  });
+  // Remove form patching logic from computed signals
+  totalQuantity = computed(() =>
+    this.boxes().reduce((sum, box) => sum + Number(box.quantity || 0), 0)
+  );
 
   totalAmount = computed(() => {
     const calculationType = this.invoiceForm.get('calculationType')?.value;
 
-    const total = this.boxes().reduce((sum, box) => {
+    return this.boxes().reduce((sum, box) => {
       const rate = Number(box.rate || 0);
       const quantity = Number(box.quantity || 0);
       const squareMeter = Number(box.squareMeter || 0);
 
-      // Calculate amount based on calculationType
       if (calculationType === 'Per Sq. Mt') {
         return sum + rate * squareMeter;
       } else if (calculationType === 'Per Sheet') {
         return sum + rate * quantity;
       }
-
-      // Default fallback
       return sum;
     }, 0);
-
-    this.invoiceForm.patchValue({ totalAmount: total });
-    return total;
   });
 
-  totalSquareMeters = computed(() => {
-    const sqmt = Number(
+  totalSquareMeters = computed(() =>
+    Number(
       this.boxes()
         .reduce((sum, box) => sum + Number(box.squareMeter || 0), 0)
         .toFixed(2)
-    );
-    this.invoiceForm.patchValue({ totalSquareMeters: sqmt });
-    return sqmt;
-  });
+    )
+  );
 
   netAmount = computed(() => {
     let finalAmount = this.totalAmount();
@@ -172,7 +166,6 @@ export class OrderConfirmModalComponent implements OnInit {
       this.invoiceForm.get('additionalChargeValue')?.value || 0
     );
 
-    // Calculate Total Discount
     const totalDiscount =
       discountType === 'percentage'
         ? (finalAmount * discountValue) / 100
@@ -180,7 +173,6 @@ export class OrderConfirmModalComponent implements OnInit {
         ? discountValue
         : 0;
 
-    // Calculate Total Addition
     const totalAddition =
       additionalChargeType === 'percentage'
         ? (finalAmount * additionalChargeValue) / 100
@@ -188,14 +180,11 @@ export class OrderConfirmModalComponent implements OnInit {
         ? additionalChargeValue
         : 0;
 
-    // Final Amount Calculation
     finalAmount = finalAmount - totalDiscount + totalAddition;
 
-    // Rounding Logic
     const roundedAmount = Math.round(finalAmount);
     const rounding = Number((roundedAmount - finalAmount).toFixed(2));
 
-    // Patch values to form
     this.invoiceForm.patchValue({
       rounding,
       netAmount: roundedAmount,
@@ -210,7 +199,15 @@ export class OrderConfirmModalComponent implements OnInit {
     private modalService: ModalService,
     private fb: FormBuilder,
     private masterService: MasterService
-  ) {}
+  ) {
+    effect(() => {
+      this.invoiceForm.patchValue({
+        totalQuantity: this.totalQuantity(),
+        totalSquareMeters: this.totalSquareMeters(),
+        totalAmount: this.totalAmount(),
+      });
+    });
+  }
 
   ngOnInit(): void {
     this.initForm();
@@ -225,6 +222,7 @@ export class OrderConfirmModalComponent implements OnInit {
         // this.invoiceForm.patchValue(data);
       });
   }
+
   initForm() {
     this.initInvoiceDetailsForm();
     this.initInvoiceForm();
@@ -233,7 +231,7 @@ export class OrderConfirmModalComponent implements OnInit {
     const today = new DatePipe('en-US').transform(new Date(), 'yyyy-MM-dd');
     this.invoiceForm = this.fb.group({
       invId: [''],
-      customerOrderNo: ['', Validators.required],
+      customerOrderNo: ['111', Validators.required],
       invoiceDate: [today],
       invoiceSerial: [''],
       invoicePiNo: [''],
@@ -281,20 +279,20 @@ export class OrderConfirmModalComponent implements OnInit {
   initInvoiceDetailsForm(data?: any) {
     this.invoiceDetailsForm = this.fb.group({
       invoiceDetailId: [''],
-      invoiceId: ['', Validators.required],
+      invoiceId: [''],
       containerType: ['', Validators.required],
-      containerTo: [''],
-      containerFrom: [''],
-      length: [''],
-      width: [''],
-      thickness: [''],
-      squareMeter: [''],
+      containerTo: ['10'],
+      containerFrom: ['8'],
+      length: [20],
+      width: [30],
+      thickness: [40],
+      squareMeter: [20],
       materialGrade: [''],
-      brandName: [''],
+      brandName: ['vvv'],
       finishType: [''],
       thicknessDetail: ['Single Side'],
-      quantity: ['', Validators.required],
-      rate: ['', Validators.required],
+      quantity: [10, Validators.required],
+      rate: [30, Validators.required],
       remarks: [''],
       designType: [''],
       prefixCode: [''],
@@ -445,13 +443,14 @@ export class OrderConfirmModalComponent implements OnInit {
     }
   }
 
-  onSave() {
+  onSave(isClose = false) {
     if (this.invoiceForm.disabled) {
       this.invoiceForm.enable();
     }
     if (this.invoiceDetailsForm.disabled) {
       this.invoiceDetailsForm.enable();
     }
+    if (isClose) this.dialogRef.close(false);
     console.log(this.invoiceForm.value, this.invoiceDetailsForm.value);
   }
 }
