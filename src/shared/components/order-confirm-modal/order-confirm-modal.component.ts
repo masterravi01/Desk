@@ -46,6 +46,7 @@ import {
 } from '@angular/common';
 import { SelectCustomerComponent } from '../select-customer/select-customer.component';
 import { SelectInstructionComponent } from '../select-instruction/select-instruction.component';
+import { SelectInvoiceComponent } from '../select-invoice/select-invoice.component';
 @UntilDestroy()
 @Component({
   selector: 'app-order-confirm-modal',
@@ -213,13 +214,6 @@ export class OrderConfirmModalComponent implements OnInit {
     this.invoiceDetailsForm.disable();
     this.calculationForm.disable();
     this.loadData();
-    this.masterService
-      .invoke('getInvoice', 20)
-      .pipe(untilDestroyed(this))
-      .subscribe((data: any) => {
-        console.log(data);
-        // this.invoiceForm.patchValue(data);
-      });
   }
 
   initForm() {
@@ -231,9 +225,9 @@ export class OrderConfirmModalComponent implements OnInit {
     const today = new DatePipe('en-US').transform(new Date(), 'yyyy-MM-dd');
     this.invoiceForm = this.fb.group({
       invId: [''],
-      customerOrderNo: ['111', Validators.required],
+      customerOrderNo: ['', Validators.required],
       invoiceDate: [today],
-      invoiceSerial: [''],
+      invoiceSerial: ['iii'],
       invoicePiNo: [''],
       customerId: [null],
       customerName: [''],
@@ -258,12 +252,12 @@ export class OrderConfirmModalComponent implements OnInit {
       totalSquareMeters: [0],
       rounding: [0],
       netAmount: [0],
-      deliveryTerms: [''],
-      deliveryDetails: [''],
-      shippingDetails: [''],
-      paymentTerms: [''],
-      portOfDischarge: [''],
-      dispatchTerms: [''],
+      deliveryTerms: [],
+      deliveryDetails: [],
+      shippingDetails: [],
+      paymentTerms: [],
+      portOfDischarge: [],
+      dispatchTerms: [],
       bankName: [''],
       bankBranch: [''],
       bankCity: [''],
@@ -289,18 +283,18 @@ export class OrderConfirmModalComponent implements OnInit {
       invoiceDetailId: [''],
       invoiceId: [''],
       containerType: ['', Validators.required],
-      containerTo: ['10'],
-      containerFrom: ['8'],
-      length: [20],
-      width: [30],
-      thickness: [40],
-      squareMeter: [20],
+      containerTo: [''],
+      containerFrom: [''],
+      length: [0],
+      width: [0],
+      thickness: [0],
+      squareMeter: [0],
       materialGrade: [''],
-      brandName: ['vvv'],
+      brandName: [''],
       finishType: [''],
       thicknessDetail: ['Single Side'],
-      quantity: [10, Validators.required],
-      rate: [30, Validators.required],
+      quantity: [0, Validators.required],
+      rate: [0, Validators.required],
       remarks: [''],
       designType: [''],
       prefixCode: [''],
@@ -310,6 +304,10 @@ export class OrderConfirmModalComponent implements OnInit {
       subWeight: [''],
     });
     if (data) this.invoiceDetailsForm.patchValue(data);
+    this.invoiceDetailsForm.patchValue({
+      invoiceDetailId: '',
+      invoiceId: '',
+    });
   }
 
   private loadData() {
@@ -345,14 +343,49 @@ export class OrderConfirmModalComponent implements OnInit {
   onConfirm(): void {
     this.dialogRef.close(true);
   }
-  openSelectModal(): void {
-    this.dialogRef.close(true);
-  }
+
   onDelete(): void {
-    this.dialogRef.close(true);
+    if (this.invoiceForm.get('invId')?.value) {
+      this.masterService
+        .invoke('deleteInvoice', this.invoiceForm.get('invId')?.value)
+        .pipe(untilDestroyed(this))
+        .subscribe((data) => {
+          console.log(data);
+          this.ngOnInit();
+        });
+    } else {
+      this.ngOnInit();
+    }
+
+    // this.dialogRef.close(true);
   }
   enableEdit() {
     this.invoiceForm.enable();
+  }
+
+  openSelectModal() {
+    this.modalService
+      .openModal(SelectInvoiceComponent, {
+        width: '80%',
+        height: '90%',
+      })
+      .afterClosed()
+      .subscribe((result) => {
+        if (result && result.invId) {
+          console.log(result);
+          this.masterService
+            .invoke('getInvoice', result.invId)
+            .pipe(untilDestroyed(this))
+            .subscribe((data: any) => {
+              console.log(data);
+              this.initForm();
+              this.invoiceForm.patchValue(data.invoiceMaster);
+              this.calculationForm.patchValue(data.invoiceMaster);
+              this.boxes.set(data.invoiceDetails);
+              this.instructions = data.invoiceInstruction;
+            });
+        }
+      });
   }
   openCustomerModal() {
     this.modalService
@@ -364,7 +397,7 @@ export class OrderConfirmModalComponent implements OnInit {
       .subscribe((result) => {
         if (result) {
           console.log(result);
-          this.initInvoiceForm();
+          // this.initInvoiceForm();
           this.invoiceForm.patchValue(result);
         }
       });
@@ -459,10 +492,31 @@ export class OrderConfirmModalComponent implements OnInit {
       this.invoiceDetailsForm.enable();
     }
     if (isClose) this.dialogRef.close(false);
-    console.log(
-      { ...this.invoiceForm.value, ...this.calculationForm.value },
-      this.invoiceDetailsForm.value,
-      this.boxes()
-    );
+    console.log({
+      invoiceMaster: {
+        ...this.invoiceForm.value,
+        ...this.calculationForm.value,
+      },
+      invoiceDetails: this.boxes(),
+      invoiceInstruction: this.instructions,
+    });
+    this.masterService
+      .invoke(
+        this.invoiceForm.get('invId')?.value
+          ? 'updateInvoice'
+          : 'insertInvoice',
+        {
+          invoiceMaster: {
+            ...this.invoiceForm.value,
+            ...this.calculationForm.value,
+          },
+          invoiceDetails: this.boxes(),
+          invoiceInstruction: this.instructions,
+        }
+      )
+      .pipe(untilDestroyed(this))
+      .subscribe((data) => {
+        console.log(data);
+      });
   }
 }

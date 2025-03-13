@@ -1,0 +1,79 @@
+<div class="d-flex">
+  <h5 mat-dialog-title class="h5">Select Invoice</h5>
+  <button
+    class="btn"
+    mat-button
+    (click)="onCancel()"
+    tabindex="-1"
+    style="margin-top: 10px; margin-right: 10px"
+  >
+    ❌
+  </button>
+</div>
+
+<div class="table-container">
+  <table mat-table [dataSource]="invoices" class="mat-elevation-z8 table">
+    <ng-container matColumnDef="invId">
+      <th mat-header-cell *matHeaderCellDef>Invoice ID</th>
+      <td mat-cell *matCellDef="let element">{{ element.invId }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="customerOrderNo">
+      <th mat-header-cell *matHeaderCellDef>Customer Order No</th>
+      <td mat-cell *matCellDef="let element">{{ element.customerOrderNo }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="invoiceDate">
+      <th mat-header-cell *matHeaderCellDef>Invoice Date</th>
+      <td mat-cell *matCellDef="let element">
+        {{ element.invoiceDate | date }}
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="invoiceSerial">
+      <th mat-header-cell *matHeaderCellDef>Invoice Serial</th>
+      <td mat-cell *matCellDef="let element">{{ element.invoiceSerial }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="invoicePiNo">
+      <th mat-header-cell *matHeaderCellDef>Invoice PI No</th>
+      <td mat-cell *matCellDef="let element">{{ element.invoicePiNo }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="customerId">
+      <th mat-header-cell *matHeaderCellDef>Customer ID</th>
+      <td mat-cell *matCellDef="let element">{{ element.customerId }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="customerName">
+      <th mat-header-cell *matHeaderCellDef>Customer Name</th>
+      <td mat-cell *matCellDef="let element">{{ element.customerName }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="status">
+      <th mat-header-cell *matHeaderCellDef>Status</th>
+      <td mat-cell *matCellDef="let element">{{ element.status }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="totalAmount">
+      <th mat-header-cell *matHeaderCellDef>Total Amount</th>
+      <td mat-cell *matCellDef="let element">
+        {{ element.totalAmount | currency }}
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="netAmount">
+      <th mat-header-cell *matHeaderCellDef>Net Amount</th>
+      <td mat-cell *matCellDef="let element">
+        {{ element.netAmount | currency }}
+      </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr
+      (click)="selectInvoice(row)"
+      mat-row
+      *matRowDef="let row; columns: displayedColumns"
+    ></tr>
+  </table>
+</div>

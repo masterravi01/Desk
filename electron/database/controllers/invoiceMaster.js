@@ -1,7 +1,7 @@
 const db = require("../database");
 
 // Get an invoice by ID
-function getInvoice(id) {
+function getInvoiceMaster(id) {
   return new Promise((resolve, reject) => {
     db.get("SELECT * FROM invoiceMaster WHERE invId = ?", [id], (err, row) => {
       if (err) reject(err);
@@ -11,7 +11,7 @@ function getInvoice(id) {
 }
 
 // Get all invoices
-function getAllInvoices() {
+function getAllMasterInvoices() {
   return new Promise((resolve, reject) => {
     db.all("SELECT * FROM invoiceMaster", [], (err, rows) => {
       if (err) reject(err);
@@ -21,7 +21,7 @@ function getAllInvoices() {
 }
 
 // Add a new invoice
-function addInvoice(invoice) {
+function addInvoiceMaster(invoice) {
   return new Promise((resolve, reject) => {
     const query = `
       INSERT INTO invoiceMaster (
@@ -89,7 +89,7 @@ function addInvoice(invoice) {
 }
 
 // Update an existing invoice
-function updateInvoice(invoice) {
+function updateInvoiceMaster(invoice) {
   return new Promise((resolve, reject) => {
     const query = `
       UPDATE invoiceMaster SET 
@@ -158,7 +158,7 @@ function updateInvoice(invoice) {
 }
 
 // Delete an invoice by ID
-function deleteInvoice(id) {
+function deleteInvoiceMaster(id) {
   return new Promise((resolve, reject) => {
     db.run("DELETE FROM invoiceMaster WHERE invId = ?", [id], function (err) {
       if (err) reject(err);
@@ -168,9 +168,9 @@ function deleteInvoice(id) {
 }
 
 module.exports = {
-  getInvoice,
-  getAllInvoices,
-  addInvoice,
-  updateInvoice,
-  deleteInvoice,
+  getInvoiceMaster,
+  getAllMasterInvoices,
+  updateInvoiceMaster,
+  deleteInvoiceMaster,
+  addInvoiceMaster,
 };
