@@ -51,12 +51,19 @@ const {
   deleteCustomer,
 } = require("./database/controllers/customer");
 const {
-  getInvoice,
-  getAllInvoices,
+  getInvoiceMaster,
+  getAllMasterInvoices,
+  updateInvoiceMaster,
+  deleteInvoiceMaster,
+  addInvoiceMaster,
+} = require("./database/controllers/invoiceMaster");
+
+const {
+  insertInvoice,
   updateInvoice,
   deleteInvoice,
-  addInvoice,
-} = require("./database/controllers/invoiceMaster");
+  getInvoice,
+} = require("./database/controllers/invoice");
 
 function setupIpcHandlers() {
   // Company APIs
@@ -165,19 +172,19 @@ function setupIpcHandlers() {
     return await getInvoice(id);
   });
 
-  ipcMain.handle("getAllInvoices", async (event) => {
-    return await getAllInvoices();
-  });
-
   ipcMain.handle("updateInvoice", async (event, invoice) => {
     return await updateInvoice(invoice);
   });
-
-  ipcMain.handle("addInvoice", async (event, invoice) => {
-    return await addInvoice(invoice);
-  });
   ipcMain.handle("deleteInvoice", async (event, id) => {
     return await deleteInvoice(id);
+  });
+
+  ipcMain.handle("insertInvoice", async (event, invoice) => {
+    return await insertInvoice(invoice);
+  });
+
+  ipcMain.handle("getAllMasterInvoices", async (event) => {
+    return await getAllMasterInvoices();
   });
 }
 
