@@ -1,8 +1,8 @@
 const db = require("../database");
 
-function getCustomer(ID) {
+function getCustomer(id) {
   return new Promise((resolve, reject) => {
-    db.get("SELECT * FROM customers WHERE ID = ?", [ID], (err, row) => {
+    db.get("SELECT * FROM customers WHERE id = ?", [id], (err, row) => {
       if (err) reject(err);
       else resolve(row);
     });
@@ -21,51 +21,51 @@ function getAllCustomers() {
 function addCustomer(customer) {
   return new Promise((resolve, reject) => {
     const query = `
-      INSERT INTO customers (Name, Phone, Email, ContactPerson, Designation, 
-      OtherPhone, URL, Fax, Remark, Address, 
-      City, State, Zip, Country, BuyerAddress, 
-      BuyerCity, BuyerState, BuyerZipcode, BuyerCountry, BnkName, 
-      BnkBranch, BnkCity, BnkAddress, BnkState, BnkZip, Bnkcountry)
+      INSERT INTO customers (name, phone, email, contactPerson, designation,
+      otherPhone, url, fax, remark,  address, 
+      city, state, zip, country, buyerAddress, 
+      buyerCity, buyerState, buyerZipcode, buyerCountry, bankName,
+      bankBranch, bankCity, bankAddress, bankState, bankZip, bankCountry)
       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `;
     db.run(
       query,
       [
-        customer.Name ?? null,
-        customer.Phone ?? null,
-        customer.Email ?? null,
-        customer.ContactPerson ?? null,
-        customer.Designation ?? null,
+        customer.name ?? null,
+        customer.phone ?? null,
+        customer.email ?? null,
+        customer.contactPerson ?? null,
+        customer.designation ?? null,
 
-        customer.OtherPhone ?? null,
-        customer.URL ?? null,
-        customer.Fax ?? null,
-        customer.Remark ?? null,
-        customer.Address ?? null,
+        customer.otherPhone ?? null,
+        customer.url ?? null,
+        customer.fax ?? null,
+        customer.remark ?? null,
+        customer.address ?? null,
 
-        customer.City ?? null,
-        customer.State ?? null,
-        customer.Zip ?? null,
-        customer.Country ?? null,
-        customer.BuyerAddress ?? null,
+        customer.city ?? null,
+        customer.state ?? null,
+        customer.zip ?? null,
+        customer.country ?? null,
+        customer.buyerAddress ?? null,
 
-        customer.BuyerCity ?? null,
-        customer.BuyerState ?? null,
-        customer.BuyerZipcode ?? null,
-        customer.BuyerCountry ?? null,
-        customer.BnkName ?? null,
+        customer.buyerCity ?? null,
+        customer.buyerState ?? null,
+        customer.buyerZipcode ?? null,
+        customer.buyerCountry ?? null,
+        customer.bankName ?? null,
 
-        customer.BnkBranch ?? null,
-        customer.BnkCity ?? null,
-        customer.BnkAddress ?? null,
-        customer.BnkState ?? null,
-        customer.BnkZip ?? null,
+        customer.bankBranch ?? null,
+        customer.bankCity ?? null,
+        customer.bankAddress ?? null,
+        customer.bankState ?? null,
+        customer.bankZip ?? null,
 
-        customer.Bnkcountry ?? null,
+        customer.bankCountry ?? null,
       ],
       function (err) {
         if (err) reject(err);
-        else resolve({ ID: this.lastID, ...customer });
+        else resolve({ id: this.lastID, ...customer });
       }
     );
   });
@@ -74,42 +74,42 @@ function addCustomer(customer) {
 function updateCustomer(customer) {
   return new Promise((resolve, reject) => {
     const query = `
-      UPDATE customers SET Name = ?, Phone = ?, Email = ?, ContactPerson = ?, Designation = ?, OtherPhone = ?, 
-      URL = ?, Fax = ?, Remark = ?, Address = ?, City = ?, State = ?, Zip = ?, Country = ?, 
-      BuyerAddress = ?, BuyerCity = ?, BuyerState = ?, BuyerZipcode = ?, BuyerCountry = ?, 
-      BnkName = ?, BnkBranch = ?, BnkCity = ?, BnkAddress = ?, BnkState = ?, BnkZip = ?, Bnkcountry = ?
-      WHERE ID = ?
+      UPDATE customers SET name = ?, phone = ?, email = ?, contactPerson = ?, designation = ?, otherPhone = ?, 
+      url = ?, fax = ?, remark = ?, address = ?, city = ?, state = ?, zip = ?, country = ?, 
+      buyerAddress = ?, buyerCity = ?, buyerState = ?, buyerZipcode = ?, buyerCountry = ?, 
+      bankName = ?, bankBranch = ?, bankCity = ?, bankAddress = ?, bankState = ?, bankZip = ?, bankCountry = ?
+      WHERE id = ?
     `;
     db.run(
       query,
       [
-        customer.Name,
-        customer.Phone,
-        customer.Email,
-        customer.ContactPerson,
-        customer.Designation,
-        customer.OtherPhone,
-        customer.URL,
-        customer.Fax,
-        customer.Remark,
-        customer.Address,
-        customer.City,
-        customer.State,
-        customer.Zip,
-        customer.Country,
-        customer.BuyerAddress,
-        customer.BuyerCity,
-        customer.BuyerState,
-        customer.BuyerZipcode,
-        customer.BuyerCountry,
-        customer.BnkName,
-        customer.BnkBranch,
-        customer.BnkCity,
-        customer.BnkAddress,
-        customer.BnkState,
-        customer.BnkZip,
-        customer.Bnkcountry,
-        customer.ID,
+        customer.name,
+        customer.phone,
+        customer.email,
+        customer.contactPerson,
+        customer.designation,
+        customer.otherPhone,
+        customer.url,
+        customer.fax,
+        customer.remark,
+        customer.address,
+        customer.city,
+        customer.state,
+        customer.zip,
+        customer.country,
+        customer.buyerAddress,
+        customer.buyerCity,
+        customer.buyerState,
+        customer.buyerZipcode,
+        customer.buyerCountry,
+        customer.bankName,
+        customer.bankBranch,
+        customer.bankCity,
+        customer.bankAddress,
+        customer.bankState,
+        customer.bankZip,
+        customer.bankCountry,
+        customer.id,
       ],
       function (err) {
         if (err) reject(err);
@@ -119,9 +119,9 @@ function updateCustomer(customer) {
   });
 }
 
-function deleteCustomer(ID) {
+function deleteCustomer(id) {
   return new Promise((resolve, reject) => {
-    db.run("DELETE FROM customers WHERE ID = ?", [ID], function (err) {
+    db.run("DELETE FROM customers WHERE id = ?", [id], function (err) {
       if (err) reject(err);
       else resolve({ changes: this.changes });
     });

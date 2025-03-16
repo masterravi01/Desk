@@ -45,9 +45,9 @@ export class SelectCustomerComponent {
     'Name',
     'Phone',
     'Email',
-    'ContactPerson',
+    'Contact Person',
     'Designation',
-    'OtherPhone',
+    'Other Phone',
     'URL',
     'Fax',
     'Remark',
@@ -73,7 +73,7 @@ export class SelectCustomerComponent {
   constructor(
     private modalService: ModalService,
     private masterService: MasterService
-  ) {}
+  ) { }
   ngOnInit() {
     this.loadCustomers();
   }
@@ -88,24 +88,24 @@ export class SelectCustomerComponent {
   selectCustomer(row: any) {
     console.log(row);
     this.dialogRef.close({
-      customerId: row.ID,
-      customerName: row.Name,
-      customerAddress: row.Address,
-      customerCity: row.City,
-      customerZip: row.Zip,
-      customerState: row.State,
-      customerCountry: row.Country,
-      billingAddress: row.BuyerAddress,
-      billingCity: row.BuyerCity,
-      billingZip: row.BuyerZipcode,
-      billingState: row.BuyerState,
-      billingCountry: row.BuyerCountry,
-      bankName: row.BnkName,
-      bankBranch: row.BnkBranch,
-      bankCity: row.BnkCity,
-      bankAddress: row.BnkAddress,
-      email: row.Email,
-      phone: row.Phone,
+      customerId: row.id,
+      customerName: row.name,
+      customerAddress: row.address,
+      customerCity: row.city,
+      customerZip: row.zip,
+      customerState: row.state,
+      customerCountry: row.country,
+      billingAddress: row.buyerAddress,
+      billingCity: row.buyerCity,
+      billingZip: row.buyerZipcode,
+      billingState: row.buyerState,
+      billingCountry: row.buyerCountry,
+      bankName: row.bankName,
+      bankBranch: row.bankBranch,
+      bankCity: row.bankCity,
+      bankAddress: row.bankAddress,
+      email: row.email,
+      phone: row.phone,
     });
   }
   onCancel(): void {

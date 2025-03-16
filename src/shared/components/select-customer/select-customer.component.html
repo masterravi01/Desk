@@ -14,142 +14,132 @@
   <table mat-table [dataSource]="customers" class="mat-elevation-z8 table">
     <ng-container matColumnDef="Name">
       <th mat-header-cell *matHeaderCellDef>Name</th>
-      <td mat-cell *matCellDef="let element">{{ element.Name }}</td>
+      <td mat-cell *matCellDef="let element">{{ element.name }}</td>
     </ng-container>
 
     <ng-container matColumnDef="Phone">
       <th mat-header-cell *matHeaderCellDef>Phone</th>
-      <td mat-cell *matCellDef="let element">{{ element.Phone }}</td>
+      <td mat-cell *matCellDef="let element">{{ element.phone }}</td>
     </ng-container>
 
     <ng-container matColumnDef="Email">
       <th mat-header-cell *matHeaderCellDef>Email</th>
-      <td mat-cell *matCellDef="let element">{{ element.Email }}</td>
+      <td mat-cell *matCellDef="let element">{{ element.email }}</td>
     </ng-container>
 
-    <ng-container matColumnDef="ContactPerson">
+    <ng-container matColumnDef="Contact Person">
       <th mat-header-cell *matHeaderCellDef>Contact Person</th>
-      <td mat-cell *matCellDef="let element">
-        {{ element.ContactPerson }}
-      </td>
+      <td mat-cell *matCellDef="let element">{{ element.contactPerson }}</td>
     </ng-container>
 
     <ng-container matColumnDef="Designation">
       <th mat-header-cell *matHeaderCellDef>Designation</th>
-      <td mat-cell *matCellDef="let element">
-        {{ element.Designation }}
-      </td>
+      <td mat-cell *matCellDef="let element">{{ element.designation }}</td>
     </ng-container>
 
-    <ng-container matColumnDef="OtherPhone">
+    <ng-container matColumnDef="Other Phone">
       <th mat-header-cell *matHeaderCellDef>Other Phone</th>
-      <td mat-cell *matCellDef="let element">{{ element.OtherPhone }}</td>
+      <td mat-cell *matCellDef="let element">{{ element.otherPhone }}</td>
     </ng-container>
 
     <ng-container matColumnDef="URL">
       <th mat-header-cell *matHeaderCellDef>URL</th>
-      <td mat-cell *matCellDef="let element">{{ element.URL }}</td>
+      <td mat-cell *matCellDef="let element">{{ element.url }}</td>
     </ng-container>
 
     <ng-container matColumnDef="Fax">
       <th mat-header-cell *matHeaderCellDef>Fax</th>
-      <td mat-cell *matCellDef="let element">{{ element.Fax }}</td>
+      <td mat-cell *matCellDef="let element">{{ element.fax }}</td>
     </ng-container>
 
     <ng-container matColumnDef="Remark">
       <th mat-header-cell *matHeaderCellDef>Remark</th>
-      <td mat-cell *matCellDef="let element">{{ element.Remark }}</td>
+      <td mat-cell *matCellDef="let element">{{ element.remark }}</td>
     </ng-container>
 
     <ng-container matColumnDef="Address">
       <th mat-header-cell *matHeaderCellDef>Address</th>
-      <td mat-cell *matCellDef="let element">{{ element.Address }}</td>
+      <td mat-cell *matCellDef="let element">{{ element.address }}</td>
     </ng-container>
 
     <ng-container matColumnDef="City">
       <th mat-header-cell *matHeaderCellDef>City</th>
-      <td mat-cell *matCellDef="let element">{{ element.City }}</td>
+      <td mat-cell *matCellDef="let element">{{ element.city }}</td>
     </ng-container>
 
     <ng-container matColumnDef="State">
       <th mat-header-cell *matHeaderCellDef>State</th>
-      <td mat-cell *matCellDef="let element">{{ element.State }}</td>
+      <td mat-cell *matCellDef="let element">{{ element.state }}</td>
     </ng-container>
 
     <ng-container matColumnDef="Zip">
       <th mat-header-cell *matHeaderCellDef>Zip</th>
-      <td mat-cell *matCellDef="let element">{{ element.Zip }}</td>
+      <td mat-cell *matCellDef="let element">{{ element.zip }}</td>
     </ng-container>
 
     <ng-container matColumnDef="Country">
       <th mat-header-cell *matHeaderCellDef>Country</th>
-      <td mat-cell *matCellDef="let element">{{ element.Country }}</td>
+      <td mat-cell *matCellDef="let element">{{ element.country }}</td>
     </ng-container>
 
     <ng-container matColumnDef="Buyer Address">
       <th mat-header-cell *matHeaderCellDef>Buyer Address</th>
-      <td mat-cell *matCellDef="let element">
-        {{ element.BuyerAddress }}
-      </td>
+      <td mat-cell *matCellDef="let element">{{ element.buyerAddress }}</td>
     </ng-container>
 
     <ng-container matColumnDef="Buyer City">
       <th mat-header-cell *matHeaderCellDef>Buyer City</th>
-      <td mat-cell *matCellDef="let element">{{ element.BuyerCity }}</td>
+      <td mat-cell *matCellDef="let element">{{ element.buyerCity }}</td>
     </ng-container>
 
     <ng-container matColumnDef="Buyer State">
       <th mat-header-cell *matHeaderCellDef>Buyer State</th>
-      <td mat-cell *matCellDef="let element">{{ element.BuyerState }}</td>
+      <td mat-cell *matCellDef="let element">{{ element.buyerState }}</td>
     </ng-container>
 
     <ng-container matColumnDef="Buyer Zipcode">
       <th mat-header-cell *matHeaderCellDef>Buyer Zipcode</th>
-      <td mat-cell *matCellDef="let element">
-        {{ element.BuyerZipcode }}
-      </td>
+      <td mat-cell *matCellDef="let element">{{ element.buyerZipcode }}</td>
     </ng-container>
 
     <ng-container matColumnDef="Buyer Country">
       <th mat-header-cell *matHeaderCellDef>Buyer Country</th>
-      <td mat-cell *matCellDef="let element">
-        {{ element.BuyerCountry }}
-      </td>
+      <td mat-cell *matCellDef="let element">{{ element.buyerCountry }}</td>
     </ng-container>
 
     <ng-container matColumnDef="Bank Name">
       <th mat-header-cell *matHeaderCellDef>Bank Name</th>
-      <td mat-cell *matCellDef="let element">{{ element.BnkName }}</td>
+      <td mat-cell *matCellDef="let element">{{ element.bankName }}</td>
     </ng-container>
 
     <ng-container matColumnDef="Bank Branch">
       <th mat-header-cell *matHeaderCellDef>Bank Branch</th>
-      <td mat-cell *matCellDef="let element">{{ element.BnkBranch }}</td>
+      <td mat-cell *matCellDef="let element">{{ element.bankBranch }}</td>
     </ng-container>
 
     <ng-container matColumnDef="Bank City">
       <th mat-header-cell *matHeaderCellDef>Bank City</th>
-      <td mat-cell *matCellDef="let element">{{ element.BnkCity }}</td>
+      <td mat-cell *matCellDef="let element">{{ element.bankCity }}</td>
     </ng-container>
 
     <ng-container matColumnDef="Bank Address">
       <th mat-header-cell *matHeaderCellDef>Bank Address</th>
-      <td mat-cell *matCellDef="let element">{{ element.BnkAddress }}</td>
+      <td mat-cell *matCellDef="let element">{{ element.bankAddress }}</td>
     </ng-container>
 
     <ng-container matColumnDef="Bank State">
       <th mat-header-cell *matHeaderCellDef>Bank State</th>
-      <td mat-cell *matCellDef="let element">{{ element.BnkState }}</td>
+      <td mat-cell *matCellDef="let element">{{ element.bankState }}</td>
     </ng-container>
 
     <ng-container matColumnDef="Bank Zip">
       <th mat-header-cell *matHeaderCellDef>Bank Zip</th>
-      <td mat-cell *matCellDef="let element">{{ element.BnkZip }}</td>
+      <td mat-cell *matCellDef="let element">{{ element.bankZip }}</td>
     </ng-container>
 
     <ng-container matColumnDef="Bank Country">
       <th mat-header-cell *matHeaderCellDef>Bank Country</th>
-      <td mat-cell *matCellDef="let element">{{ element.Bnkcountry }}</td>
+      <td mat-cell *matCellDef="let element">{{ element.bankCountry }}</td>
     </ng-container>
 
     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>

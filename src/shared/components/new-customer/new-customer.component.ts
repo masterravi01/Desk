@@ -45,41 +45,42 @@ export class NewCustomerComponent {
 
   ) {
     this.customerForm = this.fb.group({
-      ID: [''],
-      Name: [''],
-      Phone: [''],
-      Email: [''],
-      ContactPerson: [''],
-      Designation: [''],
+      id: [''],
+      name: [''],
+      phone: [''],
+      email: [''],
+      contactPerson: [''],
+      designation: [''],
 
-      OtherPhone: [''],
-      URL: [''],
-      Fax: [''],
-      Remark: [''],
-      Address: [''],
+      otherPhone: [''],
+      url: [''],
+      fax: [''],
+      remark: [''],
+      address: [''],
 
-      City: [''],
-      State: [''],
-      Zip: [''],
-      Country: [''],
-      BuyerAddress: [''],
+      city: [''],
+      state: [''],
+      zip: [''],
+      country: [''],
+      buyerAddress: [''],
 
-      BuyerCity: [''],
-      BuyerState: [''],
-      BuyerZipcode: [''],
-      BuyerCountry: [''],
-      BnkName: [''],
+      buyerCity: [''],
+      buyerState: [''],
+      buyerZipcode: [''],
+      buyerCountry: [''],
+      bankName: [''],
 
-      BnkBranch: [''],
-      BnkCity: [''],
-      BnkAddress: [''],
-      BnkState: [''],
-      BnkZip: [''],
+      bankBranch: [''],
+      bankCity: [''],
+      bankAddress: [''],
+      bankState: [''],
+      bankZip: [''],
 
-      Bnkcountry: ['']
+      bankCountry: ['']
     });
 
-    if (this.data?.ID) {
+
+    if (this.data?.id) {
       this.customerForm.patchValue(this.data);
     }
 
@@ -90,7 +91,7 @@ export class NewCustomerComponent {
   }
 
   onSave() {
-    let action = this.customerForm.get('ID')?.value ? 'updateCustomer' : 'addCustomer';
+    let action = this.customerForm.get('id')?.value ? 'updateCustomer' : 'addCustomer';
     this.masterService
       .invoke(action, this.customerForm.value)
       .pipe(untilDestroyed(this))
@@ -101,7 +102,7 @@ export class NewCustomerComponent {
   }
   onDelete() {
     this.masterService
-      .invoke('deleteCustomer', this.customerForm.get('ID')?.value)
+      .invoke('deleteCustomer', this.customerForm.get('id')?.value)
       .pipe(untilDestroyed(this))
       .subscribe((data) => {
         console.log(data);

@@ -40,8 +40,8 @@ import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 export class BusinessMasterModalComponent {
   readonly dialogRef = inject(MatDialogRef<BusinessMasterModalComponent>);
   readonly data = inject<any>(MAT_DIALOG_DATA);
-  displayedColumns: string[] = ['Name', 'Phone', 'Email', 'ContactPerson', 'Designation',
-    'OtherPhone', 'URL', 'Fax', 'Remark', 'Address',
+  displayedColumns: string[] = ['Name', 'Phone', 'Email', 'Contact Person', 'Designation',
+    'Other Phone', 'URL', 'Fax', 'Remark', 'Address',
     'City', 'State', 'Zip', 'Country', 'Buyer Address',
     'Buyer City', 'Buyer State', 'Buyer Zipcode', 'Buyer Country', 'Bank Name',
     'Bank Branch', 'Bank City', 'Bank Address', 'Bank State', 'Bank Zip',
@@ -76,6 +76,8 @@ export class BusinessMasterModalComponent {
       .pipe(untilDestroyed(this))
       .subscribe((data: any) => {
         this.customers = data;
+        console.log(data);
+
       });
   }
 
@@ -103,6 +105,7 @@ export class BusinessMasterModalComponent {
       .pipe(untilDestroyed(this))
       .subscribe((data: any) => {
         this.containers = data;
+        console.log(data);
       });
   }
 
