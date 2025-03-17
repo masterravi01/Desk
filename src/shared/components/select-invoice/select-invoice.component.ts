@@ -43,7 +43,7 @@ export class SelectInvoiceComponent {
   invoices = [];
 
   displayedColumns: string[] = [
-    'invId',
+    'invoiceId',
     'customerOrderNo',
     'invoiceDate',
     'invoiceSerial',
@@ -76,7 +76,7 @@ export class SelectInvoiceComponent {
   selectInvoice(row: any) {
     console.log(row);
     this.dialogRef.close({
-      invId: row.invId,
+      invoiceId: row.invoiceId,
       customerOrderNo: row.customerOrderNo,
       invoiceDate: row.invoiceDate,
       invoiceSerial: row.invoiceSerial,

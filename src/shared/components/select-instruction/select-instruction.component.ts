@@ -1,5 +1,9 @@
 import { Component, inject } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import {
+  MatDialogRef,
+  MAT_DIALOG_DATA,
+  MatDialogTitle,
+} from '@angular/material/dialog';
 import { MatTableModule } from '@angular/material/table';
 import { ModalService } from '../../../core/services/modal.service';
 import { MasterService } from '../../../core/services/master.service';
@@ -10,7 +14,7 @@ import { CommonModule } from '@angular/common';
 @Component({
   selector: 'app-select-instruction',
   standalone: true,
-  imports: [MatTableModule, CommonModule],
+  imports: [MatTableModule, CommonModule, MatDialogTitle],
   templateUrl: './select-instruction.component.html',
   styleUrl: './select-instruction.component.css',
 })

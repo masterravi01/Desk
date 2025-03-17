@@ -220,7 +220,7 @@ const migrations = [
     description: "Create Invoice Master",
     script: `DROP TABLE IF EXISTS invoiceMaster;
 CREATE TABLE invoiceMaster (
-    invId INTEGER PRIMARY KEY AUTOINCREMENT,
+    invoiceId INTEGER PRIMARY KEY AUTOINCREMENT,
     customerOrderNo TEXT DEFAULT NULL,
     invoiceDate TEXT DEFAULT NULL,
     invoiceSerial TEXT DEFAULT NULL,
@@ -265,7 +265,7 @@ CREATE TABLE invoiceMaster (
 );
 
 INSERT INTO invoiceMaster (
-    invId, customerOrderNo, invoiceDate, invoiceSerial, invoicePiNo, customerId,
+    invoiceId, customerOrderNo, invoiceDate, invoiceSerial, invoicePiNo, customerId,
     customerName, customerAddress, customerCity, customerZip, customerState, customerCountry,
     buyerAddress, buyerCity, buyerZip, buyerState, buyerCountry, currency,
     status, discountType, discountValue, additionalChargeType, additionalChargeValue,
@@ -391,7 +391,7 @@ CREATE TABLE invoiceBottomNote (
     script: `
       DROP TABLE IF EXISTS finalinvoice;
       CREATE TABLE finalinvoice (
-          invId INTEGER PRIMARY KEY AUTOINCREMENT,
+          invoiceId INTEGER PRIMARY KEY AUTOINCREMENT,
           customerName TEXT DEFAULT NULL,
           buyerName TEXT DEFAULT NULL,
           buyerAddress TEXT DEFAULT NULL,

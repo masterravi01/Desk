@@ -1,5 +1,5 @@
 <div class="d-flex">
-  <h5 mat-dialog-title class="h5">Select Bottomnotes</h5>
+  <h5 mat-dialog-title class="h5">Select Bottomnote</h5>
   <button
     class="btn"
     mat-button
@@ -13,15 +13,18 @@
 
 <div class="table-container">
   <table mat-table [dataSource]="BottomNotes" class="mat-elevation-z8 table">
-    <ng-container
-      *ngFor="let column of displayedColumns"
-      [matColumnDef]="column"
-    >
-      <th mat-header-cell *matHeaderCellDef>{{ column | titlecase }}</th>
+    <ng-container matColumnDef="bottomNoteId">
+      <th mat-header-cell *matHeaderCellDef>ID</th>
       <td mat-cell *matCellDef="let element">
-        {{ element[column] || "-" }}
+        {{ element.bottomNoteId }}
       </td>
     </ng-container>
+    <ng-contaier matColumnDef="bottomNote">
+      <th mat-header-cell *matHeaderCellDef>Bottom Note</th>
+      <td mat-cell *matCellDef="let element">
+        {{ element.bottomNote || "-" }}
+      </td>
+    </ng-contaier>
 
     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
     <tr
