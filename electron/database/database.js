@@ -37,10 +37,10 @@ const migrations = [
     script: `
         DROP TABLE IF EXISTS bottomnote;
         CREATE TABLE bottomnote (
-            BID INTEGER PRIMARY KEY AUTOINCREMENT,
-            BottomNote TEXT DEFAULT NULL
+            bottomNoteId INTEGER PRIMARY KEY AUTOINCREMENT,
+            bottomNote TEXT DEFAULT NULL
         );
-        INSERT INTO bottomnote (BID, BottomNote) VALUES
+        INSERT INTO bottomnote (bottomNoteId, bottomNote) VALUES
         (2, 'CIN NO.L20100GJ1991PLC016763'),
         (3, '"WE INTEND TO CLAIM RODTEP BENEFIT FOR ALL EXPORT ITEM LISTED AS ABOVE IN INVOICE".'),
         (4, '"I/WE UNDERTAKE TO ABIDE BY PROVISIONS OF FOREIGN EXCHANGE MANAGEMENT ACT,1999,AS AMENDED FROM TIME TO TIME,INCLUDING REALIZATION / REPATRIATION OF FOREIGN EXCHANGE TO / FROM INDIA"'),
@@ -232,11 +232,11 @@ CREATE TABLE invoiceMaster (
     customerZip TEXT DEFAULT NULL,
     customerState TEXT DEFAULT NULL,
     customerCountry TEXT DEFAULT NULL,
-    billingAddress TEXT DEFAULT NULL,
-    billingCity TEXT DEFAULT NULL,
-    billingZip TEXT DEFAULT NULL,
-    billingState TEXT DEFAULT NULL,
-    billingCountry TEXT DEFAULT NULL,
+    buyerAddress TEXT DEFAULT NULL,
+    buyerCity TEXT DEFAULT NULL,
+    buyerZip TEXT DEFAULT NULL,
+    buyerState TEXT DEFAULT NULL,
+    buyerCountry TEXT DEFAULT NULL,
     currency TEXT DEFAULT NULL,
     status TEXT DEFAULT NULL,
     discountType TEXT DEFAULT NULL,
@@ -267,7 +267,7 @@ CREATE TABLE invoiceMaster (
 INSERT INTO invoiceMaster (
     invId, customerOrderNo, invoiceDate, invoiceSerial, invoicePiNo, customerId,
     customerName, customerAddress, customerCity, customerZip, customerState, customerCountry,
-    billingAddress, billingCity, billingZip, billingState, billingCountry, currency,
+    buyerAddress, buyerCity, buyerZip, buyerState, buyerCountry, currency,
     status, discountType, discountValue, additionalChargeType, additionalChargeValue,
     reference, totalQuantity, totalAmount, totalSquareMeters, rounding, netAmount,
     deliveryTerms, deliveryDetails, shippingDetails, paymentTerms, portOfDischarge,
@@ -372,6 +372,71 @@ INSERT INTO invoiceInstruction (
   (22, 15, 'SHEETS SHOULD PASS BOILING WATER NEMA LD TEST PLUS 70 MINUTES EN438 TEST.'),
   (22, 16, 'STUFFING SHOULD BE AS PER PLAN AND PHOTOGRAPHS SHOULD BE SUPPLIED WITH B/L.');
 `,
+  },
+  {
+    version: 11,
+    description: "Create invoiceBottomNote",
+    script: `DROP TABLE IF EXISTS invoiceBottomNote;
+
+CREATE TABLE invoiceBottomNote (
+  invoiceId INTEGER DEFAULT NULL,
+  bottomNoteId INTEGER DEFAULT NULL,
+  bottomNote TEXT DEFAULT NULL
+);
+`,
+  },
+  {
+    version: 13,
+    description: "Create Final Invoice Table",
+    script: `
+      DROP TABLE IF EXISTS finalinvoice;
+      CREATE TABLE finalinvoice (
+          invId INTEGER PRIMARY KEY AUTOINCREMENT,
+          customerName TEXT DEFAULT NULL,
+          buyerName TEXT DEFAULT NULL,
+          buyerAddress TEXT DEFAULT NULL,
+          buyerCity TEXT DEFAULT NULL,
+          buyerZip TEXT DEFAULT NULL,
+          buyerState TEXT DEFAULT NULL,
+          buyerCountry TEXT DEFAULT NULL,
+          consigneeName TEXT DEFAULT NULL,
+          consigneeAddress TEXT DEFAULT NULL,
+          consigneeCity TEXT DEFAULT NULL,
+          consigneeZip TEXT DEFAULT NULL,
+          consigneeState TEXT DEFAULT NULL,
+          consigneeCountry TEXT DEFAULT NULL,
+          bankName TEXT DEFAULT NULL,
+          bankAddress TEXT DEFAULT NULL,
+          bankCity TEXT DEFAULT NULL,
+          bankZip TEXT DEFAULT NULL,
+          bankState TEXT DEFAULT NULL,
+          bankCountry TEXT DEFAULT NULL,
+          bankAsConsignee INTEGER DEFAULT 0,
+          termsOfDp TEXT DEFAULT NULL,
+          deliveryTerms TEXT DEFAULT NULL,
+          precarriage TEXT DEFAULT NULL,
+          vesselNo TEXT DEFAULT NULL,
+          portOfDischarge TEXT DEFAULT NULL,
+          originOfGoods TEXT DEFAULT NULL,
+          receiptPlace TEXT DEFAULT NULL,
+          loadingPort TEXT DEFAULT NULL,
+          finalDestination TEXT DEFAULT NULL,
+          dischargeTerms TEXT DEFAULT NULL,
+          privateRemark TEXT DEFAULT NULL,
+          bottomNote TEXT DEFAULT NULL,
+          bankShortName TEXT DEFAULT NULL,
+          branchName TEXT DEFAULT NULL,
+          city TEXT DEFAULT NULL,
+          panNo TEXT DEFAULT NULL,
+          adCode TEXT DEFAULT NULL,
+          acCode TEXT DEFAULT NULL,
+          iec TEXT DEFAULT NULL,
+          comment TEXT DEFAULT NULL,
+          invoiceDate TEXT DEFAULT NULL,
+          finalInvoice TEXT DEFAULT NULL
+      );
+  
+      `,
   },
 ];
 

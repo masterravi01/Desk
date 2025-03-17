@@ -1,0 +1,38 @@
+<div class="d-flex">
+  <h5 mat-dialog-title class="h5">Select Bottomnotes</h5>
+  <button
+    class="btn"
+    mat-button
+    (click)="onCancel()"
+    tabindex="-1"
+    style="margin-top: 10px; margin-right: 10px"
+  >
+    ❌
+  </button>
+</div>
+
+<div class="table-container">
+  <table mat-table [dataSource]="BottomNotes" class="mat-elevation-z8 table">
+    <ng-container
+      *ngFor="let column of displayedColumns"
+      [matColumnDef]="column"
+    >
+      <th mat-header-cell *matHeaderCellDef>{{ column | titlecase }}</th>
+      <td mat-cell *matCellDef="let element">
+        {{ element[column] || "-" }}
+      </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr
+      (click)="selectBottomNote(row)"
+      mat-row
+      *matRowDef="let row; columns: displayedColumns"
+    ></tr>
+  </table>
+
+  <!-- No data fallback -->
+  <div *ngIf="BottomNotes.length === 0" class="no-data">
+    No Bottomnotes available.
+  </div>
+</div>

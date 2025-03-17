@@ -341,3 +341,34 @@
 2025-03-16 13:37:49 [INFO]: 🔗 Foreign Key support enabled.
 2025-03-16 13:49:12 [INFO]: ✅ Connected to SQLite Database at: C:\Users\Hiren\AppData\Roaming\alfa\database.sqlite
 2025-03-16 13:49:13 [INFO]: 🔗 Foreign Key support enabled.
+2025-03-17 05:40:18 [INFO]: ✅ Connected to SQLite Database at: C:\Users\Harun\AppData\Roaming\alfa\database.sqlite
+2025-03-17 05:40:18 [INFO]: 🔗 Foreign Key support enabled.
+2025-03-17 06:02:59 [INFO]: ✅ Connected to SQLite Database at: C:\Users\Harun\AppData\Roaming\alfa\database.sqlite
+2025-03-17 06:02:59 [INFO]: 🔗 Foreign Key support enabled.
+2025-03-17 06:02:59 [ERROR]: ❌ Migration 11 Failed: SQLITE_ERROR: 2 values for 3 columns
+2025-03-17 06:21:03 [INFO]: ✅ Connected to SQLite Database at: C:\Users\Harun\AppData\Roaming\alfa\database.sqlite
+2025-03-17 06:21:03 [INFO]: 🔗 Foreign Key support enabled.
+2025-03-17 06:21:03 [INFO]: ✅ Migration 11: Create invoiceBottomNote
+2025-03-17 06:25:58 [INFO]: ✅ Connected to SQLite Database at: C:\Users\Harun\AppData\Roaming\alfa\database.sqlite
+2025-03-17 06:25:58 [INFO]: 🔗 Foreign Key support enabled.
+2025-03-17 06:26:29 [INFO]: ✅ Connected to SQLite Database at: C:\Users\Harun\AppData\Roaming\alfa\database.sqlite
+2025-03-17 06:26:29 [INFO]: 🔗 Foreign Key support enabled.
+2025-03-17 06:26:29 [INFO]: ✅ Migration 1: Create BottomNote Table
+2025-03-17 06:55:28 [INFO]: ✅ Connected to SQLite Database at: C:\Users\Harun\AppData\Roaming\alfa\database.sqlite
+2025-03-17 06:55:29 [INFO]: 🔗 Foreign Key support enabled.
+2025-03-17 06:56:41 [INFO]: ✅ Connected to SQLite Database at: C:\Users\Harun\AppData\Roaming\alfa\database.sqlite
+2025-03-17 06:56:41 [INFO]: 🔗 Foreign Key support enabled.
+2025-03-17 06:59:14 [INFO]: ✅ Connected to SQLite Database at: C:\Users\Harun\AppData\Roaming\alfa\database.sqlite
+2025-03-17 06:59:14 [INFO]: 🔗 Foreign Key support enabled.
+2025-03-17 06:59:50 [INFO]: ✅ Connected to SQLite Database at: C:\Users\Harun\AppData\Roaming\alfa\database.sqlite
+2025-03-17 06:59:50 [INFO]: 🔗 Foreign Key support enabled.
+2025-03-17 06:59:50 [ERROR]: ❌ Migration 13 Failed: SQLITE_ERROR: unrecognized token: "'"
+2025-03-17 07:03:04 [INFO]: ✅ Connected to SQLite Database at: C:\Users\Harun\AppData\Roaming\alfa\database.sqlite
+2025-03-17 07:03:04 [INFO]: 🔗 Foreign Key support enabled.
+2025-03-17 07:03:04 [ERROR]: ❌ Migration 13 Failed: SQLITE_ERROR: unrecognized token: "'"
+2025-03-17 07:03:56 [INFO]: ✅ Connected to SQLite Database at: C:\Users\Harun\AppData\Roaming\alfa\database.sqlite
+2025-03-17 07:03:57 [INFO]: 🔗 Foreign Key support enabled.
+2025-03-17 07:03:57 [INFO]: ✅ Migration 13: Create Final Invoice Table
+2025-03-17 10:48:39 [INFO]: ✅ Connected to SQLite Database at: C:\Users\Harun\AppData\Roaming\alfa\database.sqlite
+2025-03-17 10:48:39 [INFO]: 🔗 Foreign Key support enabled.
+2025-03-17 10:48:39 [INFO]: ✅ Migration 7: Create Customer Table

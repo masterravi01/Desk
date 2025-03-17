@@ -73,7 +73,7 @@ export class SelectCustomerComponent {
   constructor(
     private modalService: ModalService,
     private masterService: MasterService
-  ) { }
+  ) {}
   ngOnInit() {
     this.loadCustomers();
   }
@@ -95,11 +95,11 @@ export class SelectCustomerComponent {
       customerZip: row.zip,
       customerState: row.state,
       customerCountry: row.country,
-      billingAddress: row.buyerAddress,
-      billingCity: row.buyerCity,
-      billingZip: row.buyerZipcode,
-      billingState: row.buyerState,
-      billingCountry: row.buyerCountry,
+      buyerAddress: row.buyerAddress,
+      buyerCity: row.buyerCity,
+      buyerZip: row.buyerZipcode,
+      buyerState: row.buyerState,
+      buyerCountry: row.buyerCountry,
       bankName: row.bankName,
       bankBranch: row.bankBranch,
       bankCity: row.bankCity,
