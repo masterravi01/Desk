@@ -2,6 +2,7 @@ const fs = require("fs");
 const PizZip = require("pizzip");
 const Docxtemplater = require("docxtemplater");
 const libre = require("libreoffice-convert");
+const { exec } = require("child_process"); // Import the exec function from child_process
 libre.convertAsync = require("util").promisify(libre.convert);
 
 // Load the template file
@@ -45,6 +46,24 @@ const buf = doc.getZip().generate({
 fs.writeFileSync("output.docx", buf);
 
 console.log("Word document generated successfully!");
+
+// Function to open the Word document
+function openWordDocument(filePath) {
+  const command =
+    process.platform === "win32"
+      ? `start "" "${filePath}"`
+      : `open "${filePath}"`;
+  exec(command, (err) => {
+    if (err) {
+      console.error("Failed to open Word document:", err);
+    } else {
+      console.log("Word document opened successfully!");
+    }
+  });
+}
+
+// Open the generated Word document
+openWordDocument("output.docx");
 
 // Convert the generated Word document to PDF
 async function convertToPdf() {
