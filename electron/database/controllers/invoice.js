@@ -495,9 +495,11 @@ function getInvoice(invoiceId) {
 }
 
 // Add a new final invoice
-function addFinalInvoice(invoice) {
+function addFinalInvoice({ invoice, invoiceBottomNotes = [] }) {
   return new Promise((resolve, reject) => {
-    const query = `
+    db.serialize(() => {
+      db.run("BEGIN TRANSACTION");
+      const query = `
       INSERT INTO finalinvoice (
         customerName, buyerName, buyerAddress, buyerCity, buyerZip, buyerState, buyerCountry,
         consigneeName, consigneeAddress, consigneeCity, consigneeZip, consigneeState, consigneeCountry,
@@ -508,9 +510,7 @@ function addFinalInvoice(invoice) {
         invoiceDate, finalInvoice
       ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?,?)
     `;
-    db.run(
-      query,
-      [
+      runQuery(query, [
         invoice.customerName,
         invoice.buyerName,
         invoice.buyerAddress,
@@ -553,17 +553,87 @@ function addFinalInvoice(invoice) {
         invoice.comment,
         invoice.invoiceDate,
         invoice.finalInvoice,
-      ],
-      function (err) {
-        if (err) reject(err);
-        else resolve({ id: this.lastID, ...invoice });
-      }
-    );
+      ])
+        .then((invoiceId) => {
+          Promise.all([
+            runQuery(
+              "SELECT bottomNoteId FROM invoiceBottomNote WHERE invoiceId = ?",
+              [invoiceId]
+            ).then((data) => (Array.isArray(data) ? data : [])),
+          ]).then(([oldBottomnotes]) => {
+            const oldBottomnoteIds = oldBottomnotes.map((i) => i.bottomNoteId);
+            const newBottomnoteIds = invoiceBottomNotes
+              .map((i) => i.bottomNoteId)
+              .filter(Boolean);
+
+            const deleteBottomnotePromises = oldBottomnoteIds
+              .filter(
+                (oldBottomNoteId) => !newBottomnoteIds.includes(oldBottomNoteId)
+              )
+              .map((oldBottomNoteId) => {
+                console.log(oldBottomNoteId);
+                return runQuery(
+                  "DELETE FROM invoiceBottomNote WHERE invoiceId = ? AND bottomNoteId = ?",
+                  [invoiceId, oldBottomNoteId]
+                );
+              });
+
+            // Insert or update records
+
+            const upsertBottomNotePromises = (invoiceBottomNotes || []).map(
+              (bottomnote) =>
+                bottomnote.bottomNoteId && bottomnote.invoiceId
+                  ? runQuery(
+                      `UPDATE invoiceBottomNote SET invoiceBottomNote = ?
+                    WHERE invoiceId = ? AND bottomNoteId = ?`,
+                      [
+                        bottomnote.bottomNote ?? null,
+                        invoiceId,
+                        bottomnote.bottomNoteId ?? null,
+                      ]
+                    )
+                  : runQuery(
+                      `INSERT INTO invoiceBottomNote (
+                      invoiceId, bottomNoteId, bottomNote
+                    ) VALUES (?, ?, ?)`,
+                      [
+                        invoiceId,
+                        bottomnote.bottomNoteId ?? null,
+                        bottomnote.bottomNote ?? null,
+                      ]
+                    )
+            );
+
+            return Promise.all([
+              ...deleteBottomnotePromises,
+              ...upsertBottomNotePromises,
+            ])
+              .then(() => {
+                db.run("COMMIT", (commitErr) => {
+                  if (commitErr)
+                    return reject(`Commit Error: ${commitErr.message}`);
+                  resolve({
+                    invoiceId,
+                    message: "Invoice updated successfully!",
+                  });
+                });
+              })
+              .catch((error) => {
+                db.run("ROLLBACK", () =>
+                  reject(`Transaction failed: ${error}`)
+                );
+              });
+          });
+        })
+        .catch((error) => {
+          db.run("ROLLBACK", () => reject(`Transaction failed: ${error}`));
+        });
+    });
   });
 }
 
 // Update an existing final invoice
-function updateFinalInvoice(invoice) {
+function updateFinalInvoice({ invoice, invoiceBottomNotes }) {
   return new Promise((resolve, reject) => {
     const query = `
       UPDATE finalinvoice SET 

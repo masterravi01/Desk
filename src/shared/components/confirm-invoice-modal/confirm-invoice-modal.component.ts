@@ -249,13 +249,19 @@ export class ConfirmInvoiceModalComponent implements OnInit {
     }
 
     if (isClose) this.dialogRef.close(false);
-    console.log(this.finalInvoiceForm.value);
+    console.log({
+      finalinvoice: this.finalInvoiceForm.value,
+      invoiceBottomNotes: this.invoiceBottomNotes,
+    });
     this.masterService
       .invoke(
         this.finalInvoiceForm.get('invoiceId')?.value
           ? 'addFinalInvoice'
           : 'addFinalInvoice',
-        this.finalInvoiceForm.value
+        {
+          invoice: this.finalInvoiceForm.value,
+          invoiceBottomNotes: this.invoiceBottomNotes,
+        }
       )
       .pipe(untilDestroyed(this))
       .subscribe((data) => {
