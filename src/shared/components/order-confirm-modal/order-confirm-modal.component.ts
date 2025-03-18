@@ -224,7 +224,7 @@ export class OrderConfirmModalComponent implements OnInit {
   initInvoiceForm() {
     const today = new DatePipe('en-US').transform(new Date(), 'yyyy-MM-dd');
     this.invoiceForm = this.fb.group({
-      invId: [''],
+      invoiceId: [''],
       customerOrderNo: ['', Validators.required],
       invoiceDate: [today],
       invoiceSerial: ['iii'],
@@ -236,11 +236,11 @@ export class OrderConfirmModalComponent implements OnInit {
       customerZip: [''],
       customerState: [''],
       customerCountry: [''],
-      billingAddress: [''],
-      billingCity: [''],
-      billingZip: [''],
-      billingState: [''],
-      billingCountry: [''],
+      buyerAddress: [''],
+      buyerCity: [''],
+      buyerZip: [''],
+      buyerState: [''],
+      buyerCountry: [''],
       currency: ['USD'],
       status: [''],
 
@@ -345,9 +345,9 @@ export class OrderConfirmModalComponent implements OnInit {
   }
 
   onDelete(): void {
-    if (this.invoiceForm.get('invId')?.value) {
+    if (this.invoiceForm.get('invoiceId')?.value) {
       this.masterService
-        .invoke('deleteInvoice', this.invoiceForm.get('invId')?.value)
+        .invoke('deleteInvoice', this.invoiceForm.get('invoiceId')?.value)
         .pipe(untilDestroyed(this))
         .subscribe((data) => {
           console.log(data);
@@ -371,10 +371,10 @@ export class OrderConfirmModalComponent implements OnInit {
       })
       .afterClosed()
       .subscribe((result) => {
-        if (result && result.invId) {
+        if (result && result.invoiceId) {
           console.log(result);
           this.masterService
-            .invoke('getInvoice', result.invId)
+            .invoke('getInvoice', result.invoiceId)
             .pipe(untilDestroyed(this))
             .subscribe((data: any) => {
               console.log(data);
@@ -502,7 +502,7 @@ export class OrderConfirmModalComponent implements OnInit {
     });
     this.masterService
       .invoke(
-        this.invoiceForm.get('invId')?.value
+        this.invoiceForm.get('invoiceId')?.value
           ? 'updateInvoice'
           : 'insertInvoice',
         {

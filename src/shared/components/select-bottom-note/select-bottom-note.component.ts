@@ -12,18 +12,18 @@ import { CommonModule } from '@angular/common';
 
 @UntilDestroy()
 @Component({
-  selector: 'app-select-instruction',
+  selector: 'app-select-bottom-note',
   standalone: true,
   imports: [MatTableModule, CommonModule, MatDialogTitle],
-  templateUrl: './select-instruction.component.html',
-  styleUrl: './select-instruction.component.css',
+  templateUrl: './select-bottom-note.component.html',
+  styleUrl: './select-bottom-note.component.css',
 })
-export class SelectInstructionComponent {
-  readonly dialogRef = inject(MatDialogRef<SelectInstructionComponent>);
+export class SelectBottomNoteComponent {
+  readonly dialogRef = inject(MatDialogRef<SelectBottomNoteComponent>);
   readonly data = inject<any>(MAT_DIALOG_DATA);
 
-  Instructions: any[] = [];
-  displayedColumns: string[] = ['BID', 'Instruction'];
+  BottomNotes: any[] = [];
+  displayedColumns: string[] = ['bottomNoteId', 'bottomNote'];
 
   constructor(
     private modalService: ModalService,
@@ -31,30 +31,30 @@ export class SelectInstructionComponent {
   ) {}
 
   ngOnInit() {
-    this.loadInstructions();
+    this.loadBottomNote();
   }
 
-  loadInstructions() {
+  loadBottomNote() {
     this.masterService
-      .invoke('getAllInstruction')
+      .invoke('getAllBottomNote')
       .pipe(untilDestroyed(this))
       .subscribe({
         next: (data: any) => {
           console.log(data);
-          this.Instructions = data || []; // Ensure fallback to empty array
+          this.BottomNotes = data || []; // Ensure fallback to empty array
         },
         error: (error) => {
-          console.error('Error fetching instructions:', error);
-          this.Instructions = [];
+          console.error('Error fetching BottomNotes:', error);
+          this.BottomNotes = [];
         },
       });
   }
 
-  selectInstruction(row: any) {
+  selectBottomNote(row: any) {
     console.log(row);
     this.dialogRef.close({
-      instructionId: row.BID,
-      invoiceInstruction: row.Instruction,
+      bottomNoteId: row.bottomNoteId,
+      bottomNote: row.bottomNote,
     });
   }
 

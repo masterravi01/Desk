@@ -47,8 +47,8 @@ function insertInvoice({ invoiceMaster, invoiceDetails, invoiceInstruction }) {
       const masterInsertQuery = `INSERT INTO invoiceMaster (
         customerOrderNo, invoiceDate, invoiceSerial, invoicePiNo, customerId,
         customerName, customerAddress, customerCity, customerZip, customerState,
-        customerCountry, billingAddress, billingCity, billingZip, billingState,
-        billingCountry, currency, status, discountType, discountValue,
+        customerCountry, buyerAddress, buyerCity, buyerZip, buyerState,
+        buyerCountry, currency, status, discountType, discountValue,
         additionalChargeType, additionalChargeValue, reference, totalQuantity,
         totalAmount, totalSquareMeters, rounding, netAmount, deliveryTerms,
         deliveryDetails, shippingDetails, paymentTerms, portOfDischarge,
@@ -68,11 +68,11 @@ function insertInvoice({ invoiceMaster, invoiceDetails, invoiceInstruction }) {
         invoiceMaster.customerZip ?? null,
         invoiceMaster.customerState ?? null,
         invoiceMaster.customerCountry ?? null,
-        invoiceMaster.billingAddress ?? null,
-        invoiceMaster.billingCity ?? null,
-        invoiceMaster.billingZip ?? null,
-        invoiceMaster.billingState ?? null,
-        invoiceMaster.billingCountry ?? null,
+        invoiceMaster.buyerAddress ?? null,
+        invoiceMaster.buyerCity ?? null,
+        invoiceMaster.buyerZip ?? null,
+        invoiceMaster.buyerState ?? null,
+        invoiceMaster.buyerCountry ?? null,
         invoiceMaster.currency ?? null,
         invoiceMaster.status ?? null,
         invoiceMaster.discountType ?? null,
@@ -186,13 +186,13 @@ function updateInvoice({ invoiceMaster, invoiceDetails, invoiceInstruction }) {
       const masterUpdateQuery = `UPDATE invoiceMaster SET 
           customerOrderNo = ?, invoiceDate = ?, invoiceSerial = ?, invoicePiNo = ?, customerId = ?,
           customerName = ?, customerAddress = ?, customerCity = ?, customerZip = ?, customerState = ?,
-          customerCountry = ?, billingAddress = ?, billingCity = ?, billingZip = ?, billingState = ?,
-          billingCountry = ?, currency = ?, status = ?, discountType = ?, discountValue = ?,
+          customerCountry = ?, buyerAddress = ?, buyerCity = ?, buyerZip = ?, buyerState = ?,
+          buyerCountry = ?, currency = ?, status = ?, discountType = ?, discountValue = ?,
           additionalChargeType = ?, additionalChargeValue = ?, reference = ?, totalQuantity = ?,
           totalAmount = ?, totalSquareMeters = ?, rounding = ?, netAmount = ?, deliveryTerms = ?,
           deliveryDetails = ?, shippingDetails = ?, paymentTerms = ?, portOfDischarge = ?,
           dispatchTerms = ?, bankName = ?, bankBranch = ?, bankCity = ?, swiftNumber = ?,
-          comments = ?, calculationType = ?, bankAddress = ? WHERE invId = ?`;
+          comments = ?, calculationType = ?, bankAddress = ? WHERE invoiceId = ?`;
 
       runQuery(masterUpdateQuery, [
         invoiceMaster.customerOrderNo ?? null,
@@ -206,11 +206,11 @@ function updateInvoice({ invoiceMaster, invoiceDetails, invoiceInstruction }) {
         invoiceMaster.customerZip ?? null,
         invoiceMaster.customerState ?? null,
         invoiceMaster.customerCountry ?? null,
-        invoiceMaster.billingAddress ?? null,
-        invoiceMaster.billingCity ?? null,
-        invoiceMaster.billingZip ?? null,
-        invoiceMaster.billingState ?? null,
-        invoiceMaster.billingCountry ?? null,
+        invoiceMaster.buyerAddress ?? null,
+        invoiceMaster.buyerCity ?? null,
+        invoiceMaster.buyerZip ?? null,
+        invoiceMaster.buyerState ?? null,
+        invoiceMaster.buyerCountry ?? null,
         invoiceMaster.currency ?? null,
         invoiceMaster.status ?? null,
         invoiceMaster.discountType ?? null,
@@ -236,10 +236,10 @@ function updateInvoice({ invoiceMaster, invoiceDetails, invoiceInstruction }) {
         invoiceMaster.comments ?? null,
         invoiceMaster.calculationType ?? null,
         invoiceMaster.bankAddress ?? null,
-        invoiceMaster.invId,
+        invoiceMaster.invoiceId,
       ])
         .then(() => {
-          const invoiceId = invoiceMaster.invId;
+          const invoiceId = invoiceMaster.invoiceId;
           // Fetch existing records
           Promise.all([
             runQuery(
@@ -424,7 +424,7 @@ function deleteInvoice(invoiceId) {
         )
         .then(() =>
           // Delete invoice master
-          runQuery("DELETE FROM invoiceMaster WHERE invId = ?", [invoiceId])
+          runQuery("DELETE FROM invoiceMaster WHERE invoiceId = ?", [invoiceId])
         )
         .then(() => {
           db.run("COMMIT", (commitErr) => {
@@ -445,7 +445,7 @@ function getInvoice(invoiceId) {
   return new Promise((resolve, reject) => {
     db.serialize(() => {
       const invoiceMasterQuery = `
-          SELECT * FROM invoiceMaster WHERE invId = ?
+          SELECT * FROM invoiceMaster WHERE invoiceId = ?
         `;
 
       const invoiceDetailsQuery = `
@@ -455,6 +455,9 @@ function getInvoice(invoiceId) {
       const invoiceInstructionQuery = `
           SELECT * FROM invoiceInstruction WHERE invoiceId = ?
         `;
+      const invoicefinalQuery = `
+        SELECT * FROM finalinvoice WHERE invoiceId = ?
+      `;
 
       db.get(invoiceMasterQuery, [invoiceId], (err, invoiceMaster) => {
         if (err) return reject(`Error fetching invoice master: ${err.message}`);
@@ -473,11 +476,15 @@ function getInvoice(invoiceId) {
                 return reject(
                   `Error fetching invoice instructions: ${err.message}`
                 );
-
-              resolve({
-                invoiceMaster,
-                invoiceDetails,
-                invoiceInstruction,
+              db.all(invoicefinalQuery, [invoiceId], (err, finalInvoice) => {
+                if (err)
+                  return reject(`Error fetching invoice final: ${err.message}`);
+                resolve({
+                  invoiceMaster,
+                  invoiceDetails,
+                  invoiceInstruction,
+                  finalInvoice,
+                });
               });
             }
           );
@@ -487,9 +494,219 @@ function getInvoice(invoiceId) {
   });
 }
 
+// Add a new final invoice
+function addFinalInvoice({ invoice, invoiceBottomNotes = [] }) {
+  return new Promise((resolve, reject) => {
+    db.serialize(() => {
+      db.run("BEGIN TRANSACTION");
+      const query = `
+      INSERT INTO finalinvoice (
+        customerName, buyerName, buyerAddress, buyerCity, buyerZip, buyerState, buyerCountry,
+        consigneeName, consigneeAddress, consigneeCity, consigneeZip, consigneeState, consigneeCountry,
+        bankName, bankAddress, bankCity, bankZip, bankState, bankCountry, bankAsConsignee,
+        termsOfDp, deliveryTerms, precarriage, vesselNo, portOfDischarge, originOfGoods,
+        receiptPlace, loadingPort, finalDestination, dischargeTerms, privateRemark, bottomNote,
+        bankShortName, branchName, city, panNo, adCode, acCode, iec, comment,
+        invoiceDate, finalInvoice
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?,?)
+    `;
+      runQuery(query, [
+        invoice.customerName,
+        invoice.buyerName,
+        invoice.buyerAddress,
+        invoice.buyerCity,
+        invoice.buyerZip,
+        invoice.buyerState,
+        invoice.buyerCountry,
+        invoice.consigneeName,
+        invoice.consigneeAddress,
+        invoice.consigneeCity,
+        invoice.consigneeZip,
+        invoice.consigneeState,
+        invoice.consigneeCountry,
+        invoice.bankName,
+        invoice.bankAddress,
+        invoice.bankCity,
+        invoice.bankZip,
+        invoice.bankState,
+        invoice.bankCountry,
+        invoice.bankAsConsignee,
+        invoice.termsOfDp,
+        invoice.deliveryTerms,
+        invoice.precarriage,
+        invoice.vesselNo,
+        invoice.portOfDischarge,
+        invoice.originOfGoods,
+        invoice.receiptPlace,
+        invoice.loadingPort,
+        invoice.finalDestination,
+        invoice.dischargeTerms,
+        invoice.privateRemark,
+        invoice.bottomNote,
+        invoice.bankShortName,
+        invoice.branchName,
+        invoice.city,
+        invoice.panNo,
+        invoice.adCode,
+        invoice.acCode,
+        invoice.iec,
+        invoice.comment,
+        invoice.invoiceDate,
+        invoice.finalInvoice,
+      ])
+        .then((invoiceId) => {
+          Promise.all([
+            runQuery(
+              "SELECT bottomNoteId FROM invoiceBottomNote WHERE invoiceId = ?",
+              [invoiceId]
+            ).then((data) => (Array.isArray(data) ? data : [])),
+          ]).then(([oldBottomnotes]) => {
+            const oldBottomnoteIds = oldBottomnotes.map((i) => i.bottomNoteId);
+            const newBottomnoteIds = invoiceBottomNotes
+              .map((i) => i.bottomNoteId)
+              .filter(Boolean);
+
+            const deleteBottomnotePromises = oldBottomnoteIds
+              .filter(
+                (oldBottomNoteId) => !newBottomnoteIds.includes(oldBottomNoteId)
+              )
+              .map((oldBottomNoteId) => {
+                console.log(oldBottomNoteId);
+                return runQuery(
+                  "DELETE FROM invoiceBottomNote WHERE invoiceId = ? AND bottomNoteId = ?",
+                  [invoiceId, oldBottomNoteId]
+                );
+              });
+
+            // Insert or update records
+
+            const upsertBottomNotePromises = (invoiceBottomNotes || []).map(
+              (bottomnote) =>
+                bottomnote.bottomNoteId && bottomnote.invoiceId
+                  ? runQuery(
+                      `UPDATE invoiceBottomNote SET invoiceBottomNote = ?
+                    WHERE invoiceId = ? AND bottomNoteId = ?`,
+                      [
+                        bottomnote.bottomNote ?? null,
+                        invoiceId,
+                        bottomnote.bottomNoteId ?? null,
+                      ]
+                    )
+                  : runQuery(
+                      `INSERT INTO invoiceBottomNote (
+                      invoiceId, bottomNoteId, bottomNote
+                    ) VALUES (?, ?, ?)`,
+                      [
+                        invoiceId,
+                        bottomnote.bottomNoteId ?? null,
+                        bottomnote.bottomNote ?? null,
+                      ]
+                    )
+            );
+
+            return Promise.all([
+              ...deleteBottomnotePromises,
+              ...upsertBottomNotePromises,
+            ])
+              .then(() => {
+                db.run("COMMIT", (commitErr) => {
+                  if (commitErr)
+                    return reject(`Commit Error: ${commitErr.message}`);
+                  resolve({
+                    invoiceId,
+                    message: "Invoice updated successfully!",
+                  });
+                });
+              })
+              .catch((error) => {
+                db.run("ROLLBACK", () =>
+                  reject(`Transaction failed: ${error}`)
+                );
+              });
+          });
+        })
+        .catch((error) => {
+          db.run("ROLLBACK", () => reject(`Transaction failed: ${error}`));
+        });
+    });
+  });
+}
+
+// Update an existing final invoice
+function updateFinalInvoice({ invoice, invoiceBottomNotes }) {
+  return new Promise((resolve, reject) => {
+    const query = `
+      UPDATE finalinvoice SET 
+        customerName = ?, buyerName = ?, buyerAddress = ?, buyerCity = ?, buyerZip = ?, buyerState = ?,
+        buyerCountry = ?, consigneeName = ?, consigneeAddress = ?, consigneeCity = ?, consigneeZip = ?,
+        consigneeState = ?, consigneeCountry = ?, bankName = ?, bankAddress = ?, bankCity = ?,
+        bankZip = ?, bankState = ?, bankCountry = ?, bankAsConsignee = ?, termsOfDp = ?,
+        deliveryTerms = ?, precarriage = ?, vesselNo = ?, portOfDischarge = ?, originOfGoods = ?,
+        receiptPlace = ?, loadingPort = ?, finalDestination = ?, dischargeTerms = ?, privateRemark = ?,
+        bottomNote = ?, bankShortName = ?, branchName = ?, city = ?, panNo = ?, adCode = ?,
+        acCode = ?, iec = ?, comment = ?, invoiceDate = ?, finalInvoice = ?
+      WHERE invoiceId = ?
+    `;
+    db.run(
+      query,
+      [
+        invoice.customerName,
+        invoice.buyerName,
+        invoice.buyerAddress,
+        invoice.buyerCity,
+        invoice.buyerZip,
+        invoice.buyerState,
+        invoice.buyerCountry,
+        invoice.consigneeName,
+        invoice.consigneeAddress,
+        invoice.consigneeCity,
+        invoice.consigneeZip,
+        invoice.consigneeState,
+        invoice.consigneeCountry,
+        invoice.bankName,
+        invoice.bankAddress,
+        invoice.bankCity,
+        invoice.bankZip,
+        invoice.bankState,
+        invoice.bankCountry,
+        invoice.bankAsConsignee,
+        invoice.termsOfDp,
+        invoice.deliveryTerms,
+        invoice.precarriage,
+        invoice.vesselNo,
+        invoice.portOfDischarge,
+        invoice.originOfGoods,
+        invoice.receiptPlace,
+        invoice.loadingPort,
+        invoice.finalDestination,
+        invoice.dischargeTerms,
+        invoice.privateRemark,
+        invoice.bottomNote,
+        invoice.bankShortName,
+        invoice.branchName,
+        invoice.city,
+        invoice.panNo,
+        invoice.adCode,
+        invoice.acCode,
+        invoice.iec,
+        invoice.comment,
+        invoice.invoiceDate,
+        invoice.finalInvoice,
+        invoice.invoiceId,
+      ],
+      function (err) {
+        if (err) reject(err);
+        else resolve({ changes: this.changes });
+      }
+    );
+  });
+}
+
 module.exports = {
   insertInvoice,
   updateInvoice,
   deleteInvoice,
   getInvoice,
+  addFinalInvoice,
+  updateFinalInvoice,
 };

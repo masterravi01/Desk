@@ -12,14 +12,14 @@ function getAllBottomNote() {
 function addBottomNote(bottomNote) {
   return new Promise((resolve, reject) => {
     const query = `
-      INSERT INTO bottomnote (BottomNote) VALUES (?)
+      INSERT INTO bottomnote (bottomNote) VALUES (?)
     `;
     db.run(query, [bottomNote.value ?? null], function (err) {
       if (err) {
         console.error("SQL Error:", err.message);
         reject(err);
       } else {
-        resolve({ BID: this.lastID, bottomNote: bottomNote.value });
+        resolve({ bottomNoteId: this.lastID, bottomNote: bottomNote.value });
       }
     });
   });
@@ -28,7 +28,7 @@ function addBottomNote(bottomNote) {
 function updateBottomNote(bottomNote) {
   return new Promise((resolve, reject) => {
     const query = `
-      UPDATE bottomnote SET BottomNote = ? WHERE BID = ?
+      UPDATE bottomnote SET bottomNote = ? WHERE bottomNoteId = ?
     `;
     db.run(query, [bottomNote.value, bottomNote.id], function (err) {
       if (err) reject(err);
@@ -40,7 +40,7 @@ function updateBottomNote(bottomNote) {
 function deleteBottomNote(bottomNote) {
   return new Promise((resolve, reject) => {
     db.run(
-      "DELETE FROM bottomnote WHERE BID = ?",
+      "DELETE FROM bottomnote WHERE bottomNoteId = ?",
       [bottomNote.id],
       function (err) {
         if (err) reject(err);

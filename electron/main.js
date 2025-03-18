@@ -85,7 +85,8 @@ function createWindow() {
         },
         {
           label: "Confirm Invoice",
-          click: () => mainWindow.webContents.send("navigate", "/products"),
+          click: () =>
+            mainWindow.webContents.send("navigate", "/confirmInvoice"),
         },
       ],
     },
