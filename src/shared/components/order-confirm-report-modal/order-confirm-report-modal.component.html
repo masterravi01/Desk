@@ -1,0 +1,101 @@
+<div class="d-flex">
+  <h5 mat-dialog-title class="h5">Order Confirmation Report</h5>
+  <button
+    class="btn"
+    mat-button
+    (click)="onCancel()"
+    tabindex="-1"
+    style="margin-top: 14px; margin-right: 0"
+  >
+    ❌
+  </button>
+</div>
+<mat-divider></mat-divider>
+
+<div class="modal-content">
+  <div></div>
+  <button
+    class="btn"
+    mat-raised-button
+    style="height: 32px; margin: 20px 0px"
+    (click)="openSelectModal()"
+  >
+    Select Invoice
+  </button>
+  <table class="form-table">
+    <tbody>
+      <tr>
+        <td class="label-cell">Customer ID</td>
+        <td class="value-cell">{{ orderForm.get("customerId")?.value }}</td>
+        <td class="label-cell">Customer Name</td>
+        <td class="value-cell">{{ orderForm.get("customerName")?.value }}</td>
+      </tr>
+      <tr>
+        <td class="label-cell">Invoice ID</td>
+        <td class="value-cell">{{ orderForm.get("invoiceId")?.value }}</td>
+        <td class="label-cell">Invoice No</td>
+        <td class="value-cell">{{ orderForm.get("invoicePiNo")?.value }}</td>
+      </tr>
+    </tbody>
+  </table>
+  <table class="form-table" style="margin-top: 10px">
+    <tbody>
+      <tr>
+        <td style="padding-right: 20px">
+          <select
+            style="
+              background: #fff;
+              height: 30px;
+              width: 100%;
+              border-radius: 4px;
+              margin: 5px 0px;
+            "
+            [(ngModel)]="selectedFormat"
+          >
+            <option value="ms-word">MS-Word</option>
+            <option value="pdf">PDF</option>
+          </select>
+        </td>
+        <td>
+          <button
+            class="btn table-btn"
+            mat-raised-button
+            (click)="openSelectModal()"
+          >
+            Order Confirmation
+          </button>
+        </td>
+        <td>
+          <button
+            class="btn table-btn"
+            mat-raised-button
+            (click)="openSelectModal()"
+          >
+            Order Confirmation (UK)
+          </button>
+        </td>
+      </tr>
+      <tr>
+        <td class="label-cell"></td>
+        <td>
+          <button
+            class="btn table-btn"
+            mat-raised-button
+            (click)="openSelectModal()"
+          >
+            Order Confirmation (Aus)
+          </button>
+        </td>
+        <td>
+          <button
+            class="btn table-btn"
+            mat-raised-button
+            (click)="openSelectModal()"
+          >
+            OPF Report
+          </button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

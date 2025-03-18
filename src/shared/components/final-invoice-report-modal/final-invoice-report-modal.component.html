@@ -1,0 +1,126 @@
+<div class="d-flex">
+  <h5 mat-dialog-title class="h5">Final Invoice Report</h5>
+  <button
+    class="btn"
+    mat-button
+    (click)="onCancel()"
+    tabindex="-1"
+    style="margin-top: 14px; margin-right: 0"
+  >
+    ❌
+  </button>
+</div>
+<mat-divider></mat-divider>
+
+<div class="modal-content">
+  <div></div>
+  <button
+    class="btn"
+    mat-raised-button
+    style="height: 32px; margin: 20px 0px"
+    (click)="openSelectModal()"
+  >
+    Select Invoice
+  </button>
+  <table class="form-table">
+    <tbody>
+      <tr>
+        <td class="label-cell">Customer ID</td>
+        <td class="value-cell">{{ orderForm.get("customerId")?.value }}</td>
+        <td class="label-cell">Customer Name</td>
+        <td class="value-cell">{{ orderForm.get("customerName")?.value }}</td>
+      </tr>
+      <tr>
+        <td class="label-cell">Invoice ID</td>
+        <td class="value-cell">{{ orderForm.get("invoiceId")?.value }}</td>
+        <td class="label-cell">Invoice No</td>
+        <td class="value-cell">{{ orderForm.get("invoicePiNo")?.value }}</td>
+      </tr>
+    </tbody>
+  </table>
+  <div class="d-flex">
+    <div style="margin-top: 10px; width: 40%">
+      <mat-radio-group aria-label="Select an option" [(ngModel)]="reportType">
+        <mat-radio-button value="custom">Custom Reports</mat-radio-button>
+        <mat-radio-button value="party">Party Reports</mat-radio-button>
+      </mat-radio-group>
+      <select
+        style="
+          background: #fff;
+          height: 30px;
+          width: 70%;
+          border-radius: 4px;
+          margin: 5px 0px;
+        "
+        [(ngModel)]="selectedFormat"
+      >
+        <option value="ms-word">MS-Word</option>
+        <option value="pdf">PDF</option>
+      </select>
+    </div>
+    <table class="form-table" style="margin-top: 10px">
+      <tbody>
+        <tr>
+          <td>
+            <button
+              class="btn table-btn"
+              mat-raised-button
+              (click)="openSelectModal()"
+            >
+              Final Invoice
+            </button>
+          </td>
+          <td>
+            <button
+              class="btn table-btn"
+              mat-raised-button
+              (click)="openSelectModal()"
+            >
+              Packing List
+            </button>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <button
+              class="btn table-btn"
+              mat-raised-button
+              (click)="openSelectModal()"
+            >
+              Final Invoice (Aus)
+            </button>
+          </td>
+          <td>
+            <button
+              class="btn table-btn"
+              mat-raised-button
+              (click)="openSelectModal()"
+            >
+              Packing List (Aus)
+            </button>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <button
+              class="btn table-btn"
+              mat-raised-button
+              (click)="openSelectModal()"
+            >
+              Final Invoice (UK)
+            </button>
+          </td>
+          <td>
+            <button
+              class="btn table-btn"
+              mat-raised-button
+              (click)="openSelectModal()"
+            >
+              Packing List (UK)
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
