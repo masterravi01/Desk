@@ -104,6 +104,7 @@ export class ConfirmInvoiceModalComponent implements OnInit {
   initForm() {
     const today = new DatePipe('en-US').transform(new Date(), 'yyyy-MM-dd');
     this.finalInvoiceForm = this.fb.group({
+      id: [''],
       invoiceId: [''],
       customerName: [''],
       buyerName: [''],
@@ -159,9 +160,12 @@ export class ConfirmInvoiceModalComponent implements OnInit {
   }
 
   onDelete(): void {
-    if (this.finalInvoiceForm.get('invoiceId')?.value) {
+    if (this.finalInvoiceForm.get('id')?.value) {
       this.masterService
-        .invoke('deleteInvoice', this.finalInvoiceForm.get('invoiceId')?.value)
+        .invoke(
+          'deleteFinalInvoice',
+          this.finalInvoiceForm.get('invoiceId')?.value
+        )
         .pipe(untilDestroyed(this))
         .subscribe((data) => {
           console.log(data);
@@ -180,6 +184,7 @@ export class ConfirmInvoiceModalComponent implements OnInit {
   openSelectModal() {
     this.modalService
       .openModal(SelectInvoiceComponent, {
+        data: { final: true },
         width: '80%',
         height: '90%',
       })
@@ -193,20 +198,26 @@ export class ConfirmInvoiceModalComponent implements OnInit {
             .subscribe((data: any) => {
               console.log(data);
               this.initForm();
-              this.finalInvoiceForm.patchValue(data.invoiceMaster);
-              this.finalInvoiceForm
-                .get('invoiceId')
-                ?.patchValue(data.invoiceMaster.invoiceId);
-              this.finalInvoiceForm.patchValue({
-                consigneeName: data.invoiceMaster.customerName,
-                consigneeAddress: data.invoiceMaster.customerAddress,
-                consigneeCity: data.invoiceMaster.customerCity,
-                consigneeZip: data.invoiceMaster.customerZip,
-                consigneeState: data.invoiceMaster.customerState,
-                consigneeCountry: data.invoiceMaster.customerCountry,
-              });
-              if (data.finalInvoice)
-                this.finalInvoiceForm.patchValue(data.finalInvoice);
+              if (data.invoiceMaster?.length) {
+                data.invoiceMaster = data.invoiceMaster[0];
+                this.finalInvoiceForm.patchValue(data.invoiceMaster);
+
+                this.finalInvoiceForm
+                  .get('invoiceId')
+                  ?.patchValue(data.invoiceMaster.invoiceId);
+                this.finalInvoiceForm.patchValue({
+                  consigneeName: data.invoiceMaster.customerName,
+                  consigneeAddress: data.invoiceMaster.customerAddress,
+                  consigneeCity: data.invoiceMaster.customerCity,
+                  consigneeZip: data.invoiceMaster.customerZip,
+                  consigneeState: data.invoiceMaster.customerState,
+                  consigneeCountry: data.invoiceMaster.customerCountry,
+                });
+              }
+              this.invoiceBottomNotes = data.invoiceBottomNote;
+              if (data.finalInvoice?.length)
+                this.finalInvoiceForm.patchValue(data.finalInvoice[0]);
+
               // this.finalInvoiceForm.get('invoiceId')?.disable();
               // this.invoiceBottomNotes = data.invoiceBottomNote;
             });
@@ -249,17 +260,22 @@ export class ConfirmInvoiceModalComponent implements OnInit {
     }
 
     if (isClose) this.dialogRef.close(false);
+    const date = this.finalInvoiceForm.get('invoiceDate')?.value
+      ? new Date(this.finalInvoiceForm.get('invoiceDate')?.value)
+          .toISOString()
+          .split('T')[0]
+      : '';
     console.log({
-      finalinvoice: this.finalInvoiceForm.value,
+      finalinvoice: { ...this.finalInvoiceForm.value, invoiceDate: date },
       invoiceBottomNotes: this.invoiceBottomNotes,
     });
     this.masterService
       .invoke(
-        this.finalInvoiceForm.get('invoiceId')?.value
-          ? 'addFinalInvoice'
+        this.finalInvoiceForm.get('id')?.value
+          ? 'updateFinalInvoice'
           : 'addFinalInvoice',
         {
-          invoice: this.finalInvoiceForm.value,
+          invoice: { ...this.finalInvoiceForm.value, invoiceDate: date },
           invoiceBottomNotes: this.invoiceBottomNotes,
         }
       )

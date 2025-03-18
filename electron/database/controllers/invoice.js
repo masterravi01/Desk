@@ -441,265 +441,284 @@ function deleteInvoice(invoiceId) {
   });
 }
 
-function getInvoice(invoiceId) {
-  return new Promise((resolve, reject) => {
-    db.serialize(() => {
-      const invoiceMasterQuery = `
-          SELECT * FROM invoiceMaster WHERE invoiceId = ?
-        `;
+async function getInvoice(invoiceId) {
+  try {
+    const queries = {
+      invoiceMasterQuery: `SELECT * FROM invoiceMaster WHERE invoiceId = ?`,
+      invoiceDetailsQuery: `SELECT * FROM invoiceDetails WHERE invoiceId = ?`,
+      invoiceInstructionQuery: `SELECT * FROM invoiceInstruction WHERE invoiceId = ?`,
+      invoiceFinalQuery: `SELECT * FROM finalinvoice WHERE invoiceId = ?`,
+      invoiceBottomNoteQuery: `SELECT * FROM invoiceBottomNote WHERE invoiceId = ?`,
+    };
 
-      const invoiceDetailsQuery = `
-          SELECT * FROM invoiceDetails WHERE invoiceId = ?
-        `;
+    // Run queries in parallel for better performance
+    const [
+      invoiceMaster,
+      invoiceDetails,
+      invoiceInstruction,
+      finalInvoice,
+      invoiceBottomNote,
+    ] = await Promise.all([
+      runQuery(queries.invoiceMasterQuery, [invoiceId]),
+      runQuery(queries.invoiceDetailsQuery, [invoiceId]),
+      runQuery(queries.invoiceInstructionQuery, [invoiceId]),
+      runQuery(queries.invoiceFinalQuery, [invoiceId]),
+      runQuery(queries.invoiceBottomNoteQuery, [invoiceId]),
+    ]);
 
-      const invoiceInstructionQuery = `
-          SELECT * FROM invoiceInstruction WHERE invoiceId = ?
-        `;
-      const invoicefinalQuery = `
-        SELECT * FROM finalinvoice WHERE invoiceId = ?
-      `;
+    if (!invoiceMaster) {
+      throw new Error(`Invoice with ID ${invoiceId} not found`);
+    }
 
-      db.get(invoiceMasterQuery, [invoiceId], (err, invoiceMaster) => {
-        if (err) return reject(`Error fetching invoice master: ${err.message}`);
-        if (!invoiceMaster)
-          return reject(`Invoice with ID ${invoiceId} not found`);
-
-        db.all(invoiceDetailsQuery, [invoiceId], (err, invoiceDetails) => {
-          if (err)
-            return reject(`Error fetching invoice details: ${err.message}`);
-
-          db.all(
-            invoiceInstructionQuery,
-            [invoiceId],
-            (err, invoiceInstruction) => {
-              if (err)
-                return reject(
-                  `Error fetching invoice instructions: ${err.message}`
-                );
-              db.all(invoicefinalQuery, [invoiceId], (err, finalInvoice) => {
-                if (err)
-                  return reject(`Error fetching invoice final: ${err.message}`);
-                resolve({
-                  invoiceMaster,
-                  invoiceDetails,
-                  invoiceInstruction,
-                  finalInvoice,
-                });
-              });
-            }
-          );
-        });
-      });
-    });
-  });
+    return {
+      invoiceMaster,
+      invoiceDetails,
+      invoiceInstruction,
+      finalInvoice,
+      invoiceBottomNote,
+    };
+  } catch (error) {
+    console.error(`❌ Error fetching invoice data: ${error.message}`);
+    throw new Error(`Failed to fetch invoice: ${error.message}`);
+  }
 }
 
 // Add a new final invoice
-function addFinalInvoice({ invoice, invoiceBottomNotes = [] }) {
-  return new Promise((resolve, reject) => {
-    db.serialize(() => {
-      db.run("BEGIN TRANSACTION");
-      const query = `
+async function addFinalInvoice({ invoice, invoiceBottomNotes = [] }) {
+  try {
+    await runQuery("BEGIN TRANSACTION");
+    console.log(invoice, invoiceBottomNotes);
+    const query = `
       INSERT INTO finalinvoice (
-        customerName, buyerName, buyerAddress, buyerCity, buyerZip, buyerState, buyerCountry,
-        consigneeName, consigneeAddress, consigneeCity, consigneeZip, consigneeState, consigneeCountry,
-        bankName, bankAddress, bankCity, bankZip, bankState, bankCountry, bankAsConsignee,
-        termsOfDp, deliveryTerms, precarriage, vesselNo, portOfDischarge, originOfGoods,
-        receiptPlace, loadingPort, finalDestination, dischargeTerms, privateRemark, bottomNote,
-        bankShortName, branchName, city, panNo, adCode, acCode, iec, comment,
-        invoiceDate, finalInvoice
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?,?)
+        invoiceId, customerName, buyerName, buyerAddress, buyerCity, buyerZip,
+        buyerState, buyerCountry, consigneeName, consigneeAddress, consigneeCity,
+        consigneeZip, consigneeState, consigneeCountry, bankName, bankAddress,
+        bankCity, bankZip, bankState, bankCountry, bankAsConsignee, termsOfDp,
+        deliveryTerms, precarriage, vesselNo, portOfDischarge, originOfGoods,
+        receiptPlace, loadingPort, finalDestination, dischargeTerms, privateRemark,
+        bottomNote, bankShortName, branchName, city, panNo, adCode, acCode, iec,
+        comment, invoiceDate, finalInvoice
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?,?)
     `;
-      runQuery(query, [
-        invoice.customerName,
-        invoice.buyerName,
-        invoice.buyerAddress,
-        invoice.buyerCity,
-        invoice.buyerZip,
-        invoice.buyerState,
-        invoice.buyerCountry,
-        invoice.consigneeName,
-        invoice.consigneeAddress,
-        invoice.consigneeCity,
-        invoice.consigneeZip,
-        invoice.consigneeState,
-        invoice.consigneeCountry,
-        invoice.bankName,
-        invoice.bankAddress,
-        invoice.bankCity,
-        invoice.bankZip,
-        invoice.bankState,
-        invoice.bankCountry,
-        invoice.bankAsConsignee,
-        invoice.termsOfDp,
-        invoice.deliveryTerms,
-        invoice.precarriage,
-        invoice.vesselNo,
-        invoice.portOfDischarge,
-        invoice.originOfGoods,
-        invoice.receiptPlace,
-        invoice.loadingPort,
-        invoice.finalDestination,
-        invoice.dischargeTerms,
-        invoice.privateRemark,
-        invoice.bottomNote,
-        invoice.bankShortName,
-        invoice.branchName,
-        invoice.city,
-        invoice.panNo,
-        invoice.adCode,
-        invoice.acCode,
-        invoice.iec,
-        invoice.comment,
-        invoice.invoiceDate,
-        invoice.finalInvoice,
-      ])
-        .then((invoiceId) => {
-          Promise.all([
-            runQuery(
-              "SELECT bottomNoteId FROM invoiceBottomNote WHERE invoiceId = ?",
-              [invoiceId]
-            ).then((data) => (Array.isArray(data) ? data : [])),
-          ]).then(([oldBottomnotes]) => {
-            const oldBottomnoteIds = oldBottomnotes.map((i) => i.bottomNoteId);
-            const newBottomnoteIds = invoiceBottomNotes
-              .map((i) => i.bottomNoteId)
-              .filter(Boolean);
 
-            const deleteBottomnotePromises = oldBottomnoteIds
-              .filter(
-                (oldBottomNoteId) => !newBottomnoteIds.includes(oldBottomNoteId)
-              )
-              .map((oldBottomNoteId) => {
-                console.log(oldBottomNoteId);
-                return runQuery(
-                  "DELETE FROM invoiceBottomNote WHERE invoiceId = ? AND bottomNoteId = ?",
-                  [invoiceId, oldBottomNoteId]
-                );
-              });
+    await runQuery(query, [
+      invoice.invoiceId,
+      invoice.customerName,
+      invoice.buyerName,
+      invoice.buyerAddress,
+      invoice.buyerCity,
+      invoice.buyerZip,
+      invoice.buyerState,
+      invoice.buyerCountry,
+      invoice.consigneeName,
+      invoice.consigneeAddress,
+      invoice.consigneeCity,
+      invoice.consigneeZip,
+      invoice.consigneeState,
+      invoice.consigneeCountry,
+      invoice.bankName,
+      invoice.bankAddress,
+      invoice.bankCity,
+      invoice.bankZip,
+      invoice.bankState,
+      invoice.bankCountry,
+      invoice.bankAsConsignee,
+      invoice.termsOfDp,
+      invoice.deliveryTerms,
+      invoice.precarriage,
+      invoice.vesselNo,
+      invoice.portOfDischarge,
+      invoice.originOfGoods,
+      invoice.receiptPlace,
+      invoice.loadingPort,
+      invoice.finalDestination,
+      invoice.dischargeTerms,
+      invoice.privateRemark,
+      invoice.bottomNote,
+      invoice.bankShortName,
+      invoice.branchName,
+      invoice.city,
+      invoice.panNo,
+      invoice.adCode,
+      invoice.acCode,
+      invoice.iec,
+      invoice.comment,
+      invoice.invoiceDate,
+      invoice.finalInvoice,
+    ]);
 
-            // Insert or update records
+    const insertBottomNotePromises = Array.isArray(invoiceBottomNotes)
+      ? invoiceBottomNotes.map((bottomnote) =>
+          runQuery(
+            `INSERT INTO invoiceBottomNote (
+              invoiceId, bottomNoteId, bottomNote
+            ) VALUES (?, ?, ?)`,
 
-            const upsertBottomNotePromises = (invoiceBottomNotes || []).map(
-              (bottomnote) =>
-                bottomnote.bottomNoteId && bottomnote.invoiceId
-                  ? runQuery(
-                      `UPDATE invoiceBottomNote SET invoiceBottomNote = ?
-                    WHERE invoiceId = ? AND bottomNoteId = ?`,
-                      [
-                        bottomnote.bottomNote ?? null,
-                        invoiceId,
-                        bottomnote.bottomNoteId ?? null,
-                      ]
-                    )
-                  : runQuery(
-                      `INSERT INTO invoiceBottomNote (
-                      invoiceId, bottomNoteId, bottomNote
-                    ) VALUES (?, ?, ?)`,
-                      [
-                        invoiceId,
-                        bottomnote.bottomNoteId ?? null,
-                        bottomnote.bottomNote ?? null,
-                      ]
-                    )
-            );
+            [
+              invoice.invoiceId,
+              bottomnote.bottomNoteId ?? null,
+              bottomnote.bottomNote ?? null,
+            ]
+          )
+        )
+      : [];
 
-            return Promise.all([
-              ...deleteBottomnotePromises,
-              ...upsertBottomNotePromises,
-            ])
-              .then(() => {
-                db.run("COMMIT", (commitErr) => {
-                  if (commitErr)
-                    return reject(`Commit Error: ${commitErr.message}`);
-                  resolve({
-                    invoiceId,
-                    message: "Invoice updated successfully!",
-                  });
-                });
-              })
-              .catch((error) => {
-                db.run("ROLLBACK", () =>
-                  reject(`Transaction failed: ${error}`)
-                );
-              });
-          });
-        })
-        .catch((error) => {
-          db.run("ROLLBACK", () => reject(`Transaction failed: ${error}`));
-        });
-    });
-  });
+    await Promise.all(insertBottomNotePromises);
+
+    await runQuery("COMMIT");
+
+    return {
+      invoiceId: invoice.invoiceId,
+      message: "Invoice final added successfully!",
+    };
+  } catch (error) {
+    await runQuery("ROLLBACK");
+    throw new Error(`Transaction failed: ${error.message}`);
+  }
 }
 
 // Update an existing final invoice
-function updateFinalInvoice({ invoice, invoiceBottomNotes }) {
-  return new Promise((resolve, reject) => {
+async function updateFinalInvoice({ invoice, invoiceBottomNotes = [] }) {
+  try {
+    await runQuery("BEGIN TRANSACTION");
+
+    // ✅ Step 1: Update Invoice Details
     const query = `
-      UPDATE finalinvoice SET 
-        customerName = ?, buyerName = ?, buyerAddress = ?, buyerCity = ?, buyerZip = ?, buyerState = ?,
-        buyerCountry = ?, consigneeName = ?, consigneeAddress = ?, consigneeCity = ?, consigneeZip = ?,
-        consigneeState = ?, consigneeCountry = ?, bankName = ?, bankAddress = ?, bankCity = ?,
-        bankZip = ?, bankState = ?, bankCountry = ?, bankAsConsignee = ?, termsOfDp = ?,
-        deliveryTerms = ?, precarriage = ?, vesselNo = ?, portOfDischarge = ?, originOfGoods = ?,
-        receiptPlace = ?, loadingPort = ?, finalDestination = ?, dischargeTerms = ?, privateRemark = ?,
-        bottomNote = ?, bankShortName = ?, branchName = ?, city = ?, panNo = ?, adCode = ?,
-        acCode = ?, iec = ?, comment = ?, invoiceDate = ?, finalInvoice = ?
+      UPDATE finalinvoice SET
+        customerName = ?, buyerName = ?, buyerAddress = ?, buyerCity = ?, buyerZip = ?, 
+        buyerState = ?, buyerCountry = ?, consigneeName = ?, consigneeAddress = ?, 
+        consigneeCity = ?, consigneeZip = ?, consigneeState = ?, consigneeCountry = ?, 
+        bankName = ?, bankAddress = ?, bankCity = ?, bankZip = ?, bankState = ?, 
+        bankCountry = ?, bankAsConsignee = ?, termsOfDp = ?, deliveryTerms = ?, 
+        precarriage = ?, vesselNo = ?, portOfDischarge = ?, originOfGoods = ?, 
+        receiptPlace = ?, loadingPort = ?, finalDestination = ?, dischargeTerms = ?, 
+        privateRemark = ?, bottomNote = ?, bankShortName = ?, branchName = ?, city = ?, 
+        panNo = ?, adCode = ?, acCode = ?, iec = ?, comment = ?, invoiceDate = ?, 
+        finalInvoice = ?
       WHERE invoiceId = ?
     `;
-    db.run(
-      query,
-      [
-        invoice.customerName,
-        invoice.buyerName,
-        invoice.buyerAddress,
-        invoice.buyerCity,
-        invoice.buyerZip,
-        invoice.buyerState,
-        invoice.buyerCountry,
-        invoice.consigneeName,
-        invoice.consigneeAddress,
-        invoice.consigneeCity,
-        invoice.consigneeZip,
-        invoice.consigneeState,
-        invoice.consigneeCountry,
-        invoice.bankName,
-        invoice.bankAddress,
-        invoice.bankCity,
-        invoice.bankZip,
-        invoice.bankState,
-        invoice.bankCountry,
-        invoice.bankAsConsignee,
-        invoice.termsOfDp,
-        invoice.deliveryTerms,
-        invoice.precarriage,
-        invoice.vesselNo,
-        invoice.portOfDischarge,
-        invoice.originOfGoods,
-        invoice.receiptPlace,
-        invoice.loadingPort,
-        invoice.finalDestination,
-        invoice.dischargeTerms,
-        invoice.privateRemark,
-        invoice.bottomNote,
-        invoice.bankShortName,
-        invoice.branchName,
-        invoice.city,
-        invoice.panNo,
-        invoice.adCode,
-        invoice.acCode,
-        invoice.iec,
-        invoice.comment,
-        invoice.invoiceDate,
-        invoice.finalInvoice,
-        invoice.invoiceId,
-      ],
-      function (err) {
-        if (err) reject(err);
-        else resolve({ changes: this.changes });
-      }
+
+    await runQuery(query, [
+      invoice.customerName ?? null,
+      invoice.buyerName ?? null,
+      invoice.buyerAddress ?? null,
+      invoice.buyerCity ?? null,
+      invoice.buyerZip ?? null,
+      invoice.buyerState ?? null,
+      invoice.buyerCountry ?? null,
+      invoice.consigneeName ?? null,
+      invoice.consigneeAddress ?? null,
+      invoice.consigneeCity ?? null,
+      invoice.consigneeZip ?? null,
+      invoice.consigneeState ?? null,
+      invoice.consigneeCountry ?? null,
+      invoice.bankName ?? null,
+      invoice.bankAddress ?? null,
+      invoice.bankCity ?? null,
+      invoice.bankZip ?? null,
+      invoice.bankState ?? null,
+      invoice.bankCountry ?? null,
+      invoice.bankAsConsignee ?? null,
+      invoice.termsOfDp ?? null,
+      invoice.deliveryTerms ?? null,
+      invoice.precarriage ?? null,
+      invoice.vesselNo ?? null,
+      invoice.portOfDischarge ?? null,
+      invoice.originOfGoods ?? null,
+      invoice.receiptPlace ?? null,
+      invoice.loadingPort ?? null,
+      invoice.finalDestination ?? null,
+      invoice.dischargeTerms ?? null,
+      invoice.privateRemark ?? null,
+      invoice.bottomNote ?? null,
+      invoice.bankShortName ?? null,
+      invoice.branchName ?? null,
+      invoice.city ?? null,
+      invoice.panNo ?? null,
+      invoice.adCode ?? null,
+      invoice.acCode ?? null,
+      invoice.iec ?? null,
+      invoice.comment ?? null,
+      invoice.invoiceDate ?? null,
+      invoice.finalInvoice ?? null,
+      invoice.invoiceId ?? null,
+    ]);
+
+    // ✅ Step 2: Handle Bottom Notes
+    // Get existing bottom notes
+    const existingBottomNotes = await runQuery(
+      `SELECT bottomNoteId FROM invoiceBottomNote WHERE invoiceId = ?`,
+      [invoice.invoiceId]
     );
-  });
+
+    const existingNoteIds = existingBottomNotes.map(
+      (note) => note.bottomNoteId
+    );
+
+    // Filter notes to delete (those that are no longer present)
+    const notesToDelete = existingNoteIds.filter(
+      (oldNoteId) =>
+        !invoiceBottomNotes.some(
+          (newNote) => newNote.bottomNoteId === oldNoteId
+        )
+    );
+
+    // Delete old notes if needed
+    const deletePromises = notesToDelete.map((noteId) =>
+      runQuery(`DELETE FROM invoiceBottomNote WHERE bottomNoteId = ?`, [noteId])
+    );
+
+    // Upsert (Insert or Update) Bottom Notes
+    const upsertPromises = invoiceBottomNotes.map((bottomnote) =>
+      runQuery(
+        `INSERT INTO invoiceBottomNote (
+          invoiceId, bottomNoteId, bottomNote
+        ) VALUES (?, ?, ?)
+        ON CONFLICT(invoiceId,bottomNoteId) DO UPDATE SET
+          bottomNote = excluded.bottomNote`,
+        [
+          invoice.invoiceId,
+          bottomnote.bottomNoteId ?? null,
+          bottomnote.bottomNote ?? null,
+        ]
+      )
+    );
+
+    // Run both delete and upsert operations
+    await Promise.all([...deletePromises, ...upsertPromises]);
+
+    await runQuery("COMMIT");
+
+    return {
+      invoiceId: invoice.invoiceId,
+      message: "Invoice updated successfully!",
+    };
+  } catch (error) {
+    await runQuery("ROLLBACK");
+    throw new Error(`Transaction failed: ${error.message}`);
+  }
+}
+
+async function deleteFinalInvoice(invoiceId) {
+  try {
+    await runQuery("BEGIN TRANSACTION");
+
+    // Step 1: Delete from finalinvoice
+    await runQuery("DELETE FROM finalinvoice WHERE invoiceId = ?", [invoiceId]);
+
+    // Step 2: Delete from invoiceBottomNote
+    await runQuery("DELETE FROM invoiceBottomNote WHERE invoiceId = ?", [
+      invoiceId,
+    ]);
+
+    // Step 3: Commit the transaction
+    await runQuery("COMMIT");
+
+    return { message: "Invoice final deleted successfully!" };
+  } catch (error) {
+    await runQuery("ROLLBACK");
+    throw new Error(`Transaction failed: ${error.message}`);
+  }
 }
 
 module.exports = {
@@ -709,4 +728,5 @@ module.exports = {
   getInvoice,
   addFinalInvoice,
   updateFinalInvoice,
+  deleteFinalInvoice,
 };
