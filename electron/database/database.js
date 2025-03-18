@@ -381,7 +381,8 @@ INSERT INTO invoiceInstruction (
 CREATE TABLE invoiceBottomNote (
   invoiceId INTEGER DEFAULT NULL,
   bottomNoteId INTEGER DEFAULT NULL,
-  bottomNote TEXT DEFAULT NULL
+  bottomNote TEXT DEFAULT NULL,
+  PRIMARY KEY (invoiceId, bottomNoteId)
 );
 `,
   },
@@ -391,7 +392,8 @@ CREATE TABLE invoiceBottomNote (
     script: `
       DROP TABLE IF EXISTS finalinvoice;
       CREATE TABLE finalinvoice (
-          invoiceId INTEGER PRIMARY KEY AUTOINCREMENT,
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          invoiceId INTEGER DEFAULT NULL,
           customerName TEXT DEFAULT NULL,
           buyerName TEXT DEFAULT NULL,
           buyerAddress TEXT DEFAULT NULL,
@@ -440,6 +442,7 @@ CREATE TABLE invoiceBottomNote (
   },
 ];
 
+// db.run("DELETE FROM migrations WHERE version = ?", [13]);
 // Ensure Migrations Table Exists
 db.run(`
       CREATE TABLE IF NOT EXISTS migrations (
