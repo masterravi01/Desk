@@ -31,7 +31,7 @@ To get more help on the Angular CLI use `ng help` or go check out the [Angular C
 To run electron app run below command in root directory
 
 1. npm run start
-2. npm run electron
+2. npm run electron OR Run debugger attach with Main
 
 ## Word to pdf convert
 

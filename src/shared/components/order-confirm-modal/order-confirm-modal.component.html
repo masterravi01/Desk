@@ -809,7 +809,7 @@
       class="btn"
       mat-raised-button
       mat-button
-      [disabled]="!invoiceForm?.get('invoiceId')?.value"
+      [disabled]="!invoiceForm.get('invoiceId')?.value"
       (click)="onDelete()"
     >
       Delete

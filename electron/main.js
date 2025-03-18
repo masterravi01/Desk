@@ -95,11 +95,13 @@ function createWindow() {
       submenu: [
         {
           label: "Order Confirmation",
-          click: () => mainWindow.webContents.send("navigate", "/home"),
+          click: () =>
+            mainWindow.webContents.send("navigate", "/orderConfirmReport"),
         },
         {
           label: "Final Invoice",
-          click: () => mainWindow.webContents.send("navigate", "/products"),
+          click: () =>
+            mainWindow.webContents.send("navigate", "/finalInvoiceReport"),
         },
       ],
     },

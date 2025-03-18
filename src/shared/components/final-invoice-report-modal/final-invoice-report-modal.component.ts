@@ -1,0 +1,104 @@
+import {
+  Component,
+  inject,
+} from '@angular/core';
+import {
+  MAT_DIALOG_DATA,
+  MatDialogRef,
+  MatDialogModule,
+  MatDialogActions,
+  MatDialogClose,
+  MatDialogContent,
+  MatDialogTitle,
+} from '@angular/material/dialog';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatRadioModule } from '@angular/material/radio';
+import { MatTabsModule } from '@angular/material/tabs';
+import { MatTableModule } from '@angular/material/table';
+import { MatButtonModule } from '@angular/material/button';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { ModalService } from '../../../core/services/modal.service';
+import { MasterService } from '../../../core/services/master.service';
+import {
+  FormBuilder,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+  FormsModule
+} from '@angular/forms';
+import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
+import { SelectInvoiceComponent } from '../select-invoice/select-invoice.component';
+
+@UntilDestroy()
+
+@Component({
+  selector: 'app-final-invoice-report-modal',
+  standalone: true,
+  imports: [
+    FormsModule,
+    MatButtonModule,
+    MatButtonModule,
+    MatDialogActions,
+    MatDialogClose,
+    MatDialogTitle,
+    MatDialogContent,
+    MatTableModule,
+    MatTabsModule,
+    MatDividerModule,
+    MatRadioModule
+  ],
+  templateUrl: './final-invoice-report-modal.component.html',
+  styleUrl: './final-invoice-report-modal.component.css'
+})
+export class FinalInvoiceReportModalComponent {
+  readonly dialogRef = inject(MatDialogRef<FinalInvoiceReportModalComponent>);
+  orderForm!: FormGroup;
+  selectedFormat: string = 'ms-word';
+  reportType: string = 'custom';
+
+  constructor(
+    private modalService: ModalService,
+    private fb: FormBuilder,
+    private masterService: MasterService
+  ) { }
+
+  ngOnInit(): void {
+    this.initForm();
+  }
+
+  initForm() {
+    this.orderForm = this.fb.group({
+      customerId: [''],
+      customerName: [''],
+      invoiceId: [''],
+      invoicePiNo: [''],
+    });
+  }
+
+  onCancel(): void {
+    this.dialogRef.close(false);
+  }
+
+  openSelectModal() {
+    this.modalService
+      .openModal(SelectInvoiceComponent, {
+        width: '80%',
+        height: '90%',
+      })
+      .afterClosed()
+      .subscribe((result) => {
+        if (result && result.invoiceId) {
+          console.log(result);
+          this.masterService
+            .invoke('getInvoice', result.invoiceId)
+            .pipe(untilDestroyed(this))
+            .subscribe((data: any) => {
+              console.log(data);
+              this.initForm();
+              this.orderForm.patchValue(data.invoiceMaster);
+            });
+        }
+      });
+  }
+
+}
