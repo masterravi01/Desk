@@ -1,0 +1,32 @@
+<div style="margin: 0 20px">
+  <div class="form-field">
+    <mat-form-field appearance="outline">
+      <input matInput (keyup)="applyFilter($event)" placeholder="Search Here" />
+    </mat-form-field>
+  </div>
+  <div class="table-container" style="margin: 0">
+    <table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8">
+      <!-- Dynamic Column Generation -->
+      <ng-container
+        *ngFor="let column of displayedColumns"
+        [matColumnDef]="column"
+      >
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>
+          {{
+            tableHeaders[column] ? tableHeaders[column] : (column | titlecase)
+          }}
+        </th>
+        <td mat-cell *matCellDef="let element">{{ element[column] }}</td>
+      </ng-container>
+
+      <!-- Header and Row Definitions -->
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr
+        mat-row
+        *matRowDef="let row; columns: displayedColumns"
+        (click)="rowClick.emit(row)"
+        class="clickable-row"
+      ></tr>
+    </table>
+  </div>
+</div>
