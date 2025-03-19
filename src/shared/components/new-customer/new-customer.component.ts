@@ -16,6 +16,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MasterService } from '../../../core/services/master.service';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
+import { MatCardModule } from '@angular/material/card';
 
 @UntilDestroy()
 @Component({
@@ -31,6 +32,7 @@ import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
     ReactiveFormsModule,
     MatInputModule,
     MatButtonModule,
+    MatCardModule,
   ],
   templateUrl: './new-customer.component.html',
   styleUrl: './new-customer.component.css',
@@ -42,7 +44,6 @@ export class NewCustomerComponent {
     private fb: FormBuilder,
     private dialogRef: MatDialogRef<NewCustomerComponent>,
     private masterService: MasterService
-
   ) {
     this.customerForm = this.fb.group({
       id: [''],
@@ -76,14 +77,12 @@ export class NewCustomerComponent {
       bankState: [''],
       bankZip: [''],
 
-      bankCountry: ['']
+      bankCountry: [''],
     });
-
 
     if (this.data?.id) {
       this.customerForm.patchValue(this.data);
     }
-
   }
 
   onCancel() {
@@ -91,7 +90,9 @@ export class NewCustomerComponent {
   }
 
   onSave() {
-    let action = this.customerForm.get('id')?.value ? 'updateCustomer' : 'addCustomer';
+    let action = this.customerForm.get('id')?.value
+      ? 'updateCustomer'
+      : 'addCustomer';
     this.masterService
       .invoke(action, this.customerForm.value)
       .pipe(untilDestroyed(this))

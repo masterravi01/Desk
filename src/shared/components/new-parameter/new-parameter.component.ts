@@ -44,13 +44,9 @@ import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 })
 export class NewParameterComponent {
   parameterForm: FormGroup;
-
+  readonly dialogRef = inject(MatDialogRef<NewParameterComponent>);
   readonly data = inject<any>(MAT_DIALOG_DATA);
-  constructor(
-    private fb: FormBuilder,
-    private dialogRef: MatDialogRef<NewParameterComponent>,
-    private masterService: MasterService
-  ) {
+  constructor(private fb: FormBuilder, private masterService: MasterService) {
     this.parameterForm = this.fb.group({
       id: [0],
       parameterName: [''],
@@ -75,11 +71,20 @@ export class NewParameterComponent {
       .pipe(untilDestroyed(this))
       .subscribe((data) => {
         console.log(data);
+        this.dialogRef.close(true);
       });
-
-    this.dialogRef.close(this.parameterForm.value);
   }
   onDelete() {
-    this.dialogRef.close({ ...this.parameterForm.value, delete: true });
+    if (this.parameterForm.get('id')?.value) {
+      this.masterService
+        .invoke('deleteSystemParameter', this.parameterForm.get('id')?.value)
+        .pipe(untilDestroyed(this))
+        .subscribe((data) => {
+          console.log(data);
+          this.dialogRef.close(true);
+        });
+    } else {
+      this.dialogRef.close(true);
+    }
   }
 }

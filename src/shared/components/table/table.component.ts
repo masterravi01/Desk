@@ -17,6 +17,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
+import { CamelCaseToTitlePipe } from '../../pipes/camel-case-to-title.pipe';
 
 @Component({
   selector: 'app-table',
@@ -30,6 +31,7 @@ import { MatTableDataSource, MatTableModule } from '@angular/material/table';
     MatInputModule,
     CommonModule,
     TitleCasePipe,
+    CamelCaseToTitlePipe,
   ],
   templateUrl: './table.component.html',
   styleUrls: ['./table.component.css'],
@@ -45,25 +47,7 @@ export class TableComponent implements OnInit, OnChanges, AfterViewInit {
   tableHeaders: any = {
     BID: 'ID',
     id: 'ID',
-    currencyName: 'Currency Name',
-    currencyChar: 'Currency Char',
-    currencyCountry: 'Currency Country',
-    contactPerson: 'Contact Person',
-    otherPhone: 'Other Phone',
-    buyerAddress: 'Buyer Address',
-    buyerCity: 'Buyer City',
-    buyerState: 'Buyer State',
-    buyerZipcode: 'Buyer Zipcode',
-    buyerCountry: 'Buyer Country',
-    bankName: 'Bank Name',
-    bankBranch: 'Bank Branch',
-    bankCity: 'bank City',
-    bankAddress: 'Bank Address',
-    bankState: 'Bank State',
-    bankZip: 'Bank Zip',
-    bankCountry: 'Bank Country',
     bottomNoteId: 'ID',
-    bottomNote: 'Bottom Note',
   };
 
   ngOnInit() {

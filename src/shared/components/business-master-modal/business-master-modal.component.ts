@@ -167,8 +167,12 @@ export class BusinessMasterModalComponent {
   openCustomerModal(data?: any) {
     this.modalService
       .openModal(NewCustomerComponent, {
-        width: '80%',
+        width: '95vw',
         height: '90%',
+        maxWidth: '95vw',
+        position: {
+          top: '20px',
+        },
         data,
       })
       .afterClosed()
@@ -180,7 +184,7 @@ export class BusinessMasterModalComponent {
     this.modalService
       .openModal(ContainerModalComponent, {
         width: '50%',
-        height: '90%',
+        minHeight: '340px',
         position: {
           top: '40px',
         },
@@ -209,7 +213,7 @@ export class BusinessMasterModalComponent {
   openBottomNoteModal(note?: any) {
     const dialogRef = this.modalService.openModal(SingleParamenterComponent, {
       width: '50%',
-      height: '300px',
+      minHeight: '250px',
       position: { top: '40px' },
       data: {
         title: note ? 'Edit Bottom Note' : 'New Bottom Note',
@@ -250,7 +254,7 @@ export class BusinessMasterModalComponent {
   openInstructionModal(instruction?: any) {
     const dialogRef = this.modalService.openModal(SingleParamenterComponent, {
       width: '50%',
-      height: '300px',
+      minHeight: '200px',
       position: { top: '40px' },
       data: {
         title: instruction ? 'Edit Instruction' : 'New Instruction',

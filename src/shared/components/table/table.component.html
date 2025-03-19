@@ -8,23 +8,31 @@
     <table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8">
       <!-- Dynamic Column Generation -->
       <ng-container
-        *ngFor="let column of displayedColumns"
+        *ngFor="let column of displayedColumns; let first = first"
         [matColumnDef]="column"
       >
         <th mat-header-cell *matHeaderCellDef mat-sort-header>
           {{
-            tableHeaders[column] ? tableHeaders[column] : (column | titlecase)
+            tableHeaders[column]
+              ? tableHeaders[column]
+              : (column | camelCaseToTitle)
           }}
         </th>
-        <td mat-cell *matCellDef="let element">{{ element[column] }}</td>
+        <td
+          mat-cell
+          *matCellDef="let element"
+          [ngClass]="{ 'clickable-cell': first }"
+          (click)="first && rowClick.emit(element)"
+        >
+          {{ element[column] }}
+        </td>
       </ng-container>
 
       <!-- Header and Row Definitions -->
-      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
       <tr
         mat-row
         *matRowDef="let row; columns: displayedColumns"
-        (click)="rowClick.emit(row)"
         class="clickable-row"
       ></tr>
     </table>

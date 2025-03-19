@@ -1,11 +1,5 @@
-<!-- <h2 mat-dialog-title>{{ data.title }}</h2>
-<mat-dialog-content>{{ data.message }}</mat-dialog-content>
-<mat-dialog-actions align="end">
-  <button class='btn' mat-button (click)="onCancel()">Cancel</button>
-  <button class='btn' mat-button color="warn" (click)="onConfirm()">Confirm</button>
-</mat-dialog-actions> -->
 <div class="d-flex">
-  <h5 mat-dialog-title class="h5">System Parameter</h5>
+  <h6 mat-dialog-title class="h5">System Parameter</h6>
   <button
     class="btn"
     mat-button
@@ -298,46 +292,12 @@
           New Parameter
         </button>
       </div>
-
-      <div class="table-container">
-        <table
-          mat-table
-          [dataSource]="parameters"
-          class="mat-elevation-z8 table"
-        >
-          <ng-container matColumnDef="id">
-            <th mat-header-cell *matHeaderCellDef>Id</th>
-            <td mat-cell *matCellDef="let element">{{ element.id }}</td>
-          </ng-container>
-
-          <ng-container matColumnDef="parameterName">
-            <th mat-header-cell *matHeaderCellDef>Parameter Name</th>
-            <td mat-cell *matCellDef="let element">
-              <a mat-button (click)="openParameterModal(element)">
-                {{ element.parameterName }}</a
-              >
-            </td>
-          </ng-container>
-          <ng-container matColumnDef="parameterValue">
-            <th mat-header-cell *matHeaderCellDef>Parameter Value</th>
-            <td mat-cell *matCellDef="let element">
-              {{ element.parameterValue }}
-            </td>
-          </ng-container>
-
-          <tr
-            mat-header-row
-            *matHeaderRowDef="['id', 'parameterName', 'parameterValue']"
-          ></tr>
-          <tr
-            mat-row
-            *matRowDef="
-              let row;
-              columns: ['id', 'parameterName', 'parameterValue']
-            "
-          ></tr>
-        </table>
-      </div>
+      <app-table
+        [dataSource]="parameters"
+        [displayedColumns]="['id', 'parameterName', 'parameterValue']"
+        (rowClick)="openParameterModal($event)"
+      >
+      </app-table>
     </div>
   </mat-tab>
 </mat-tab-group>
