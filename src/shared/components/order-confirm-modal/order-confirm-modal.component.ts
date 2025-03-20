@@ -29,24 +29,18 @@ import {
 } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
-
-import { NewCustomerComponent } from '../new-customer/new-customer.component';
 import { ModalService } from '../../../core/services/modal.service';
-import { NewCurrencyModalComponent } from '../new-currency-modal/new-currency-modal.component';
 import { MasterService } from '../../../core/services/master.service';
 import { MatCardModule } from '@angular/material/card';
 import { provideNativeDateAdapter } from '@angular/material/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatRadioModule } from '@angular/material/radio';
-import {
-  CommonModule,
-  DatePipe,
-  SlicePipe,
-  TitleCasePipe,
-} from '@angular/common';
+import { CommonModule, DatePipe, TitleCasePipe } from '@angular/common';
 import { SelectCustomerComponent } from '../select-customer/select-customer.component';
 import { SelectInstructionComponent } from '../select-instruction/select-instruction.component';
 import { SelectInvoiceComponent } from '../select-invoice/select-invoice.component';
+import { InvoiceDetailsService } from '../../../core/services/invoice-details.service';
+import { debounceTime } from 'rxjs/internal/operators/debounceTime';
 @UntilDestroy()
 @Component({
   selector: 'app-order-confirm-modal',
@@ -69,7 +63,6 @@ import { SelectInvoiceComponent } from '../select-invoice/select-invoice.compone
     MatRadioModule,
     TitleCasePipe,
     CommonModule,
-    SlicePipe,
   ],
   providers: [provideNativeDateAdapter()],
   templateUrl: './order-confirm-modal.component.html',
@@ -205,10 +198,13 @@ export class OrderConfirmModalComponent implements OnInit {
   constructor(
     private modalService: ModalService,
     private fb: FormBuilder,
-    private masterService: MasterService
+    private masterService: MasterService,
+    private invoiceDetailsService: InvoiceDetailsService
   ) {}
 
   ngOnInit(): void {
+    this.instructions = [];
+    this.boxes.set([]);
     this.initForm();
     this.invoiceForm.disable();
     this.invoiceDetailsForm.disable();
@@ -217,8 +213,8 @@ export class OrderConfirmModalComponent implements OnInit {
   }
 
   initForm() {
-    this.initInvoiceDetailsForm();
     this.initInvoiceForm();
+    this.initInvoiceDetailsForm();
     this.initCalculationForm();
   }
   initInvoiceForm() {
@@ -227,7 +223,7 @@ export class OrderConfirmModalComponent implements OnInit {
       invoiceId: [''],
       customerOrderNo: ['', Validators.required],
       invoiceDate: [today],
-      invoiceSerial: ['iii'],
+      invoiceSerial: [''],
       invoicePiNo: [''],
       customerId: [null],
       customerName: [''],
@@ -282,6 +278,7 @@ export class OrderConfirmModalComponent implements OnInit {
     this.invoiceDetailsForm = this.fb.group({
       invoiceDetailId: [''],
       invoiceId: [''],
+      customerId: [''],
       containerType: ['', Validators.required],
       containerTo: [''],
       containerFrom: [''],
@@ -307,6 +304,37 @@ export class OrderConfirmModalComponent implements OnInit {
     this.invoiceDetailsForm.patchValue({
       invoiceDetailId: '',
       invoiceId: '',
+    });
+    this.invoiceDetailsForm
+      .get('customerId')
+      ?.patchValue(this.invoiceForm.get('customerId')?.value);
+    this.invoiceDetailsForm
+      .get('materialGrade')
+      ?.valueChanges.pipe(debounceTime(500))
+      .subscribe((materialGrade) => {
+        const customerId = this.invoiceDetailsForm.get('customerId')?.value;
+        console.log(materialGrade, customerId);
+        if (materialGrade && customerId) {
+          this.invoiceDetailsService.setSearchParams({
+            materialGrade,
+            customerId,
+          });
+        }
+      });
+
+    this.invoiceDetailsService.getSearchResults().subscribe({
+      next: (result) => {
+        console.log(result);
+        if (result && result?.length) {
+          this.invoiceDetailsForm.patchValue({
+            ...result[0],
+            invoiceDetailId: '',
+          });
+        }
+      },
+      error: () => {
+        console.warn('No matching data found.');
+      },
     });
   }
 
@@ -362,7 +390,25 @@ export class OrderConfirmModalComponent implements OnInit {
   enableEdit() {
     this.invoiceForm.enable();
   }
+  getInvoiceById(invoiceId: any) {
+    this.masterService
+      .invoke('getInvoice', invoiceId)
+      .pipe(untilDestroyed(this))
+      .subscribe((data: any) => {
+        console.log(data);
+        this.initForm();
+        if (data.invoiceMaster?.length) {
+          this.invoiceForm.patchValue(data.invoiceMaster[0]);
+          this.invoiceDetailsForm
+            .get('customerId')
+            ?.patchValue(data.invoiceMaster[0].customerId);
+          this.calculationForm.patchValue(data.invoiceMaster[0]);
+        }
 
+        this.boxes.set(data.invoiceDetails);
+        this.instructions = data.invoiceInstruction;
+      });
+  }
   openSelectModal() {
     this.modalService
       .openModal(SelectInvoiceComponent, {
@@ -373,17 +419,7 @@ export class OrderConfirmModalComponent implements OnInit {
       .subscribe((result) => {
         if (result && result.invoiceId) {
           console.log(result);
-          this.masterService
-            .invoke('getInvoice', result.invoiceId)
-            .pipe(untilDestroyed(this))
-            .subscribe((data: any) => {
-              console.log(data);
-              this.initForm();
-              this.invoiceForm.patchValue(data.invoiceMaster);
-              this.calculationForm.patchValue(data.invoiceMaster);
-              this.boxes.set(data.invoiceDetails);
-              this.instructions = data.invoiceInstruction;
-            });
+          this.getInvoiceById(result.invoiceId);
         }
       });
   }
@@ -399,6 +435,9 @@ export class OrderConfirmModalComponent implements OnInit {
           console.log(result);
           // this.initInvoiceForm();
           this.invoiceForm.patchValue(result);
+          this.invoiceDetailsForm
+            .get('customerId')
+            ?.patchValue(result.customerId);
         }
       });
   }
@@ -515,8 +554,11 @@ export class OrderConfirmModalComponent implements OnInit {
         }
       )
       .pipe(untilDestroyed(this))
-      .subscribe((data) => {
+      .subscribe((data: any) => {
         console.log(data);
+        if (data.invoiceId) {
+          this.getInvoiceById(data.invoiceId);
+        }
       });
   }
 }

@@ -308,6 +308,7 @@ INSERT INTO invoiceMaster (
       CREATE TABLE invoiceDetails (
         invoiceDetailId INTEGER PRIMARY KEY AUTOINCREMENT,
         invoiceId INTEGER DEFAULT NULL,
+          customerId INTEGER DEFAULT NULL,
         containerType TEXT DEFAULT NULL,
         containerTo TEXT DEFAULT NULL,
         containerFrom INTEGER DEFAULT NULL,
@@ -332,24 +333,16 @@ INSERT INTO invoiceMaster (
       );
 
       INSERT INTO invoiceDetails (
-        invoiceDetailId, invoiceId, containerType, containerTo, containerFrom, length, width, thickness,
+        invoiceDetailId, invoiceId,customerId, containerType, containerTo, containerFrom, length, width, thickness,
         squareMeter, materialGrade, brandName, materialQuality, finishType, thicknessDetail, 
         quantity, rate, remarks, designType, prefixCode, grossWeight, netWeight, boxType, subWeight
       ) VALUES
-      (68, 20, 'BOX 150', '8', 1, '2440', '1220', '0.7', '9525.7600', 'SHPAWHGLZZZZ30007', '', NULL, 'GL+F', 'Single Side', '3200', '7.14', NULL, '5203', '49', 10602, 1, '101 X 52 X 14', 1),
-      (69, 20, 'BOX 150', '14', 9, '2440', '1220', '0.7', '7144.3200', 'ALBAWHITZMAZ30070', '', NULL, 'MT', 'Single Side', '2400', '3.93', NULL, '5002', '49', 7951, 1, '101 X 52 X 14', 2),
-      (72, 22, 'BOX 135', '18', 1, '3050', '1300', '0.6', '17842.5', 'WHITE ', 'BALANCE', NULL, 'MT', 'Single Side', '4500', '1.6', NULL, '5002', '9181', 17525, 1, '125 X 55 X 9', 1),
-      (73, 22, 'BOX 135', '19', 19, '3050', '1300', '0.6', '317.2', 'PF', '', NULL, 'GL+F', 'Single Side', '80', '3.55', NULL, '5101', '9181', 0, 1, '', 2),
-      (74, 22, 'BOX 135', '19', 19, '3050', '1300', '0.6', '79.3', 'PF', '', NULL, 'T.C.+F', 'Single Side', '20', '3.55', NULL, '6825', '9181', 0, 1, '', 3);
+      (68, 20,1, 'BOX 150', '8', 1, '2440', '1220', '0.7', '9525.7600', 'SHPAWHGLZZZZ30007', '', NULL, 'GL+F', 'Single Side', '3200', '7.14', NULL, '5203', '49', 10602, 1, '101 X 52 X 14', 1),
+      (69, 20,1, 'BOX 150', '14', 9, '2440', '1220', '0.7', '7144.3200', 'ALBAWHITZMAZ30070', '', NULL, 'MT', 'Single Side', '2400', '3.93', NULL, '5002', '49', 7951, 1, '101 X 52 X 14', 2),
+      (72, 22,1, 'BOX 135', '18', 1, '3050', '1300', '0.6', '17842.5', 'WHITE ', 'BALANCE', NULL, 'MT', 'Single Side', '4500', '1.6', NULL, '5002', '9181', 17525, 1, '125 X 55 X 9', 1),
+      (73, 22,1, 'BOX 135', '19', 19, '3050', '1300', '0.6', '317.2', 'PF', '', NULL, 'GL+F', 'Single Side', '80', '3.55', NULL, '5101', '9181', 0, 1, '', 2),
+      (74, 22,1, 'BOX 135', '19', 19, '3050', '1300', '0.6', '79.3', 'PF', '', NULL, 'T.C.+F', 'Single Side', '20', '3.55', NULL, '6825', '9181', 0, 1, '', 3);
 
-      INSERT INTO invoiceDetails (
-        invoiceId, containerType, containerTo, containerFrom, length, width, thickness,
-        squareMeter, materialGrade, brandName, materialQuality, finishType, thicknessDetail, 
-        quantity, rate, remarks, designType, prefixCode, grossWeight, netWeight, boxType, subWeight
-      ) VALUES 
-      (1001, 'Container A', 'Warehouse 1', 500, '10m', '5m', '2cm', '50 sq.m', 
-      'Grade A', 'Brand X', 'High', 'Glossy', '3mm', '100', '500', 'Urgent', 
-      'Design A', 'PFX001', 2000, 100, 'Box A', 50);
     `,
   },
   {

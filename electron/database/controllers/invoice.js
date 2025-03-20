@@ -104,13 +104,14 @@ function insertInvoice({ invoiceMaster, invoiceDetails, invoiceInstruction }) {
             ? invoiceDetails.map((detail) =>
                 runQuery(
                   `INSERT INTO invoiceDetails (
-                invoiceId, containerType, containerTo, containerFrom, length,
+                invoiceId,customerId, containerType, containerTo, containerFrom, length,
                 width, thickness, squareMeter, materialGrade, brandName,
                 materialQuality, finishType, thicknessDetail, quantity, rate,
                 remarks, designType, prefixCode, grossWeight, netWeight, boxType, subWeight
-              ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+              ) VALUES (?,?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
                   [
                     invoiceId,
+                    detail.customerId ?? null,
                     detail.containerType ?? null,
                     detail.containerTo ?? null,
                     detail.containerFrom ?? null,
@@ -291,12 +292,13 @@ function updateInvoice({ invoiceMaster, invoiceDetails, invoiceInstruction }) {
               detail.invoiceDetailId
                 ? runQuery(
                     `UPDATE invoiceDetails SET
-                      containerType = ?, containerTo = ?, containerFrom = ?, length = ?,
+                      customerId = ?,containerType = ?, containerTo = ?, containerFrom = ?, length = ?,
                       width = ?, thickness = ?, squareMeter = ?, materialGrade = ?, brandName = ?,
                       materialQuality = ?, finishType = ?, thicknessDetail = ?, quantity = ?, rate = ?,
                       remarks = ?, designType = ?, prefixCode = ?, grossWeight = ?, netWeight = ?,
                       boxType = ?, subWeight = ? WHERE invoiceDetailId = ?`,
                     [
+                      detail.customerId ?? null,
                       detail.containerType ?? null,
                       detail.containerTo ?? null,
                       detail.containerFrom ?? null,
@@ -323,13 +325,14 @@ function updateInvoice({ invoiceMaster, invoiceDetails, invoiceInstruction }) {
                   )
                 : runQuery(
                     `INSERT INTO invoiceDetails (
-                      invoiceId, containerType, containerTo, containerFrom, length,
+                      invoiceId,customerId, containerType, containerTo, containerFrom, length,
                       width, thickness, squareMeter, materialGrade, brandName,
                       materialQuality, finishType, thicknessDetail, quantity, rate,
                       remarks, designType, prefixCode, grossWeight, netWeight, boxType, subWeight
-                    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+                    ) VALUES (?,?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
                     [
                       invoiceId,
+                      detail.customerId ?? null,
                       detail.containerType ?? null,
                       detail.containerTo ?? null,
                       detail.containerFrom ?? null,
@@ -721,6 +724,29 @@ async function deleteFinalInvoice(invoiceId) {
   }
 }
 
+async function getInvoiceDetails({ materialGrade, customerId }) {
+  try {
+    const result = await runQuery(
+      `
+        SELECT * FROM invoiceDetails 
+        WHERE materialGrade = ? AND customerId = ? 
+        ORDER BY invoiceDetailId DESC 
+        LIMIT 1
+    `,
+      [materialGrade, customerId]
+    );
+
+    if (result && Object.keys(result).length != 0) {
+      return result;
+    } else {
+      return null;
+    }
+  } catch (error) {
+    console.error(`❌ Error fetching invoice details data: ${error.message}`);
+    throw new Error(`Failed to fetch invoice details: ${error.message}`);
+  }
+}
+
 module.exports = {
   insertInvoice,
   updateInvoice,
@@ -729,4 +755,5 @@ module.exports = {
   addFinalInvoice,
   updateFinalInvoice,
   deleteFinalInvoice,
+  getInvoiceDetails,
 };

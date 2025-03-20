@@ -76,7 +76,7 @@ export class ContainerModalComponent {
   }
   onDelete() {
     this.masterService
-      .invoke('deleteContainer', this.containerForm.get('ID')?.value)
+      .invoke('deleteContainer', this.containerForm.get('id')?.value)
       .pipe(untilDestroyed(this))
       .subscribe((data) => {
         console.log(data);
