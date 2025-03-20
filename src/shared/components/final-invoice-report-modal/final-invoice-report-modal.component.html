@@ -26,21 +26,25 @@
     <tbody>
       <tr>
         <td class="label-cell">Customer ID</td>
-        <td class="value-cell">{{ orderForm.get("customerId")?.value }}</td>
+        <td class="value-cell">{{ invoiceForm.get("customerId")?.value }}</td>
         <td class="label-cell">Customer Name</td>
-        <td class="value-cell">{{ orderForm.get("customerName")?.value }}</td>
+        <td class="value-cell">{{ invoiceForm.get("customerName")?.value }}</td>
       </tr>
       <tr>
         <td class="label-cell">Invoice ID</td>
-        <td class="value-cell">{{ orderForm.get("invoiceId")?.value }}</td>
+        <td class="value-cell">{{ invoiceForm.get("invoiceId")?.value }}</td>
         <td class="label-cell">Invoice No</td>
-        <td class="value-cell">{{ orderForm.get("invoicePiNo")?.value }}</td>
+        <td class="value-cell">{{ invoiceForm.get("finalInvoice")?.value }}</td>
       </tr>
     </tbody>
   </table>
   <div class="d-flex">
     <div style="margin-top: 10px; width: 40%">
-      <mat-radio-group aria-label="Select an option" [(ngModel)]="reportType">
+      <mat-radio-group
+        aria-label="Select an option"
+        [(ngModel)]="documentType"
+        [disabled]="invoiceForm.disabled"
+      >
         <mat-radio-button value="custom">Custom Reports</mat-radio-button>
         <mat-radio-button value="party">Party Reports</mat-radio-button>
       </mat-radio-group>
@@ -52,7 +56,8 @@
           border-radius: 4px;
           margin: 5px 0px;
         "
-        [(ngModel)]="selectedFormat"
+        [(ngModel)]="reportType"
+        [disabled]="invoiceForm.disabled"
       >
         <option value="ms-word">MS-Word</option>
         <option value="pdf">PDF</option>
@@ -65,7 +70,8 @@
             <button
               class="btn table-btn"
               mat-raised-button
-              (click)="openSelectModal()"
+              [disabled]="invoiceForm.disabled"
+              (click)="generateInvoice('invoice', 'custom')"
             >
               Final Invoice
             </button>
@@ -74,7 +80,8 @@
             <button
               class="btn table-btn"
               mat-raised-button
-              (click)="openSelectModal()"
+              [disabled]="invoiceForm.disabled"
+              (click)="generateInvoice('packingList', 'custom')"
             >
               Packing List
             </button>
@@ -85,7 +92,8 @@
             <button
               class="btn table-btn"
               mat-raised-button
-              (click)="openSelectModal()"
+              [disabled]="invoiceForm.disabled"
+              (click)="generateInvoice('invoice', 'aus')"
             >
               Final Invoice (Aus)
             </button>
@@ -94,7 +102,8 @@
             <button
               class="btn table-btn"
               mat-raised-button
-              (click)="openSelectModal()"
+              [disabled]="invoiceForm.disabled"
+              (click)="generateInvoice('packingList', 'aus')"
             >
               Packing List (Aus)
             </button>
@@ -105,7 +114,8 @@
             <button
               class="btn table-btn"
               mat-raised-button
-              (click)="openSelectModal()"
+              [disabled]="invoiceForm.disabled"
+              (click)="generateInvoice('invoice', 'uk')"
             >
               Final Invoice (UK)
             </button>
@@ -114,7 +124,8 @@
             <button
               class="btn table-btn"
               mat-raised-button
-              (click)="openSelectModal()"
+              [disabled]="invoiceForm.disabled"
+              (click)="generateInvoice('packingList', 'uk')"
             >
               Packing List (UK)
             </button>

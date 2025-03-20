@@ -57,29 +57,22 @@ function getInvoiceMaster(id) {
 async function getAllMasterInvoices(master = true) {
   try {
     // Step 1: Fetch All Final Invoices
-
     if (master) {
       const masterInvoices = await runQuery("SELECT * FROM invoiceMaster");
       return masterInvoices;
     } else {
+      const masterInvoices = await runQuery("SELECT * FROM invoiceMaster");
       const finalInvoices = await runQuery("SELECT * FROM finalinvoice");
 
-      // Step 2: Extract Invoice IDs from Final Invoices
-      const finalInvoiceIds = finalInvoices.map((invoice) => invoice.invoiceId);
+      const invoices = finalInvoices.map((invoice) => {
+        const finalInv = masterInvoices.find(
+          (final) => final.invoiceId === invoice.invoiceId
+        );
 
-      // Step 3: Fetch All Master Invoices (Excluding Final Invoice IDs)
-      const masterInvoices = await runQuery(
-        `
-      SELECT * FROM invoiceMaster 
-      WHERE invoiceId NOT IN (${finalInvoiceIds.map(() => "?").join(", ")})
-    `,
-        finalInvoiceIds
-      );
+        return finalInv ? { ...invoice, ...finalInv } : invoice;
+      });
 
-      // Step 4: Combine Final and Master Invoices
-      const combinedInvoices = [...finalInvoices, ...masterInvoices];
-
-      return combinedInvoices;
+      return invoices;
     }
   } catch (error) {
     console.error(`❌ Error fetching invoices: ${error.message}`);

@@ -49,6 +49,7 @@ export class SelectInvoiceComponent {
     'invoiceSerial',
     'invoicePiNo',
     'customerId',
+    'finalInvoice',
     'customerName',
     'status',
     'totalAmount',
@@ -58,7 +59,7 @@ export class SelectInvoiceComponent {
   constructor(
     private modalService: ModalService,
     private masterService: MasterService
-  ) {}
+  ) { }
 
   ngOnInit() {
     this.loadInvoices();
@@ -82,6 +83,7 @@ export class SelectInvoiceComponent {
       invoiceDate: row.invoiceDate,
       invoiceSerial: row.invoiceSerial,
       invoicePiNo: row.invoicePiNo,
+      finalInvoice: row.finalInvoice,
       customerId: row.customerId,
       customerName: row.customerName,
       status: row.status,

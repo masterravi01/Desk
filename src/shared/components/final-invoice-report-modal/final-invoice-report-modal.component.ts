@@ -52,9 +52,9 @@ import { SelectInvoiceComponent } from '../select-invoice/select-invoice.compone
 })
 export class FinalInvoiceReportModalComponent {
   readonly dialogRef = inject(MatDialogRef<FinalInvoiceReportModalComponent>);
-  orderForm!: FormGroup;
-  selectedFormat: string = 'ms-word';
-  reportType: string = 'custom';
+  invoiceForm!: FormGroup;
+  reportType: string = 'ms-word';
+  documentType: string = 'custom';
 
   constructor(
     private modalService: ModalService,
@@ -64,14 +64,15 @@ export class FinalInvoiceReportModalComponent {
 
   ngOnInit(): void {
     this.initForm();
+    this.invoiceForm.disable();
   }
 
   initForm() {
-    this.orderForm = this.fb.group({
+    this.invoiceForm = this.fb.group({
       customerId: [''],
       customerName: [''],
       invoiceId: [''],
-      invoicePiNo: [''],
+      finalInvoice: [''],
     });
   }
 
@@ -82,6 +83,7 @@ export class FinalInvoiceReportModalComponent {
   openSelectModal() {
     this.modalService
       .openModal(SelectInvoiceComponent, {
+        data: { final: true },
         width: '80%',
         height: '90%',
       })
@@ -89,15 +91,28 @@ export class FinalInvoiceReportModalComponent {
       .subscribe((result) => {
         if (result && result.invoiceId) {
           console.log(result);
-          this.masterService
-            .invoke('getInvoice', result.invoiceId)
-            .pipe(untilDestroyed(this))
-            .subscribe((data: any) => {
-              console.log(data);
-              this.initForm();
-              this.orderForm.patchValue(data.invoiceMaster);
-            });
+          this.initForm();
+          this.invoiceForm.patchValue(result);
+          console.log(this.invoiceForm.value);
         }
+      });
+  }
+
+  generateInvoice(template: any, country: any) {
+    let body = {
+      ...this.invoiceForm.value,
+      format: this.reportType,
+      type: this.documentType,
+      template,
+      country
+    };
+    console.log(body);
+
+    this.masterService
+      .invoke('generateInvoiceDocument', body)
+      .pipe(untilDestroyed(this))
+      .subscribe((data: any) => {
+        console.log(data);
       });
   }
 

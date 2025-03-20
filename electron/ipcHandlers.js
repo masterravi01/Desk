@@ -68,6 +68,10 @@ const {
   deleteFinalInvoice,
 } = require("./database/controllers/invoice");
 
+const {
+  generateInvoiceDocument,
+} = require("./database/generate-document/report");
+
 function setupIpcHandlers() {
   // Company APIs
   ipcMain.handle("getCompany", async (event, id) => {
@@ -197,6 +201,10 @@ function setupIpcHandlers() {
 
   ipcMain.handle("getAllMasterInvoices", async (event, invoice) => {
     return await getAllMasterInvoices(invoice);
+  });
+
+  ipcMain.handle("generateInvoiceDocument", async (event, body) => {
+    return await generateInvoiceDocument(body);
   });
 }
 
