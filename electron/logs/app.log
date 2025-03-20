@@ -429,3 +429,41 @@
 2025-03-18 10:32:18 [INFO]: 🔗 Foreign Key support enabled.
 2025-03-18 10:33:51 [INFO]: ✅ Connected to SQLite Database at: C:\Users\Harun\AppData\Roaming\alfa\database.sqlite
 2025-03-18 10:33:51 [INFO]: 🔗 Foreign Key support enabled.
+2025-03-18 13:49:39 [INFO]: ✅ Connected to SQLite Database at: C:\Users\Harun\AppData\Roaming\alfa\database.sqlite
+2025-03-18 13:49:39 [INFO]: 🔗 Foreign Key support enabled.
+2025-03-19 07:13:02 [INFO]: ✅ Connected to SQLite Database at: C:\Users\Harun\AppData\Roaming\alfa\database.sqlite
+2025-03-19 07:13:02 [INFO]: 🔗 Foreign Key support enabled.
+2025-03-19 07:13:02 [ERROR]: ❌ Error Fetching Migrations:
+2025-03-19 07:13:44 [INFO]: ✅ Connected to SQLite Database at: C:\Users\Harun\AppData\Roaming\alfa\database.sqlite
+2025-03-19 07:13:44 [INFO]: 🔗 Foreign Key support enabled.
+2025-03-19 07:13:44 [INFO]: ✅ Migration 1: Create BottomNote Table
+2025-03-19 07:13:44 [INFO]: ✅ Migration 2: Create Company Table
+2025-03-19 07:13:44 [INFO]: ✅ Migration 3: Create Containers Table
+2025-03-19 07:13:44 [INFO]: ✅ Migration 4: Create Currency Table
+2025-03-19 07:13:44 [INFO]: ✅ Migration 5: Create System Parameter
+2025-03-19 07:13:44 [INFO]: ✅ Migration 6: Create Instruction Table
+2025-03-19 07:13:44 [INFO]: ✅ Migration 7: Create Customer Table
+2025-03-19 07:13:44 [INFO]: ✅ Migration 8: Create Invoice Master
+2025-03-19 07:13:44 [INFO]: ✅ Migration 9: Create InvoiceDetails Table
+2025-03-19 07:13:44 [INFO]: ✅ Migration 10: Create Invoice Instructions
+2025-03-19 07:13:44 [INFO]: ✅ Migration 11: Create invoiceBottomNote
+2025-03-19 07:13:44 [INFO]: ✅ Migration 13: Create Final Invoice Table
+2025-03-19 07:14:01 [INFO]: ✅ Connected to SQLite Database at: C:\Users\Harun\AppData\Roaming\alfa\database.sqlite
+2025-03-19 07:14:01 [INFO]: 🔗 Foreign Key support enabled.
+2025-03-19 12:05:28 [INFO]: ✅ Connected to SQLite Database at: C:\Users\Harun\AppData\Roaming\alfa\database.sqlite
+2025-03-19 12:05:29 [INFO]: 🔗 Foreign Key support enabled.
+2025-03-19 16:49:43 [INFO]: ✅ Connected to SQLite Database at: C:\Users\Harun\AppData\Roaming\alfa\database.sqlite
+2025-03-19 16:49:44 [INFO]: 🔗 Foreign Key support enabled.
+2025-03-19 18:14:23 [INFO]: ✅ Connected to SQLite Database at: C:\Users\Harun\AppData\Roaming\alfa\database.sqlite
+2025-03-19 18:14:23 [INFO]: 🔗 Foreign Key support enabled.
+2025-03-19 18:15:51 [INFO]: ✅ Connected to SQLite Database at: C:\Users\Harun\AppData\Roaming\alfa\database.sqlite
+2025-03-19 18:15:51 [INFO]: 🔗 Foreign Key support enabled.
+2025-03-19 18:15:51 [INFO]: ✅ Migration 9: Create InvoiceDetails Table
+2025-03-19 18:18:02 [INFO]: ✅ Connected to SQLite Database at: C:\Users\Harun\AppData\Roaming\alfa\database.sqlite
+2025-03-19 18:18:02 [INFO]: 🔗 Foreign Key support enabled.
+2025-03-19 18:45:54 [INFO]: ✅ Connected to SQLite Database at: C:\Users\Harun\AppData\Roaming\alfa\database.sqlite
+2025-03-19 18:45:55 [INFO]: 🔗 Foreign Key support enabled.
+2025-03-19 18:47:41 [INFO]: ✅ Connected to SQLite Database at: C:\Users\Harun\AppData\Roaming\alfa\database.sqlite
+2025-03-19 18:47:41 [INFO]: 🔗 Foreign Key support enabled.
+2025-03-19 18:55:08 [INFO]: ✅ Connected to SQLite Database at: C:\Users\Harun\AppData\Roaming\alfa\database.sqlite
+2025-03-19 18:55:08 [INFO]: 🔗 Foreign Key support enabled.

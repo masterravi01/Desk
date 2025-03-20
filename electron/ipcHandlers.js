@@ -66,6 +66,7 @@ const {
   addFinalInvoice,
   updateFinalInvoice,
   deleteFinalInvoice,
+  getInvoiceDetails,
 } = require("./database/controllers/invoice");
 
 const {
@@ -197,6 +198,9 @@ function setupIpcHandlers() {
   });
   ipcMain.handle("deleteFinalInvoice", async (event, invoiceId) => {
     return await deleteFinalInvoice(invoiceId);
+  });
+  ipcMain.handle("getInvoiceDetails", async (event, data) => {
+    return await getInvoiceDetails(data);
   });
 
   ipcMain.handle("getAllMasterInvoices", async (event, invoice) => {

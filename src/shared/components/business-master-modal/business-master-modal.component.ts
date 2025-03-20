@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, ViewChild } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import {
   MAT_DIALOG_DATA,
@@ -19,6 +19,8 @@ import { NewCurrencyModalComponent } from '../new-currency-modal/new-currency-mo
 import { SingleParamenterComponent } from '../single-paramenter/single-paramenter.component';
 import { MasterService } from '../../../core/services/master.service';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
+import { MatTableDataSource } from '@angular/material/table';
+import { TableComponent } from '../table/table.component';
 
 @UntilDestroy()
 @Component({
@@ -33,6 +35,7 @@ import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
     MatDialogContent,
     MatTableModule,
     MatTabsModule,
+    TableComponent,
   ],
   templateUrl: './business-master-modal.component.html',
   styleUrl: './business-master-modal.component.css',
@@ -41,38 +44,38 @@ export class BusinessMasterModalComponent {
   readonly dialogRef = inject(MatDialogRef<BusinessMasterModalComponent>);
   readonly data = inject<any>(MAT_DIALOG_DATA);
   displayedColumns: string[] = [
-    'Name',
-    'Phone',
-    'Email',
-    'Contact Person',
-    'Designation',
-    'Other Phone',
-    'URL',
-    'Fax',
-    'Remark',
-    'Address',
-    'City',
-    'State',
-    'Zip',
-    'Country',
-    'Buyer Address',
-    'Buyer City',
-    'Buyer State',
-    'Buyer Zipcode',
-    'Buyer Country',
-    'Bank Name',
-    'Bank Branch',
-    'Bank City',
-    'Bank Address',
-    'Bank State',
-    'Bank Zip',
-    'Bank Country',
+    'name',
+    'phone',
+    'email',
+    'contactPerson',
+    'designation',
+    'otherPhone',
+    'url',
+    'fax',
+    'remark',
+    'address',
+    'city',
+    'state',
+    'zip',
+    'country',
+    'buyerAddress',
+    'buyerCity',
+    'buyerState',
+    'buyerZipcode',
+    'buyerCountry',
+    'bankName',
+    'bankBranch',
+    'bankCity',
+    'bankAddress',
+    'bankState',
+    'bankZip',
+    'bankCountry',
   ];
-  customers = [];
-  instructions = [];
-  containers = [];
-  currency = [];
-  bottomNote = [];
+  customers = new MatTableDataSource<any>([]);
+  instructions = new MatTableDataSource<any>([]);
+  containers = new MatTableDataSource<any>([]);
+  currency = new MatTableDataSource<any>([]);
+  bottomNote = new MatTableDataSource<any>([]);
 
   constructor(
     private modalService: ModalService,
@@ -82,7 +85,10 @@ export class BusinessMasterModalComponent {
   ngOnInit() {
     this.loadCustomers();
   }
-
+  onRowClick(row: any) {
+    console.log('Row clicked:', row);
+    // Handle row click (e.g., navigate to details page, open dialog, etc.)
+  }
   onTabChange(event: any) {
     let tab = event.tab.textLabel || 'Customer';
     if (tab == 'Customer') this.loadCustomers();
@@ -97,7 +103,7 @@ export class BusinessMasterModalComponent {
       .invoke('getAllCustomers')
       .pipe(untilDestroyed(this))
       .subscribe((data: any) => {
-        this.customers = data;
+        this.customers = new MatTableDataSource<any>(data);
         console.log(data);
       });
   }
@@ -107,7 +113,7 @@ export class BusinessMasterModalComponent {
       .invoke('getAllBottomNote')
       .pipe(untilDestroyed(this))
       .subscribe((data: any) => {
-        this.bottomNote = data;
+        this.bottomNote = new MatTableDataSource<any>(data);
       });
   }
 
@@ -116,7 +122,7 @@ export class BusinessMasterModalComponent {
       .invoke('getAllInstruction')
       .pipe(untilDestroyed(this))
       .subscribe((data: any) => {
-        this.instructions = data;
+        this.instructions = new MatTableDataSource<any>(data);
       });
   }
 
@@ -125,8 +131,19 @@ export class BusinessMasterModalComponent {
       .invoke('getAllContainer')
       .pipe(untilDestroyed(this))
       .subscribe((data: any) => {
-        this.containers = data;
-        console.log(data);
+        this.containers = new MatTableDataSource<any>(data);
+
+        // ✅ Custom sorting logic for text fields
+        // this.containers.sortingDataAccessor = (item, property) => {
+        //   switch (property) {
+        //     case 'name':
+        //       return item.containerName?.toLowerCase() || '';
+        //     case 'type':
+        //       return item.containerType?.toLowerCase() || '';
+        //     default:
+        //       return item[property];
+        //   }
+        // };
       });
   }
 
@@ -136,7 +153,7 @@ export class BusinessMasterModalComponent {
       .pipe(untilDestroyed(this))
       .subscribe((data: any) => {
         console.log(data);
-        this.currency = data;
+        this.currency = new MatTableDataSource<any>(data);
       });
   }
 
@@ -150,8 +167,12 @@ export class BusinessMasterModalComponent {
   openCustomerModal(data?: any) {
     this.modalService
       .openModal(NewCustomerComponent, {
-        width: '80%',
+        width: '95vw',
         height: '90%',
+        maxWidth: '95vw',
+        position: {
+          top: '20px',
+        },
         data,
       })
       .afterClosed()
@@ -163,7 +184,7 @@ export class BusinessMasterModalComponent {
     this.modalService
       .openModal(ContainerModalComponent, {
         width: '50%',
-        height: '90%',
+        minHeight: '340px',
         position: {
           top: '40px',
         },
@@ -192,7 +213,7 @@ export class BusinessMasterModalComponent {
   openBottomNoteModal(note?: any) {
     const dialogRef = this.modalService.openModal(SingleParamenterComponent, {
       width: '50%',
-      height: '300px',
+      minHeight: '250px',
       position: { top: '40px' },
       data: {
         title: note ? 'Edit Bottom Note' : 'New Bottom Note',
@@ -233,7 +254,7 @@ export class BusinessMasterModalComponent {
   openInstructionModal(instruction?: any) {
     const dialogRef = this.modalService.openModal(SingleParamenterComponent, {
       width: '50%',
-      height: '300px',
+      minHeight: '200px',
       position: { top: '40px' },
       data: {
         title: instruction ? 'Edit Instruction' : 'New Instruction',

@@ -776,30 +776,21 @@
     class="d-flex"
     style="justify-content: center; margin-top: 20px; margin-bottom: 10px"
   >
-    <button class="btn" mat-raised-button mat-button (click)="initForm()">
-      New
-    </button>
+    <button class="btn" mat-raised-button (click)="initForm()">New</button>
     <button
       class="btn"
       mat-raised-button
-      mat-button
       [disabled]="invoiceForm.disabled || invoiceForm.invalid"
       (click)="onSave(true)"
     >
       Add
     </button>
-    <button
-      class="btn"
-      mat-raised-button
-      mat-button
-      (click)="openSelectModal()"
-    >
+    <button class="btn" mat-raised-button (click)="openSelectModal()">
       Select
     </button>
     <button
       class="btn"
       mat-raised-button
-      mat-button
       [disabled]="invoiceForm.disabled || invoiceForm.invalid"
       (click)="onSave()"
     >
@@ -808,7 +799,6 @@
     <button
       class="btn"
       mat-raised-button
-      mat-button
       [disabled]="!invoiceForm.get('invoiceId')?.value"
       (click)="onDelete()"
     >
@@ -817,7 +807,6 @@
     <button
       class="btn"
       mat-raised-button
-      mat-button
       (click)="initForm()"
       [disabled]="invoiceForm.disabled || invoiceDetailsForm.disabled"
     >

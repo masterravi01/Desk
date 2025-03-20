@@ -97,6 +97,8 @@ export class ConfirmInvoiceModalComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    this.invoiceBottomNotes = [];
+    this.selectedBottomIndex = 0;
     this.initForm();
     this.finalInvoiceForm.disable();
   }
@@ -192,39 +194,41 @@ export class ConfirmInvoiceModalComponent implements OnInit {
       .subscribe((result) => {
         if (result && result.invoiceId) {
           console.log(result);
-          this.masterService
-            .invoke('getInvoice', result.invoiceId)
-            .pipe(untilDestroyed(this))
-            .subscribe((data: any) => {
-              console.log(data);
-              this.initForm();
-              if (data.invoiceMaster?.length) {
-                data.invoiceMaster = data.invoiceMaster[0];
-                this.finalInvoiceForm.patchValue(data.invoiceMaster);
-
-                this.finalInvoiceForm
-                  .get('invoiceId')
-                  ?.patchValue(data.invoiceMaster.invoiceId);
-                this.finalInvoiceForm.patchValue({
-                  consigneeName: data.invoiceMaster.customerName,
-                  consigneeAddress: data.invoiceMaster.customerAddress,
-                  consigneeCity: data.invoiceMaster.customerCity,
-                  consigneeZip: data.invoiceMaster.customerZip,
-                  consigneeState: data.invoiceMaster.customerState,
-                  consigneeCountry: data.invoiceMaster.customerCountry,
-                });
-              }
-              this.invoiceBottomNotes = data.invoiceBottomNote;
-              if (data.finalInvoice?.length)
-                this.finalInvoiceForm.patchValue(data.finalInvoice[0]);
-
-              // this.finalInvoiceForm.get('invoiceId')?.disable();
-              // this.invoiceBottomNotes = data.invoiceBottomNote;
-            });
+          this.getFinalInvoiceById(result.invoiceId);
         }
       });
   }
+  getFinalInvoiceById(invoiceId: any) {
+    this.masterService
+      .invoke('getInvoice', invoiceId)
+      .pipe(untilDestroyed(this))
+      .subscribe((data: any) => {
+        console.log(data);
+        this.initForm();
+        if (data.invoiceMaster?.length) {
+          data.invoiceMaster = data.invoiceMaster[0];
+          this.finalInvoiceForm.patchValue(data.invoiceMaster);
 
+          this.finalInvoiceForm
+            .get('invoiceId')
+            ?.patchValue(data.invoiceMaster.invoiceId);
+          this.finalInvoiceForm.patchValue({
+            consigneeName: data.invoiceMaster.customerName,
+            consigneeAddress: data.invoiceMaster.customerAddress,
+            consigneeCity: data.invoiceMaster.customerCity,
+            consigneeZip: data.invoiceMaster.customerZip,
+            consigneeState: data.invoiceMaster.customerState,
+            consigneeCountry: data.invoiceMaster.customerCountry,
+          });
+        }
+        this.invoiceBottomNotes = data.invoiceBottomNote;
+        if (data.finalInvoice?.length)
+          this.finalInvoiceForm.patchValue(data.finalInvoice[0]);
+
+        // this.finalInvoiceForm.get('invoiceId')?.disable();
+        // this.invoiceBottomNotes = data.invoiceBottomNote;
+      });
+  }
   openBottomNoteModal() {
     this.modalService
       .openModal(SelectBottomNoteComponent, {
@@ -280,8 +284,9 @@ export class ConfirmInvoiceModalComponent implements OnInit {
         }
       )
       .pipe(untilDestroyed(this))
-      .subscribe((data) => {
+      .subscribe((data:any) => {
         console.log(data);
+        this.getFinalInvoiceById(data.invoiceId);
       });
   }
 }

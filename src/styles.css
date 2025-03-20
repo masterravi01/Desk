@@ -37,7 +37,7 @@ body {
   margin-top: 10px;
 }
 .modal-content {
-  padding: 0 20px;
+  padding: 0 20px 20px 20px;
 }
 .h5 {
   padding: 0 20px !important;
@@ -124,6 +124,13 @@ mat-form-field {
 mat-card {
   background: #f3f3f3 !important;
   margin-top: 20px;
+}
+.mat-mdc-header-row {
+  height: 32px !important; /* Adjust as needed */
+}
+
+.mat-mdc-row {
+  height: 32px !important;
 }
 
 @layer reset, base, overrides;

@@ -10,7 +10,7 @@ import {
   MatDialogTitle,
 } from '@angular/material/dialog';
 import { MatTabsModule } from '@angular/material/tabs';
-import { MatTableModule } from '@angular/material/table';
+import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatDividerModule } from '@angular/material/divider';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
@@ -23,6 +23,7 @@ import { NewCurrencyModalComponent } from '../new-currency-modal/new-currency-mo
 import { MasterService } from '../../../core/services/master.service';
 import { MatCardModule } from '@angular/material/card';
 import { NewParameterComponent } from '../new-parameter/new-parameter.component';
+import { TableComponent } from '../table/table.component';
 
 @UntilDestroy()
 @Component({
@@ -42,6 +43,7 @@ import { NewParameterComponent } from '../new-parameter/new-parameter.component'
     ReactiveFormsModule,
     MatInputModule,
     MatCardModule,
+    TableComponent,
   ],
   templateUrl: './system-parameter-modal.component.html',
   styleUrl: './system-parameter-modal.component.css',
@@ -52,13 +54,13 @@ export class SystemParameterModalComponent implements OnInit {
 
   displayedColumns: string[] = ['name', 'email', 'phone'];
   companyForm!: FormGroup;
-  parameters: any[] = [];
+  parameters = new MatTableDataSource<any>([]);
 
   constructor(
     private modalService: ModalService,
     private fb: FormBuilder,
     private masterService: MasterService
-  ) { }
+  ) {}
 
   ngOnInit(): void {
     this.initForm();
@@ -114,7 +116,7 @@ export class SystemParameterModalComponent implements OnInit {
       .pipe(untilDestroyed(this))
       .subscribe((data: any) => {
         console.log(data);
-        this.parameters = data;
+        this.parameters = new MatTableDataSource<any>(data);
       });
   }
 
@@ -130,7 +132,7 @@ export class SystemParameterModalComponent implements OnInit {
   }
   openCustomerModal() {
     this.modalService.openModal(NewCustomerComponent, {
-      width: '80%',
+      width: '90%',
       height: '90%',
     });
   }

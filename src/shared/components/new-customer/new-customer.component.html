@@ -12,228 +12,313 @@
 </div>
 
 <form [formGroup]="customerForm" class="modal-content">
-  <mat-divider></mat-divider>
-
   <!-- Basic Details -->
-  <div class="section">
-    <h3 class="h3">Basic Details</h3>
-    <div class="grid">
-      <div class="form-field">
-        <label class="label">Name:</label>
-        <mat-form-field appearance="outline">
-          <input matInput formControlName="name" />
-        </mat-form-field>
-      </div>
+  <div class="">
+    <mat-card appearance="outlined">
+      <mat-card-content>
+        <h3 class="h3">Basic Details</h3>
+        <table class="form-table">
+          <tbody>
+            <tr>
+              <td class="input-cell" colspan="2">
+                <div class="grid">
+                  <div class="d-flex">
+                    <div class="label-cell">Name</div>
+                    <mat-form-field appearance="outline">
+                      <input matInput formControlName="name" />
+                    </mat-form-field>
+                  </div>
 
-      <div class="form-field">
-        <label class="label">Other Phone:</label>
-        <mat-form-field appearance="outline">
-          <input matInput formControlName="otherPhone" />
-        </mat-form-field>
-      </div>
+                  <div class="d-flex">
+                    <div class="label-cell">Other Phone</div>
+                    <mat-form-field appearance="outline">
+                      <input matInput formControlName="otherPhone" />
+                    </mat-form-field>
+                  </div>
+                </div>
+              </td>
+            </tr>
 
-      <div class="form-field">
-        <label class="label">Phone:</label>
-        <mat-form-field appearance="outline">
-          <input matInput formControlName="phone" />
-        </mat-form-field>
-      </div>
+            <tr>
+              <td class="input-cell" colspan="2">
+                <div class="grid">
+                  <div class="d-flex">
+                    <div class="label-cell">Phone</div>
+                    <mat-form-field appearance="outline">
+                      <input matInput formControlName="phone" />
+                    </mat-form-field>
+                  </div>
 
-      <div class="form-field">
-        <label class="label">URL:</label>
-        <mat-form-field appearance="outline">
-          <input matInput formControlName="url" />
-        </mat-form-field>
-      </div>
+                  <div class="d-flex">
+                    <div class="label-cell">URL</div>
+                    <mat-form-field appearance="outline">
+                      <input matInput formControlName="url" />
+                    </mat-form-field>
+                  </div>
+                </div>
+              </td>
+            </tr>
 
-      <div class="form-field">
-        <label class="label">Email:</label>
-        <mat-form-field appearance="outline">
-          <input matInput formControlName="email" />
-        </mat-form-field>
-      </div>
+            <tr>
+              <td class="input-cell" colspan="2">
+                <div class="grid">
+                  <div class="d-flex">
+                    <div class="label-cell">Email</div>
+                    <mat-form-field appearance="outline">
+                      <input matInput formControlName="email" type="email" />
+                    </mat-form-field>
+                  </div>
 
-      <div class="form-field">
-        <label class="label">Fax:</label>
-        <mat-form-field appearance="outline">
-          <input matInput formControlName="fax" />
-        </mat-form-field>
-      </div>
+                  <div class="d-flex">
+                    <div class="label-cell">Fax</div>
+                    <mat-form-field appearance="outline">
+                      <input matInput formControlName="fax" />
+                    </mat-form-field>
+                  </div>
+                </div>
+              </td>
+            </tr>
 
-      <div class="form-field">
-        <label class="label">Contact:</label>
-        <mat-form-field appearance="outline">
-          <input matInput formControlName="contactPerson" />
-        </mat-form-field>
-      </div>
+            <tr>
+              <td class="input-cell" colspan="2">
+                <div class="grid">
+                  <div class="d-flex">
+                    <div class="label-cell">Contact</div>
+                    <mat-form-field appearance="outline">
+                      <input matInput formControlName="contactPerson" />
+                    </mat-form-field>
+                  </div>
 
-      <div class="form-field">
-        <label class="label">Remark:</label>
-        <mat-form-field appearance="outline">
-          <input matInput formControlName="remark" />
-        </mat-form-field>
-      </div>
+                  <div class="d-flex">
+                    <div class="label-cell">Remark</div>
+                    <mat-form-field appearance="outline">
+                      <textarea matInput formControlName="remark"></textarea>
+                    </mat-form-field>
+                  </div>
+                </div>
+              </td>
+            </tr>
 
-      <div class="form-field">
-        <label class="label">Designation:</label>
-        <mat-form-field appearance="outline">
-          <input matInput formControlName="designation" />
-        </mat-form-field>
-      </div>
-    </div>
+            <tr>
+              <td class="input-cell" colspan="2">
+                <div class="grid">
+                  <div class="d-flex">
+                    <div class="label-cell">Designation</div>
+                    <mat-form-field appearance="outline">
+                      <input matInput formControlName="designation" />
+                    </mat-form-field>
+                  </div>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </mat-card-content>
+    </mat-card>
   </div>
 
-  <mat-divider></mat-divider>
+  <div class="grid" style="margin: 0">
+    <mat-card appearance="outlined">
+      <mat-card-content>
+        <h3 class="section-title h3">Customer Address</h3>
 
-  <!-- Customer Address -->
-  <div class="section">
-    <div class="grid">
-      <div>
-        <h3 class="h3">Customer Address</h3>
-        <div class="full-width form-field">
-          <label class="label">Address:</label>
-          <mat-form-field appearance="outline" class="full-width">
-            <textarea matInput rows="2" formControlName="address"></textarea>
-          </mat-form-field>
-        </div>
-        <div class="grid">
-          <div class="form-field">
-            <label class="label">City:</label>
-            <mat-form-field appearance="outline">
-              <input matInput formControlName="city" />
-            </mat-form-field>
-          </div>
+        <table class="form-table">
+          <tbody>
+            <tr>
+              <td class="label-cell">
+                <label>Address</label>
+              </td>
+              <td class="input-cell">
+                <mat-form-field appearance="outline" class="full-width">
+                  <textarea
+                    matInput
+                    rows="2"
+                    formControlName="address"
+                  ></textarea>
+                </mat-form-field>
+              </td>
+            </tr>
+            <tr>
+              <td class="input-cell" colspan="2">
+                <div class="grid">
+                  <div class="d-flex">
+                    <div class="label-cell">City</div>
+                    <mat-form-field appearance="outline">
+                      <input matInput formControlName="city" />
+                    </mat-form-field>
+                  </div>
 
-          <div class="form-field">
-            <label class="label">State:</label>
-            <mat-form-field appearance="outline">
-              <input matInput formControlName="state" />
-            </mat-form-field>
-          </div>
+                  <div class="d-flex">
+                    <div class="label-cell">State</div>
+                    <mat-form-field appearance="outline">
+                      <input matInput formControlName="state" />
+                    </mat-form-field>
+                  </div>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td class="input-cell" colspan="2">
+                <div class="grid">
+                  <div class="d-flex">
+                    <div class="label-cell">Zip</div>
+                    <mat-form-field appearance="outline">
+                      <input matInput formControlName="zip" />
+                    </mat-form-field>
+                  </div>
 
-          <div class="form-field">
-            <label class="label">Zip:</label>
-            <mat-form-field appearance="outline">
-              <input matInput formControlName="zip" />
-            </mat-form-field>
-          </div>
+                  <div class="d-flex">
+                    <div class="label-cell">Country</div>
+                    <mat-form-field appearance="outline">
+                      <input matInput formControlName="country" />
+                    </mat-form-field>
+                  </div>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </mat-card-content>
+    </mat-card>
+    <mat-card appearance="outlined">
+      <mat-card-content>
+        <h3 class="section-title h3">Buyer Adress</h3>
+        <table class="form-table">
+          <tbody>
+            <tr>
+              <td class="label-cell">
+                <label>Address</label>
+              </td>
+              <td class="input-cell">
+                <mat-form-field appearance="outline" class="full-width">
+                  <textarea
+                    matInput
+                    rows="2"
+                    formControlName="buyerAddress"
+                  ></textarea>
+                </mat-form-field>
+              </td>
+            </tr>
+            <tr>
+              <td class="input-cell" colspan="2">
+                <div class="grid">
+                  <div class="d-flex">
+                    <div class="label-cell">City</div>
+                    <mat-form-field appearance="outline">
+                      <input matInput formControlName="buyerCity" />
+                    </mat-form-field>
+                  </div>
 
-          <div class="form-field">
-            <label class="label">Country:</label>
-            <mat-form-field appearance="outline">
-              <input matInput formControlName="country" />
-            </mat-form-field>
-          </div>
-        </div>
-      </div>
-      <div>
-        <h3 class="h3">Buyer Address</h3>
+                  <div class="d-flex">
+                    <div class="label-cell">State</div>
+                    <mat-form-field appearance="outline">
+                      <input matInput formControlName="buyerState" />
+                    </mat-form-field>
+                  </div>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td class="input-cell" colspan="2">
+                <div class="grid">
+                  <div class="d-flex">
+                    <div class="label-cell">Zip</div>
+                    <mat-form-field appearance="outline">
+                      <input matInput formControlName="buyerZipcode" />
+                    </mat-form-field>
+                  </div>
 
-        <div class="full-width form-field">
-          <label class="label">Address:</label>
-          <mat-form-field appearance="outline" class="full-width">
-            <textarea
-              matInput
-              rows="2"
-              formControlName="buyerAddress"
-            ></textarea>
-          </mat-form-field>
-        </div>
-        <div class="grid">
-          <div class="form-field">
-            <label class="label">City:</label>
-            <mat-form-field appearance="outline">
-              <input matInput formControlName="buyerCity" />
-            </mat-form-field>
-          </div>
-
-          <div class="form-field">
-            <label class="label">State:</label>
-            <mat-form-field appearance="outline">
-              <input matInput formControlName="buyerState" />
-            </mat-form-field>
-          </div>
-
-          <div class="form-field">
-            <label class="label">Zip:</label>
-            <mat-form-field appearance="outline">
-              <input matInput formControlName="buyerZipcode" />
-            </mat-form-field>
-          </div>
-
-          <div class="form-field">
-            <label class="label">Country:</label>
-            <mat-form-field appearance="outline">
-              <input matInput formControlName="buyerCountry" />
-            </mat-form-field>
-          </div>
-        </div>
-      </div>
-    </div>
+                  <div class="d-flex">
+                    <div class="label-cell">Country</div>
+                    <mat-form-field appearance="outline">
+                      <input matInput formControlName="buyerCountry" />
+                    </mat-form-field>
+                  </div>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </mat-card-content>
+    </mat-card>
   </div>
 
-  <mat-divider></mat-divider>
+  <div class="">
+    <mat-card appearance="outlined">
+      <mat-card-content>
+        <h3 class="h3">Bank Details</h3>
+        <table class="form-table">
+          <tbody>
+            <tr>
+              <td class="input-cell" colspan="2">
+                <div class="grid">
+                  <div class="d-flex">
+                    <div class="label-cell">Bank Name</div>
+                    <mat-form-field appearance="outline">
+                      <input matInput formControlName="bankName" />
+                    </mat-form-field>
+                  </div>
 
-  <!-- Bank Details -->
-  <div class="section">
-    <h3 class="h3">Bank Details</h3>
-    <div class="grid">
-      <div>
-        <div class="form-field">
-          <label class="label">Bank Name:</label>
-          <mat-form-field appearance="outline">
-            <input matInput formControlName="bankName" />
-          </mat-form-field>
-        </div>
-        <div class="form-field">
-          <label class="label">Address:</label>
-          <mat-form-field appearance="outline" class="full-width">
-            <textarea
-              matInput
-              rows="2"
-              formControlName="bankAddress"
-            ></textarea>
-          </mat-form-field>
-        </div>
-      </div>
+                  <div class="d-flex">
+                    <div class="label-cell">Branch</div>
+                    <mat-form-field appearance="outline">
+                      <input matInput formControlName="bankBranch" />
+                    </mat-form-field>
+                  </div>
+                </div>
+              </td>
+            </tr>
 
-      <div class="grid">
-        <div class="form-field">
-          <label class="label">Branch:</label>
-          <mat-form-field appearance="outline">
-            <input matInput formControlName="bankBranch" />
-          </mat-form-field>
-        </div>
-
-        <div class="form-field">
-          <label class="label">City:</label>
-          <mat-form-field appearance="outline">
-            <input matInput formControlName="bankCity" />
-          </mat-form-field>
-        </div>
-
-        <div class="form-field">
-          <label class="label">State:</label>
-          <mat-form-field appearance="outline">
-            <input matInput formControlName="bankState" />
-          </mat-form-field>
-        </div>
-
-        <div class="form-field">
-          <label class="label">Zip:</label>
-          <mat-form-field appearance="outline">
-            <input matInput formControlName="bankZip" />
-          </mat-form-field>
-        </div>
-
-        <div class="form-field">
-          <label class="label">Country:</label>
-          <mat-form-field appearance="outline">
-            <input matInput formControlName="bankCountry" />
-          </mat-form-field>
-        </div>
-      </div>
-    </div>
+            <tr>
+              <td class="input-cell" colspan="2">
+                <div class="grid">
+                  <div class="d-flex">
+                    <div class="label-cell">Address</div>
+                    <mat-form-field appearance="outline" class="full-width">
+                      <textarea
+                        matInput
+                        rows="2"
+                        formControlName="bankAddress"
+                      ></textarea>
+                    </mat-form-field>
+                  </div>
+                  <div class="d-flex" style="flex-direction: column">
+                    <div class="d-flex">
+                      <div class="d-flex">
+                        <div class="label-cell">City</div>
+                        <mat-form-field appearance="outline">
+                          <input matInput formControlName="bankCity" />
+                        </mat-form-field>
+                      </div>
+                      <div class="d-flex">
+                        <div class="label-cell">State</div>
+                        <mat-form-field appearance="outline">
+                          <input matInput formControlName="bankState" />
+                        </mat-form-field>
+                      </div>
+                    </div>
+                    <div class="d-flex">
+                      <div class="d-flex">
+                        <div class="label-cell">Zip</div>
+                        <mat-form-field appearance="outline">
+                          <input matInput formControlName="bankZip" />
+                        </mat-form-field>
+                      </div>
+                      <div class="d-flex">
+                        <div class="label-cell">Country</div>
+                        <mat-form-field appearance="outline">
+                          <input matInput formControlName="bankCountry" />
+                        </mat-form-field>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </mat-card-content>
+    </mat-card>
   </div>
 
   <mat-divider></mat-divider>
@@ -247,7 +332,7 @@
       }
     </div>
     <div>
-      <button class="btn" mat-button (click)="onCancel()">Cancel</button>
+      <button class="btn" mat-raised-button (click)="onCancel()">Cancel</button>
       <button class="btn" mat-raised-button color="primary" (click)="onSave()">
         Save
       </button>
