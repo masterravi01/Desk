@@ -8,6 +8,7 @@ libre.convertAsync = require("util").promisify(libre.convert);
 
 const db = require("../database");
 const { getInvoice } = require("../controllers/invoice");
+const { app } = require("electron");
 
 async function readInvoiceData(invoiceId) {
   const {
@@ -124,10 +125,11 @@ async function generateWordDocument(data, template) {
   });
 
   // Save the output document
-  fs.writeFileSync("output.docx", buf);
+  const outputPath = path.join(app.getPath("documents"), "output.docx");
+  fs.writeFileSync(outputPath, buf);
 
   console.log("Word document generated successfully!");
-  openWordDocument("output.docx");
+  openWordDocument(outputPath);
 }
 
 // Function to open the Word document
