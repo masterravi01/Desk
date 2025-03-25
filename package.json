@@ -29,8 +29,10 @@
       "icon": "assets/icon.ico"
     },
     "nsis": {
-      "oneClick": false,
-      "allowToChangeInstallationDirectory": true
+      "oneClick": true,
+      "perMachine": true,
+      "allowElevation": true,
+      "deleteAppDataOnUninstall": true
     }
   },
   "private": true,
