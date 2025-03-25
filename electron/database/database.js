@@ -311,7 +311,7 @@ INSERT INTO invoiceMaster (
           customerId INTEGER DEFAULT NULL,
         containerType TEXT DEFAULT NULL,
         containerTo TEXT DEFAULT NULL,
-        containerFrom INTEGER DEFAULT NULL,
+        containerFrom TEXT DEFAULT NULL,
         length TEXT DEFAULT NULL,
         width TEXT DEFAULT NULL,
         thickness TEXT DEFAULT NULL,

@@ -10,6 +10,20 @@ function getCurrency(id) {
   });
 }
 
+// Get a currency by currencyName
+function getCurrencyByName(currencyName) {
+  return new Promise((resolve, reject) => {
+    db.get(
+      "SELECT * FROM Currency WHERE currencyName = ?",
+      [currencyName],
+      (err, row) => {
+        if (err) reject(err);
+        else resolve(row);
+      }
+    );
+  });
+}
+
 // Get all currencies
 function getAllCurrencies() {
   return new Promise((resolve, reject) => {
@@ -77,6 +91,7 @@ function deleteCurrency(id) {
 
 module.exports = {
   getCurrency,
+  getCurrencyByName,
   getAllCurrencies,
   addCurrency,
   updateCurrency,

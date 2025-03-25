@@ -8,6 +8,8 @@ libre.convertAsync = require("util").promisify(libre.convert);
 
 const db = require("../database");
 const { getInvoice } = require("../controllers/invoice");
+const { getAllContainer } = require("../controllers/container");
+const { getCurrencyByName } = require("../controllers/currency");
 
 async function readInvoiceData(invoiceId) {
   const {
@@ -17,9 +19,48 @@ async function readInvoiceData(invoiceId) {
     finalInvoice = [],
     invoiceBottomNote = [],
   } = await getInvoice(invoiceId);
-
   const master = invoiceMaster[0] || {};
   const final = finalInvoice[0] || {};
+
+  const containers = await getAllContainer();
+  const currency = await getCurrencyByName(master.currency);
+
+  let groupedInvoices = {};
+  let totalBox = 0;
+  invoiceDetails.forEach((invoice) => {
+    const type = invoice.containerType;
+
+    if (!groupedInvoices[type]) {
+      const container = containers.find((c) => c.containerName === type);
+
+      groupedInvoices[type] = {
+        containerType: type,
+        width: container.width ?? 0,
+        height: container.height ?? 0,
+        length: container.length ?? 0,
+        invoices: [],
+      };
+    }
+    invoice.value = (
+      parseFloat(invoice?.quantity || "0") * parseFloat(invoice?.rate || "0")
+    ).toFixed(2);
+    groupedInvoices[type].invoices.push(invoice);
+    totalBox +=
+      Number(invoice.containerTo ?? "0") - Number(invoice.containerFrom ?? "0");
+  });
+
+  groupedInvoices = Object.values(groupedInvoices);
+
+  const containerSummary = groupedInvoices.map((item) => ({
+    width: item.width,
+    height: item.height,
+    length: item.length,
+    totalSqMtPerType: item.invoices.reduce(
+      (sum, invoice) => sum + parseFloat(invoice.squareMeter),
+      0
+    ),
+    avgWeight: (item.width * item.height * item.length * 1410) / 1000000000,
+  }));
 
   let docData = {
     invoiceNo: final.finalInvoice ?? "",
@@ -28,10 +69,18 @@ async function readInvoiceData(invoiceId) {
     orderDate: master.invoiceDate ?? "",
 
     consigneeName: final.consigneeName ?? "",
+    consigneeAddress: final.consigneeAddress ?? "",
+    consigneeCity: final.consigneeCity ?? "",
+    consigneeState: final.consigneeState ?? "",
     consigneeCountry: final.consigneeCountry ?? "",
+    consigneeZip: final.consigneeZip ?? "",
 
-    buyerName: final.buyerName ?? "",
     buyerAddress: final.buyerAddress ?? "",
+    buyerCity: final.buyerCity ?? "",
+    buyerName: final.buyerName ?? "",
+    buyerCountry: final.buyerCountry ?? "",
+    buyerState: final.buyerState ?? "",
+    buyerZip: final.buyerZip ?? "",
 
     originOfGoods: final.originOfGoods ?? "",
     finalDestination: final.finalDestination ?? "",
@@ -45,24 +94,50 @@ async function readInvoiceData(invoiceId) {
 
     dischargeTerms: final.dischargeTerms ?? "",
 
-    invoiceDetails: invoiceDetails.map((detail) => ({
-      sizeThickness: `${detail?.length ?? ""} x ${detail?.width ?? ""} x ${
-        detail?.thickness ?? ""
-      } MM`,
-      designFinish: detail?.finishType ?? "",
-      quantity: detail?.quantity ?? "",
-      totalSquareMeters: detail?.squareMeter ?? "",
-      price: detail?.rate ?? "",
-      value: (
-        parseFloat(detail?.quantity || "0") * parseFloat(detail?.rate || "0")
-      ).toFixed(2),
-    })),
+    // invoiceItems: invoiceDetails.map((detail) => ({
+    //   sizeThickness: `${detail?.length ?? ""} x ${detail?.width ?? ""} x ${
+    //     detail?.thickness ?? ""
+    //   } MM`,
+    //   designFinish: detail?.finishType ?? "",
+    //   quantity: detail?.quantity ?? "",
+    //   totalSqMt: detail?.squareMeter ?? "",
+    //   price: detail?.rate ?? "",
+    //   value: (
+    //     parseFloat(detail?.quantity || "0") * parseFloat(detail?.rate || "0")
+    //   ).toFixed(2),
+    // })),
+    invoiceItems: groupedInvoices,
+    rounding: master.rounding ?? "0",
+    totalQuantity: master.totalQuantity ?? "0",
+    totalBox,
+    totalSqMt: master.totalSquareMeters ?? "0",
+    totalAmount: master.totalAmount ?? "0",
+    netAmount: master.netAmount ?? "",
+    currencyChar: currency.currencyChar,
+    totalDiscount:
+      master.discountType === "percentage"
+        ? (master.totalAmount * master.discountValue) / 100
+        : master.discountType === "flat"
+        ? master.discountValue
+        : 0,
+    totalAddition:
+      master.additionalChargeType === "percentage"
+        ? (master.totalAmount * master.additionalChargeValue) / 100
+        : master.additionalChargeType === "flat"
+        ? master.additionalChargeValue
+        : 0,
+
+    containerSummary,
 
     bankName: final.bankName ?? "",
     bankBranch: final.branchName ?? "",
     bankCity: final.bankCity ?? "",
     swiftNumber: master.swiftNumber ?? "",
     bankAddress: final.bankAddress ?? "",
+    panNo: final.panNo ?? "",
+    adCode: final.adCode ?? "",
+    acCode: final.acCode ?? "",
+    iec: final.iec ?? "",
 
     bottomNotes: invoiceBottomNote.map((note) => note?.bottomNote ?? ""),
 
@@ -70,9 +145,6 @@ async function readInvoiceData(invoiceId) {
     discountValue: master.discountValue ?? "",
     additionalChargeType: master.additionalChargeType ?? "",
     additionalChargeValue: master.additionalChargeValue ?? "",
-    totalQuantity: master.totalQuantity ?? "",
-    totalAmount: master.totalAmount ?? "",
-    netAmount: master.netAmount ?? "",
     deliveryTerms: master.deliveryTerms ?? "",
     shippingDetails: master.shippingDetails ?? "",
     paymentTerms: master.paymentTerms ?? "",
