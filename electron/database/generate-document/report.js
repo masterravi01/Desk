@@ -3,6 +3,7 @@ const path = require("path");
 const PizZip = require("pizzip");
 const Docxtemplater = require("docxtemplater");
 const libre = require("libreoffice-convert");
+const converter = require("number-to-words");
 const { exec } = require("child_process"); // Import the exec function from child_process
 libre.convertAsync = require("util").promisify(libre.convert);
 
@@ -10,6 +11,7 @@ const db = require("../database");
 const { getInvoice } = require("../controllers/invoice");
 const { getAllContainer } = require("../controllers/container");
 const { getCurrencyByName } = require("../controllers/currency");
+const { convertToCapitalize } = require("../utills/helper");
 const { app } = require("electron");
 
 async function readInvoiceData(invoiceId) {
@@ -36,6 +38,7 @@ async function readInvoiceData(invoiceId) {
 
       groupedInvoices[type] = {
         containerType: type,
+        thicknessDetail: invoice.thicknessDetail,
         width: container.width ?? 0,
         height: container.height ?? 0,
         length: container.length ?? 0,
@@ -47,7 +50,9 @@ async function readInvoiceData(invoiceId) {
     ).toFixed(2);
     groupedInvoices[type].invoices.push(invoice);
     totalBox +=
-      Number(invoice.containerTo ?? "0") - Number(invoice.containerFrom ?? "0");
+      Number(invoice.containerTo ?? "0") -
+      Number(invoice.containerFrom ?? "0") +
+      (invoice.containerTo && invoice.containerFrom ? 1 : 0);
   });
 
   groupedInvoices = Object.values(groupedInvoices);
@@ -107,6 +112,7 @@ async function readInvoiceData(invoiceId) {
     //     parseFloat(detail?.quantity || "0") * parseFloat(detail?.rate || "0")
     //   ).toFixed(2),
     // })),
+    invoiceDetails,
     invoiceItems: groupedInvoices,
     rounding: master.rounding ?? "0",
     totalQuantity: master.totalQuantity ?? "0",
@@ -114,6 +120,9 @@ async function readInvoiceData(invoiceId) {
     totalSqMt: master.totalSquareMeters ?? "0",
     totalAmount: master.totalAmount ?? "0",
     netAmount: master.netAmount ?? "",
+    netAmountWords: convertToCapitalize(
+      converter.toWords(master.netAmount ?? 0)
+    ),
     currencyChar: currency.currencyChar,
     totalDiscount:
       master.discountType === "percentage"
@@ -164,14 +173,38 @@ async function readInvoiceData(invoiceId) {
 }
 
 async function generateInvoiceDocument(body) {
-  const { invoiceId } = body;
+  const { invoiceId, format, type, document } = body;
   let data = await readInvoiceData(invoiceId);
 
-  let template = "template.docx";
-  await generateWordDocument(data, template);
+  let template;
+  let fileName = "output";
+
+  if (document == "invoice") {
+    if (type == "custom") {
+      template = "custom-invoice.docx";
+      fileName = `INV ${invoiceId} (custom)`;
+    } else {
+      template = "party-invoice.docx";
+      fileName = `INV ${invoiceId} (party)`;
+    }
+  } else {
+    if (type == "custom") {
+      template = "custom-packing.docx";
+      fileName = `PLIST ${invoiceId} (custom)`;
+    } else {
+      template = "party-packing.docx";
+      fileName = `PLIST ${invoiceId} (party)`;
+    }
+  }
+  let outputPath = await generateWordDocument(data, template, fileName);
+  if (format == "ms-word") {
+    openWordDocument(outputPath);
+  } else {
+    convertToPdf(outputPath, fileName);
+  }
 }
 
-async function generateWordDocument(data, template) {
+async function generateWordDocument(data, template, fileName) {
   // Load the template file
   const content = fs.readFileSync(
     path.join(__dirname, `./templates/${template}`),
@@ -197,11 +230,11 @@ async function generateWordDocument(data, template) {
   });
 
   // Save the output document
-  const outputPath = path.join(app.getPath("documents"), "output.docx");
+  const outputPath = path.join(app.getPath("documents"), `${fileName}.docx`);
   fs.writeFileSync(outputPath, buf);
 
   console.log("Word document generated successfully!");
-  openWordDocument(outputPath);
+  return outputPath;
 }
 
 // Function to open the Word document
@@ -219,12 +252,10 @@ function openWordDocument(filePath) {
   });
 }
 
-// Open the generated Word document
-
 // Convert the generated Word document to PDF
-async function convertToPdf() {
-  const inputPath = "output.docx";
-  const outputPath = "output.pdf";
+async function convertToPdf(inputPath, fileName) {
+  // const inputPath = "output.docx";
+  const outputPath = path.join(app.getPath("documents"), `${fileName}.pdf`);
 
   // Read the generated Word document
   const docxBuffer = fs.readFileSync(inputPath);
@@ -237,10 +268,6 @@ async function convertToPdf() {
 
   console.log("PDF generated successfully!");
 }
-
-// convertToPdf().catch((err) => {
-//   console.error("Error converting to PDF:", err);
-// });
 
 module.exports = {
   generateInvoiceDocument,

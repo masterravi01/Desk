@@ -103,7 +103,7 @@ export class FinalInvoiceReportModalComponent {
       ...this.invoiceForm.value,
       format: this.reportType,
       type: this.documentType,
-      template,
+      document: template,
       country
     };
     console.log(body);
