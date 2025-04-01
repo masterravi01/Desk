@@ -67,7 +67,7 @@ export class SelectInvoiceComponent {
 
   loadInvoices() {
     this.masterService
-      .invoke('getAllMasterInvoices', this.data?.final ? false : true)
+      .invoke('getAllMasterInvoices', this.data?.final)
       .pipe(untilDestroyed(this))
       .subscribe((data: any) => {
         console.log(data);

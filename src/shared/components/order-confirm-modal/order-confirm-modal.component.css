@@ -25,3 +25,11 @@
 .mat-mdc-table .mdc-data-table__row {
   height: 32px;
 }
+
+.item-details .label {
+  font-size: 13px;
+}
+
+.label-cell {
+  font-size: 13px;
+}

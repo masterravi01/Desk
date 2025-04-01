@@ -183,10 +183,10 @@ export class ConfirmInvoiceModalComponent implements OnInit {
     this.finalInvoiceForm.enable();
   }
 
-  openSelectModal() {
+  openSelectModal(isFinal = false) {
     this.modalService
       .openModal(SelectInvoiceComponent, {
-        data: { final: true },
+        data: { final: isFinal },
         width: '80%',
         height: '90%',
       })

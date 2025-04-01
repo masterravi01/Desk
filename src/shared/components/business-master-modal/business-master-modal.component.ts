@@ -65,8 +65,8 @@ export class BusinessMasterModalComponent {
     'buyerCountry',
     'bankName',
     'bankBranch',
-    'bankCity',
     'bankAddress',
+    'bankCity',
     'bankState',
     'bankZip',
     'bankCountry',
@@ -80,7 +80,7 @@ export class BusinessMasterModalComponent {
   constructor(
     private modalService: ModalService,
     private masterService: MasterService
-  ) {}
+  ) { }
 
   ngOnInit() {
     this.loadCustomers();
@@ -220,9 +220,9 @@ export class BusinessMasterModalComponent {
         parameter: 'Bottom Note',
         info: note
           ? {
-              id: note.bottomNoteId,
-              value: note.bottomNote,
-            }
+            id: note.bottomNoteId,
+            value: note.bottomNote,
+          }
           : '',
       },
     });
@@ -261,9 +261,9 @@ export class BusinessMasterModalComponent {
         parameter: 'Instruction',
         info: instruction
           ? {
-              id: instruction.BID,
-              value: instruction.Instruction,
-            }
+            id: instruction.BID,
+            value: instruction.Instruction,
+          }
           : '',
       },
     });
