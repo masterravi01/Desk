@@ -437,45 +437,57 @@ CREATE TABLE invoiceBottomNote (
 
 // db.run("DELETE FROM migrations WHERE version = ?", [13]);
 // Ensure Migrations Table Exists
-db.run(`
-      CREATE TABLE IF NOT EXISTS migrations (
-          id INTEGER PRIMARY KEY AUTOINCREMENT,
-          version INTEGER UNIQUE NOT NULL,
-          description TEXT NOT NULL,
-          applied_at DATETIME DEFAULT CURRENT_TIMESTAMP
-      )
-  `);
-db.all("SELECT version FROM migrations", (err, rows) => {
-  if (err) {
-    logger.error("❌ Error Fetching Migrations:", err.message);
-    return;
-  }
-  console.log(rows);
-  const appliedVersions = rows.map((row) => row.version);
-  console.log(appliedVersions);
-  db.serialize(() => {
-    db.run("BEGIN TRANSACTION");
+db.run(
+  `
+  CREATE TABLE IF NOT EXISTS migrations (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      version INTEGER UNIQUE NOT NULL,
+      description TEXT NOT NULL,
+      applied_at DATETIME DEFAULT CURRENT_TIMESTAMP
+  )
+`,
+  (err) => {
+    if (err) {
+      logger.error("❌ Error Creating Migrations Table:", err.message);
+      return;
+    }
 
-    migrations.forEach((migration) => {
-      if (!appliedVersions.includes(migration.version)) {
-        db.exec(migration.script, (err) => {
-          if (err) {
-            logger.error(`❌ Migration ${migration.version} Failed:`, err);
-          } else {
-            logger.info(
-              `✅ Migration ${migration.version}: ${migration.description}`
-            );
-            db.run(
-              "INSERT INTO migrations (version, description) VALUES (?, ?)",
-              [migration.version, migration.description]
-            );
+    db.all("SELECT version FROM migrations", (err, rows) => {
+      if (err) {
+        logger.error("❌ Error Fetching Migrations:", err.message);
+        return;
+      }
+
+      console.log(rows);
+      const appliedVersions = rows.map((row) => row.version);
+
+      db.serialize(() => {
+        db.run("BEGIN TRANSACTION");
+
+        migrations.forEach((migration) => {
+          if (!appliedVersions.includes(migration.version)) {
+            db.exec(migration.script, (err) => {
+              if (err) {
+                logger.error(`❌ Migration ${migration.version} Failed:`, err);
+              } else {
+                logger.info(
+                  `✅ Migration ${migration.version}: ${migration.description}`
+                );
+                db.run(
+                  "INSERT INTO migrations (version, description) VALUES (?, ?)",
+                  [migration.version, migration.description]
+                );
+              }
+            });
           }
         });
-      }
+
+        db.run("COMMIT");
+      });
     });
-    db.run("COMMIT");
-  });
-});
+  }
+);
+
 db.all("SELECT name FROM sqlite_master WHERE type='table'", (err, rows) => {
   if (err) {
     console.error("Error fetching tables:", err.message);

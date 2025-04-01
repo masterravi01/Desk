@@ -54,10 +54,10 @@ function getInvoiceMaster(id) {
 }
 
 // Get all invoices
-async function getAllMasterInvoices(master = true) {
+async function getAllMasterInvoices(master) {
   try {
     // Step 1: Fetch All Final Invoices
-    if (master) {
+    if (!master) {
       const masterInvoices = await runQuery("SELECT * FROM invoiceMaster");
       return masterInvoices;
     } else {

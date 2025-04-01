@@ -12,7 +12,7 @@ import { ModalService } from '../../../core/services/modal.service';
   styleUrl: './business-master.component.css',
 })
 export class BusinessMasterComponent implements OnInit {
-  constructor(private modalService: ModalService) {}
+  constructor(private modalService: ModalService) { }
 
   ngOnInit(): void {
     this.openModal();
@@ -21,6 +21,7 @@ export class BusinessMasterComponent implements OnInit {
     this.modalService.openModal(BusinessMasterModalComponent, {
       data: {},
       width: '80%',
+      minHeight: '90vh',
       position: {
         top: '20px',
       },

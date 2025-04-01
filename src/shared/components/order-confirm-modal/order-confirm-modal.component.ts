@@ -100,9 +100,10 @@ export class OrderConfirmModalComponent implements OnInit {
     length: 'Length',
     width: 'Width',
     thickness: 'Thickness',
-    squareMeter: 'Area',
+    squareMeter: 'Sq. Mt.',
     materialGrade: 'Grade',
     brandName: 'Brand',
+    designType: 'Design',
     finishType: 'Finish',
     thicknessDetail: 'Description',
     quantity: 'Quantity',
@@ -165,15 +166,15 @@ export class OrderConfirmModalComponent implements OnInit {
       discountType === 'percentage'
         ? (finalAmount * discountValue) / 100
         : discountType === 'flat'
-        ? discountValue
-        : 0;
+          ? discountValue
+          : 0;
 
     const totalAddition =
       additionalChargeType === 'percentage'
         ? (finalAmount * additionalChargeValue) / 100
         : additionalChargeType === 'flat'
-        ? additionalChargeValue
-        : 0;
+          ? additionalChargeValue
+          : 0;
 
     finalAmount = finalAmount - totalDiscount + totalAddition;
 
@@ -200,7 +201,7 @@ export class OrderConfirmModalComponent implements OnInit {
     private fb: FormBuilder,
     private masterService: MasterService,
     private invoiceDetailsService: InvoiceDetailsService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.instructions = [];
@@ -412,6 +413,7 @@ export class OrderConfirmModalComponent implements OnInit {
   openSelectModal() {
     this.modalService
       .openModal(SelectInvoiceComponent, {
+        data: { final: false },
         width: '80%',
         height: '90%',
       })
@@ -451,7 +453,9 @@ export class OrderConfirmModalComponent implements OnInit {
       .subscribe((result) => {
         if (result) {
           console.log(result);
-          this.instructions = [...this.instructions, result];
+          if (!this.instructions.find((c) => c.instructionId === result.instructionId)) {
+            this.instructions = [...this.instructions, result];
+          }
         }
       });
   }

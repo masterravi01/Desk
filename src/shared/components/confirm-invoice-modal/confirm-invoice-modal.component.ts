@@ -94,7 +94,7 @@ export class ConfirmInvoiceModalComponent implements OnInit {
     private modalService: ModalService,
     private fb: FormBuilder,
     private masterService: MasterService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.invoiceBottomNotes = [];
@@ -183,10 +183,10 @@ export class ConfirmInvoiceModalComponent implements OnInit {
     this.finalInvoiceForm.enable();
   }
 
-  openSelectModal() {
+  openSelectModal(isFinal = false) {
     this.modalService
       .openModal(SelectInvoiceComponent, {
-        data: { final: true },
+        data: { final: isFinal },
         width: '80%',
         height: '90%',
       })
@@ -266,8 +266,8 @@ export class ConfirmInvoiceModalComponent implements OnInit {
     if (isClose) this.dialogRef.close(false);
     const date = this.finalInvoiceForm.get('invoiceDate')?.value
       ? new Date(this.finalInvoiceForm.get('invoiceDate')?.value)
-          .toISOString()
-          .split('T')[0]
+        .toISOString()
+        .split('T')[0]
       : '';
     console.log({
       finalinvoice: { ...this.finalInvoiceForm.value, invoiceDate: date },
@@ -284,7 +284,7 @@ export class ConfirmInvoiceModalComponent implements OnInit {
         }
       )
       .pipe(untilDestroyed(this))
-      .subscribe((data:any) => {
+      .subscribe((data: any) => {
         console.log(data);
         this.getFinalInvoiceById(data.invoiceId);
       });

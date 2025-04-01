@@ -79,6 +79,7 @@ export class OrderConfirmReportModalComponent {
   openSelectModal() {
     this.modalService
       .openModal(SelectInvoiceComponent, {
+        data: { final: false },
         width: '80%',
         height: '90%',
       })

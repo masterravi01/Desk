@@ -274,7 +274,7 @@
   </mat-tab>
   <mat-tab label="Item Details" [formGroup]="invoiceDetailsForm">
     <div
-      class="grid"
+      class="item-details grid"
       style="
         grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
         gap: 0 8px;
@@ -537,7 +537,7 @@
         </div>
       </div>
       <mat-divider></mat-divider>
-      <div class="outer-div">
+      <div class="outer-div item-details">
         <table class="form-table">
           <tbody>
             <tr>
@@ -633,7 +633,7 @@
                 </div>
 
                 <div class="d-flex">
-                  <div class="label-cell">Bank Brach</div>
+                  <div class="label-cell">Bank Branch</div>
                   <mat-form-field appearance="outline">
                     <input matInput formControlName="bankBranch" />
                   </mat-form-field>
