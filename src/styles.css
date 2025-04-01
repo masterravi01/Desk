@@ -86,9 +86,6 @@ body {
   margin-left: 10px;
 }
 
-:host ::ng-deep .mat-mdc-form-field-subscript-wrapper {
-  display: none !important;
-}
 mat-divider {
   margin-top: 24px !important;
 }
@@ -137,6 +134,9 @@ mat-card {
 @layer reset, base, overrides;
 
 @layer overrides {
+  .mat-mdc-form-field-subscript-wrapper {
+    display: none !important;
+  }
   mat-form-field {
     font-size: 12px !important;
   }

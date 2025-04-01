@@ -264,13 +264,19 @@ export class ConfirmInvoiceModalComponent implements OnInit {
     }
 
     if (isClose) this.dialogRef.close(false);
-    const date = this.finalInvoiceForm.get('invoiceDate')?.value
-      ? new Date(this.finalInvoiceForm.get('invoiceDate')?.value)
-          .toISOString()
-          .split('T')[0]
-      : '';
+
+    this.finalInvoiceForm
+      .get('invoiceDate')
+      ?.setValue(
+        this.finalInvoiceForm.get('invoiceDate')?.value
+          ? new DatePipe('en-US').transform(
+              new Date(this.finalInvoiceForm.get('invoiceDate')?.value),
+              'yyyy-MM-dd'
+            )
+          : ''
+      );
     console.log({
-      finalinvoice: { ...this.finalInvoiceForm.value, invoiceDate: date },
+      finalinvoice: this.finalInvoiceForm.value,
       invoiceBottomNotes: this.invoiceBottomNotes,
     });
     this.masterService
@@ -279,12 +285,12 @@ export class ConfirmInvoiceModalComponent implements OnInit {
           ? 'updateFinalInvoice'
           : 'addFinalInvoice',
         {
-          invoice: { ...this.finalInvoiceForm.value, invoiceDate: date },
+          invoice: this.finalInvoiceForm.value,
           invoiceBottomNotes: this.invoiceBottomNotes,
         }
       )
       .pipe(untilDestroyed(this))
-      .subscribe((data:any) => {
+      .subscribe((data: any) => {
         console.log(data);
         this.getFinalInvoiceById(data.invoiceId);
       });

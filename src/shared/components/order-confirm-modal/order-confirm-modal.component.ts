@@ -134,9 +134,9 @@ export class OrderConfirmModalComponent implements OnInit {
       const squareMeter = Number(box.squareMeter || 0);
 
       if (calculationType === 'Per Sq. Mt') {
-        return sum + rate * squareMeter;
+        return Math.round((sum + rate * squareMeter) * 100) / 100;
       } else if (calculationType === 'Per Sheet') {
-        return sum + rate * quantity;
+        return Math.round((sum + rate * quantity) * 100) / 100;
       }
       return sum;
     }, 0);
@@ -522,7 +522,18 @@ export class OrderConfirmModalComponent implements OnInit {
       this.selectedIndex++;
     }
   }
-
+  clearData() {
+    this.initForm();
+    this.instructions = [];
+    this.boxes.set([]);
+    this.formData.set({
+      discountType: '',
+      discountValue: 0,
+      additionalChargeType: '',
+      additionalChargeValue: 0,
+      calculationType: 'Per Sq. Mt',
+    });
+  }
   onSave(isClose = false) {
     if (this.invoiceForm.disabled) {
       this.invoiceForm.enable();
@@ -531,6 +542,16 @@ export class OrderConfirmModalComponent implements OnInit {
       this.invoiceDetailsForm.enable();
     }
     if (isClose) this.dialogRef.close(false);
+    this.invoiceForm
+      .get('invoiceDate')
+      ?.setValue(
+        this.invoiceForm.get('invoiceDate')?.value
+          ? new DatePipe('en-US').transform(
+              new Date(this.invoiceForm.get('invoiceDate')?.value),
+              'yyyy-MM-dd'
+            )
+          : ''
+      );
     console.log({
       invoiceMaster: {
         ...this.invoiceForm.value,
@@ -557,6 +578,7 @@ export class OrderConfirmModalComponent implements OnInit {
       .subscribe((data: any) => {
         console.log(data);
         if (data.invoiceId) {
+          if (!isClose) alert('Data Saved Successfully!');
           this.getInvoiceById(data.invoiceId);
         }
       });
