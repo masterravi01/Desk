@@ -75,7 +75,6 @@ export class OrderConfirmModalComponent implements OnInit {
   currencies: any[] = [];
   instructions: any[] = [];
   containers: any[] = [];
-  customers: any[] = [];
   displayedColumns: string[] = [
     'containerType',
     'containerFrom',
@@ -166,15 +165,15 @@ export class OrderConfirmModalComponent implements OnInit {
       discountType === 'percentage'
         ? (finalAmount * discountValue) / 100
         : discountType === 'flat'
-          ? discountValue
-          : 0;
+        ? discountValue
+        : 0;
 
     const totalAddition =
       additionalChargeType === 'percentage'
         ? (finalAmount * additionalChargeValue) / 100
         : additionalChargeType === 'flat'
-          ? additionalChargeValue
-          : 0;
+        ? additionalChargeValue
+        : 0;
 
     finalAmount = finalAmount - totalDiscount + totalAddition;
 
@@ -201,7 +200,7 @@ export class OrderConfirmModalComponent implements OnInit {
     private fb: FormBuilder,
     private masterService: MasterService,
     private invoiceDetailsService: InvoiceDetailsService
-  ) { }
+  ) {}
 
   ngOnInit(): void {
     this.instructions = [];
@@ -354,13 +353,6 @@ export class OrderConfirmModalComponent implements OnInit {
         console.log(data);
         this.containers = data;
       });
-    this.masterService
-      .invoke('getAllCustomers')
-      .pipe(untilDestroyed(this))
-      .subscribe((data: any) => {
-        console.log(data);
-        this.customers = data;
-      });
   }
 
   onCancel(): void {
@@ -440,6 +432,14 @@ export class OrderConfirmModalComponent implements OnInit {
           this.invoiceDetailsForm
             .get('customerId')
             ?.patchValue(result.customerId);
+          this.masterService
+            .invoke('getInstructionsByCustomer', result.customerId)
+            .pipe(untilDestroyed(this))
+            .subscribe((data: any) => {
+              console.log(data);
+              this.instructions = data || [];
+              // this.currencies = data;
+            });
         }
       });
   }
@@ -453,7 +453,11 @@ export class OrderConfirmModalComponent implements OnInit {
       .subscribe((result) => {
         if (result) {
           console.log(result);
-          if (!this.instructions.find((c) => c.instructionId === result.instructionId)) {
+          if (
+            !this.instructions.find(
+              (c) => c.instructionId === result.instructionId
+            )
+          ) {
             this.instructions = [...this.instructions, result];
           }
         }

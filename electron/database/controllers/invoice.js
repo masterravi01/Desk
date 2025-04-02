@@ -455,7 +455,7 @@ async function getInvoice(invoiceId) {
     };
 
     // Run queries in parallel for better performance
-    const [
+    let [
       invoiceMaster,
       invoiceDetails,
       invoiceInstruction,
@@ -471,6 +471,22 @@ async function getInvoice(invoiceId) {
 
     if (!invoiceMaster) {
       throw new Error(`Invoice with ID ${invoiceId} not found`);
+    }
+    if (invoiceBottomNote.length == 0 && invoiceMaster[0].customerId) {
+      invoiceBottomNote = await runQuery(
+        `
+        SELECT ibn.bottomNoteId, ibn.bottomNote
+        FROM invoiceBottomNote ibn
+        JOIN (
+            SELECT invoiceId
+            FROM invoiceMaster
+            WHERE customerId = ? AND invoiceId != ?
+            ORDER BY invoiceId DESC
+            LIMIT 1
+        ) latest_invoice ON ibn.invoiceId = latest_invoice.invoiceId;
+      `,
+        [invoiceMaster[0].customerId, invoiceMaster[0].invoiceId]
+      );
     }
 
     return {
