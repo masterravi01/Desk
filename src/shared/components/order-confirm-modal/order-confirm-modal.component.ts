@@ -75,7 +75,6 @@ export class OrderConfirmModalComponent implements OnInit {
   currencies: any[] = [];
   instructions: any[] = [];
   containers: any[] = [];
-  customers: any[] = [];
   displayedColumns: string[] = [
     'containerType',
     'containerFrom',
@@ -135,9 +134,9 @@ export class OrderConfirmModalComponent implements OnInit {
       const squareMeter = Number(box.squareMeter || 0);
 
       if (calculationType === 'Per Sq. Mt') {
-        return sum + rate * squareMeter;
+        return Math.round((sum + rate * squareMeter) * 100) / 100;
       } else if (calculationType === 'Per Sheet') {
-        return sum + rate * quantity;
+        return Math.round((sum + rate * quantity) * 100) / 100;
       }
       return sum;
     }, 0);
@@ -166,15 +165,15 @@ export class OrderConfirmModalComponent implements OnInit {
       discountType === 'percentage'
         ? (finalAmount * discountValue) / 100
         : discountType === 'flat'
-          ? discountValue
-          : 0;
+        ? discountValue
+        : 0;
 
     const totalAddition =
       additionalChargeType === 'percentage'
         ? (finalAmount * additionalChargeValue) / 100
         : additionalChargeType === 'flat'
-          ? additionalChargeValue
-          : 0;
+        ? additionalChargeValue
+        : 0;
 
     finalAmount = finalAmount - totalDiscount + totalAddition;
 
@@ -201,7 +200,7 @@ export class OrderConfirmModalComponent implements OnInit {
     private fb: FormBuilder,
     private masterService: MasterService,
     private invoiceDetailsService: InvoiceDetailsService
-  ) { }
+  ) {}
 
   ngOnInit(): void {
     this.instructions = [];
@@ -354,13 +353,6 @@ export class OrderConfirmModalComponent implements OnInit {
         console.log(data);
         this.containers = data;
       });
-    this.masterService
-      .invoke('getAllCustomers')
-      .pipe(untilDestroyed(this))
-      .subscribe((data: any) => {
-        console.log(data);
-        this.customers = data;
-      });
   }
 
   onCancel(): void {
@@ -440,6 +432,14 @@ export class OrderConfirmModalComponent implements OnInit {
           this.invoiceDetailsForm
             .get('customerId')
             ?.patchValue(result.customerId);
+          this.masterService
+            .invoke('getInstructionsByCustomer', result.customerId)
+            .pipe(untilDestroyed(this))
+            .subscribe((data: any) => {
+              console.log(data);
+              this.instructions = data || [];
+              // this.currencies = data;
+            });
         }
       });
   }
@@ -453,7 +453,11 @@ export class OrderConfirmModalComponent implements OnInit {
       .subscribe((result) => {
         if (result) {
           console.log(result);
-          if (!this.instructions.find((c) => c.instructionId === result.instructionId)) {
+          if (
+            !this.instructions.find(
+              (c) => c.instructionId === result.instructionId
+            )
+          ) {
             this.instructions = [...this.instructions, result];
           }
         }
@@ -526,7 +530,18 @@ export class OrderConfirmModalComponent implements OnInit {
       this.selectedIndex++;
     }
   }
-
+  clearData() {
+    this.initForm();
+    this.instructions = [];
+    this.boxes.set([]);
+    this.formData.set({
+      discountType: '',
+      discountValue: 0,
+      additionalChargeType: '',
+      additionalChargeValue: 0,
+      calculationType: 'Per Sq. Mt',
+    });
+  }
   onSave(isClose = false) {
     if (this.invoiceForm.disabled) {
       this.invoiceForm.enable();
@@ -535,6 +550,16 @@ export class OrderConfirmModalComponent implements OnInit {
       this.invoiceDetailsForm.enable();
     }
     if (isClose) this.dialogRef.close(false);
+    this.invoiceForm
+      .get('invoiceDate')
+      ?.setValue(
+        this.invoiceForm.get('invoiceDate')?.value
+          ? new DatePipe('en-US').transform(
+              new Date(this.invoiceForm.get('invoiceDate')?.value),
+              'yyyy-MM-dd'
+            )
+          : ''
+      );
     console.log({
       invoiceMaster: {
         ...this.invoiceForm.value,
@@ -561,6 +586,7 @@ export class OrderConfirmModalComponent implements OnInit {
       .subscribe((data: any) => {
         console.log(data);
         if (data.invoiceId) {
+          if (!isClose) alert('Data Saved Successfully!');
           this.getInvoiceById(data.invoiceId);
         }
       });

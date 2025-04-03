@@ -50,9 +50,35 @@ function deleteInstruction(Instruction) {
   });
 }
 
+function getInstructionsByCustomer(customerId) {
+  return new Promise((resolve, reject) => {
+    const query = `
+      SELECT ii.instructionId, ii.invoiceInstruction
+      FROM invoiceInstruction ii
+      JOIN (
+          SELECT invoiceId
+          FROM invoiceMaster
+          WHERE customerId = ?
+          ORDER BY invoiceId DESC
+          LIMIT 1
+      ) latest_invoice ON ii.invoiceId = latest_invoice.invoiceId;
+    `;
+
+    db.all(query, [customerId], (err, rows) => {
+      if (err) {
+        console.error("Error fetching invoice instructions:", err);
+        reject(err);
+      } else {
+        resolve(rows);
+      }
+    });
+  });
+}
+
 module.exports = {
   getAllInstruction,
   addInstruction,
   updateInstruction,
   deleteInstruction,
+  getInstructionsByCustomer,
 };

@@ -35,6 +35,7 @@ const {
   addInstruction,
   updateInstruction,
   deleteInstruction,
+  getInstructionsByCustomer,
 } = require("./database/controllers/instruction");
 
 const {
@@ -138,6 +139,9 @@ function setupIpcHandlers() {
     return await deleteBottomNote(id);
   });
 
+  ipcMain.handle("getInstructionsByCustomer", async (event, id) => {
+    return await getInstructionsByCustomer(id);
+  });
   ipcMain.handle("getAllInstruction", async (event) => {
     return await getAllInstruction();
   });

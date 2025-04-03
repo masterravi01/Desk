@@ -590,11 +590,11 @@
   <mat-tab label="Instrutions">
     <div class="outer-div" [formGroup]="invoiceForm">
       <h3 class="section-title h3">Payment Term</h3>
-      <table class="form-table">
-        <tbody>
-          <tr>
-            <td class="input-cell" colspan="2">
-              <div class="grid">
+      <div class="grid">
+        <table class="form-table">
+          <tbody>
+            <tr>
+              <td class="input-cell" colspan="2">
                 <div class="d-flex">
                   <div class="label-cell">Delivery Term</div>
                   <select
@@ -612,106 +612,120 @@
                     <option value="C&I">C&I</option>
                   </select>
                 </div>
-
-                <div class="d-flex">
-                  <div class="label-cell">Bank Name</div>
-                  <mat-form-field appearance="outline">
-                    <input matInput formControlName="bankName" />
-                  </mat-form-field>
-                </div>
-              </div>
-            </td>
-          </tr>
-          <tr>
-            <td class="input-cell" colspan="2">
-              <div class="grid">
+              </td>
+            </tr>
+            <tr>
+              <td class="input-cell">
                 <div class="d-flex">
                   <div class="label-cell">Delivery</div>
                   <mat-form-field appearance="outline">
                     <input matInput formControlName="deliveryDetails" />
                   </mat-form-field>
                 </div>
-
-                <div class="d-flex">
-                  <div class="label-cell">Bank Branch</div>
-                  <mat-form-field appearance="outline">
-                    <input matInput formControlName="bankBranch" />
-                  </mat-form-field>
-                </div>
-              </div>
-            </td>
-          </tr>
-          <tr>
-            <td class="input-cell" colspan="2">
-              <div class="grid">
+              </td>
+            </tr>
+            <tr>
+              <td class="input-cell">
                 <div class="d-flex">
                   <div class="label-cell">Shipping Line</div>
                   <mat-form-field appearance="outline">
                     <input matInput formControlName="shippingDetails" />
                   </mat-form-field>
                 </div>
-
-                <div class="d-flex">
-                  <div class="label-cell">Address</div>
-                  <mat-form-field appearance="outline">
-                    <input matInput formControlName="bankAddress" />
-                  </mat-form-field>
-                </div>
-              </div>
-            </td>
-          </tr>
-          <tr>
-            <td class="input-cell" colspan="2">
-              <div class="grid">
+              </td>
+            </tr>
+            <tr>
+              <td class="input-cell">
                 <div class="d-flex">
                   <div class="label-cell">Payment</div>
                   <mat-form-field appearance="outline">
                     <input matInput formControlName="paymentTerms" />
                   </mat-form-field>
                 </div>
-
-                <div class="d-flex">
-                  <div class="label-cell">Bank City</div>
-                  <mat-form-field appearance="outline">
-                    <input matInput formControlName="bankCity" />
-                  </mat-form-field>
-                </div>
-              </div>
-            </td>
-          </tr>
-          <tr>
-            <td class="input-cell" colspan="2">
-              <div class="grid">
+              </td>
+            </tr>
+            <tr>
+              <td class="input-cell">
                 <div class="d-flex">
                   <div class="label-cell">Port Of Discharge</div>
                   <mat-form-field appearance="outline">
                     <input matInput formControlName="portOfDischarge" />
                   </mat-form-field>
                 </div>
-
-                <div class="d-flex">
-                  <div class="label-cell">Swift No.</div>
-                  <mat-form-field appearance="outline">
-                    <input matInput formControlName="swiftNumber" />
-                  </mat-form-field>
-                </div>
-              </div>
-            </td>
-          </tr>
-          <tr>
-            <td class="input-cell" colspan="2">
-              <div class="grid">
+              </td>
+            </tr>
+            <tr>
+              <td class="input-cell">
                 <div class="d-flex">
                   <div class="label-cell">Discharge Term</div>
                   <mat-form-field appearance="outline">
                     <input matInput formControlName="dispatchTerms" />
                   </mat-form-field>
                 </div>
-              </div>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <table class="form-table">
+          <tbody>
+            <tr>
+              <td class="input-cell" colspan="2">
+                <div class="d-flex">
+                  <div class="label-cell">Bank Name</div>
+                  <mat-form-field appearance="outline">
+                    <input matInput formControlName="bankName" />
+                  </mat-form-field>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td class="input-cell">
+                <div class="d-flex">
+                  <div class="label-cell">Bank Branch</div>
+                  <mat-form-field appearance="outline">
+                    <input matInput formControlName="bankBranch" />
+                  </mat-form-field>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td class="input-cell">
+                <div class="d-flex">
+                  <div class="label-cell">Address</div>
+                  <mat-form-field appearance="outline" class="full-width">
+                    <textarea
+                      matInput
+                      rows="2"
+                      formControlName="bankAddress"
+                    ></textarea>
+                  </mat-form-field>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td class="input-cell">
+                <div class="d-flex">
+                  <div class="label-cell">Bank City</div>
+                  <mat-form-field appearance="outline">
+                    <input matInput formControlName="bankCity" />
+                  </mat-form-field>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td class="input-cell">
+                <div class="d-flex">
+                  <div class="label-cell">Swift No.</div>
+                  <mat-form-field appearance="outline">
+                    <input matInput formControlName="swiftNumber" />
+                  </mat-form-field>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
       <h3 class="section-title h3" style="margin-top: 20px">Instrutions</h3>
       <div class="d-flex">
         <button
@@ -739,13 +753,13 @@
         >
           <ng-contaier matColumnDef="instructionId">
             <th mat-header-cell *matHeaderCellDef>ID</th>
-            <td mat-cell *matCellDef="let element">
+            <td mat-cell *matCellDef="let element" style="cursor: pointer">
               {{ element.instructionId || "-" }}
             </td>
           </ng-contaier>
           <ng-contaier matColumnDef="invoiceInstruction">
             <th mat-header-cell *matHeaderCellDef>Instructions</th>
-            <td mat-cell *matCellDef="let element">
+            <td mat-cell *matCellDef="let element" style="cursor: pointer">
               {{ element.invoiceInstruction || "-" }}
             </td>
           </ng-contaier>
@@ -776,7 +790,7 @@
     class="d-flex"
     style="justify-content: center; margin-top: 20px; margin-bottom: 10px"
   >
-    <button class="btn" mat-raised-button (click)="initForm()">New</button>
+    <button class="btn" mat-raised-button (click)="clearData()">New</button>
     <button
       class="btn"
       mat-raised-button
@@ -807,7 +821,7 @@
     <button
       class="btn"
       mat-raised-button
-      (click)="initForm()"
+      (click)="clearData()"
       [disabled]="invoiceForm.disabled || invoiceDetailsForm.disabled"
     >
       Clear

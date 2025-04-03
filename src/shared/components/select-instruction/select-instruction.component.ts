@@ -4,17 +4,18 @@ import {
   MAT_DIALOG_DATA,
   MatDialogTitle,
 } from '@angular/material/dialog';
-import { MatTableModule } from '@angular/material/table';
+import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { ModalService } from '../../../core/services/modal.service';
 import { MasterService } from '../../../core/services/master.service';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { CommonModule } from '@angular/common';
+import { TableComponent } from '../table/table.component';
 
 @UntilDestroy()
 @Component({
   selector: 'app-select-instruction',
   standalone: true,
-  imports: [MatTableModule, CommonModule, MatDialogTitle],
+  imports: [MatTableModule, CommonModule, MatDialogTitle, TableComponent],
   templateUrl: './select-instruction.component.html',
   styleUrl: './select-instruction.component.css',
 })
@@ -22,7 +23,7 @@ export class SelectInstructionComponent {
   readonly dialogRef = inject(MatDialogRef<SelectInstructionComponent>);
   readonly data = inject<any>(MAT_DIALOG_DATA);
 
-  Instructions: any[] = [];
+  Instructions = new MatTableDataSource<any>([]);
   displayedColumns: string[] = ['BID', 'Instruction'];
 
   constructor(
@@ -41,11 +42,10 @@ export class SelectInstructionComponent {
       .subscribe({
         next: (data: any) => {
           console.log(data);
-          this.Instructions = data || []; // Ensure fallback to empty array
+          this.Instructions = new MatTableDataSource<any>(data); // Ensure fallback to empty array
         },
         error: (error) => {
           console.error('Error fetching instructions:', error);
-          this.Instructions = [];
         },
       });
   }
