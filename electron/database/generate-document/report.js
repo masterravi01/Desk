@@ -14,6 +14,47 @@ const { getCurrencyByName } = require("../controllers/currency");
 const { convertToCapitalize } = require("../utills/helper");
 const { app } = require("electron");
 
+function modifyCustomInvoiceData(data, totalAddition, master) {
+  data = data.map(container => {
+    const groupedInvoices = {};
+
+    container.invoices.forEach(invoice => {
+      const rateKey = invoice.rate;
+
+      if (!groupedInvoices[rateKey]) {
+        groupedInvoices[rateKey] = { ...invoice, quantity: 0, totalSq: 0, value: 0 };
+      }
+      
+      groupedInvoices[rateKey].quantity += Number(invoice.quantity);
+      groupedInvoices[rateKey].totalSq += Number(invoice.squareMeter);
+      groupedInvoices[rateKey].value += Number(invoice.value);
+    });
+
+    return {
+      ...container,
+      invoices: Object.values(groupedInvoices),
+    };
+  });
+
+  let maxInvoice = null;
+
+  data.forEach(container => {
+    container.invoices.forEach(invoice => {
+      if (!maxInvoice || Number(invoice.value) > Number(maxInvoice.value)) {
+        maxInvoice = invoice;
+      }
+    });
+  });
+
+  if (maxInvoice) {
+    maxInvoice.value = Number(maxInvoice.value) + totalAddition;
+    maxInvoice.rate =  maxInvoice.value / (master.calculationType == 'Per Sheet' ? maxInvoice.quantity : maxInvoice.totalSq ); 
+  }
+
+  return data;
+}
+
+
 async function readInvoiceData(invoiceId) {
   const {
     invoiceMaster = [],
@@ -28,15 +69,15 @@ async function readInvoiceData(invoiceId) {
   const containers = await getAllContainer();
   const currency = await getCurrencyByName(master.currency);
 
-  let groupedInvoices = {};
+  let groupedInvoicesBySize = {};
   let totalBox = 0;
   invoiceDetails.forEach((invoice) => {
     const type = invoice.containerType;
 
-    if (!groupedInvoices[type]) {
+    if (!groupedInvoicesBySize[type]) {
       const container = containers.find((c) => c.containerName === type);
 
-      groupedInvoices[type] = {
+      groupedInvoicesBySize[type] = {
         containerType: type,
         thicknessDetail: invoice.thicknessDetail,
         width: container.width ?? 0,
@@ -48,16 +89,22 @@ async function readInvoiceData(invoiceId) {
     invoice.value = (
       parseFloat(invoice?.quantity || "0") * parseFloat(invoice?.rate || "0")
     ).toFixed(2);
-    groupedInvoices[type].invoices.push(invoice);
+    groupedInvoicesBySize[type].invoices.push(invoice);
     totalBox +=
       Number(invoice.containerTo ?? "0") -
       Number(invoice.containerFrom ?? "0") +
       (invoice.containerTo && invoice.containerFrom ? 1 : 0);
-  });
+    });
+    groupedInvoicesBySize = Object.values(groupedInvoicesBySize);
+    
+  let totalAddition = master.additionalChargeType === "percentage"
+  ? (master.totalAmount * master.additionalChargeValue) / 100
+  : master.additionalChargeType === "flat"
+  ? master.additionalChargeValue
+  : 0
+  let CIItems = modifyCustomInvoiceData(groupedInvoicesBySize, totalAddition, master);
 
-  groupedInvoices = Object.values(groupedInvoices);
-
-  const containerSummary = groupedInvoices.map((item) => ({
+  const containerSummary = groupedInvoicesBySize.map((item) => ({
     width: item.width,
     height: item.height,
     length: item.length,
@@ -113,7 +160,9 @@ async function readInvoiceData(invoiceId) {
     //   ).toFixed(2),
     // })),
     invoiceDetails,
-    invoiceItems: groupedInvoices,
+    invoiceItems: groupedInvoicesBySize,
+    IPItems: groupedInvoicesBySize,
+    CIItems,
     rounding: master.rounding ?? "0",
     totalQuantity: master.totalQuantity ?? "0",
     totalBox,
@@ -130,15 +179,9 @@ async function readInvoiceData(invoiceId) {
         : master.discountType === "flat"
         ? master.discountValue
         : 0,
-    totalAddition:
-      master.additionalChargeType === "percentage"
-        ? (master.totalAmount * master.additionalChargeValue) / 100
-        : master.additionalChargeType === "flat"
-        ? master.additionalChargeValue
-        : 0,
-
+    totalAddition,
+    additionSumAmount: Number(totalAddition) + Number(master.totalAmount ?? "0"),
     containerSummary,
-
     bankName: final.bankName ?? "",
     bankBranch: final.branchName ?? "",
     bankCity: final.bankCity ?? "",
