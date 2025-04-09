@@ -14,17 +14,22 @@ const { getCurrencyByName } = require("../controllers/currency");
 const { convertToCapitalize } = require("../utills/helper");
 const { app } = require("electron");
 
-function modifyCustomInvoiceData(data, totalAddition, master) {
-  data = data.map(container => {
+function modifyCustomInvoiceData(data, totalAddition, totalDiscount, master) {
+  data = data.map((container) => {
     const groupedInvoices = {};
 
-    container.invoices.forEach(invoice => {
+    container.invoices.forEach((invoice) => {
       const rateKey = invoice.rate;
 
       if (!groupedInvoices[rateKey]) {
-        groupedInvoices[rateKey] = { ...invoice, quantity: 0, totalSq: 0, value: 0 };
+        groupedInvoices[rateKey] = {
+          ...invoice,
+          quantity: 0,
+          totalSq: 0,
+          value: 0,
+        };
       }
-      
+
       groupedInvoices[rateKey].quantity += Number(invoice.quantity);
       groupedInvoices[rateKey].totalSq += Number(invoice.squareMeter);
       groupedInvoices[rateKey].value += Number(invoice.value);
@@ -38,8 +43,8 @@ function modifyCustomInvoiceData(data, totalAddition, master) {
 
   let maxInvoice = null;
 
-  data.forEach(container => {
-    container.invoices.forEach(invoice => {
+  data.forEach((container) => {
+    container.invoices.forEach((invoice) => {
       if (!maxInvoice || Number(invoice.value) > Number(maxInvoice.value)) {
         maxInvoice = invoice;
       }
@@ -47,13 +52,19 @@ function modifyCustomInvoiceData(data, totalAddition, master) {
   });
 
   if (maxInvoice) {
-    maxInvoice.value = Number(maxInvoice.value) + totalAddition;
-    maxInvoice.rate =  maxInvoice.value / (master.calculationType == 'Per Sheet' ? maxInvoice.quantity : maxInvoice.totalSq ); 
+    maxInvoice.value =
+      Number(maxInvoice.value ?? "0") +
+      Number(totalAddition ?? "0") -
+      Number(totalDiscount ?? "0");
+    maxInvoice.rate =
+      maxInvoice.value /
+      (master.calculationType == "Per Sheet"
+        ? Number(maxInvoice.quantity)
+        : Number(maxInvoice.totalSq));
   }
 
   return data;
 }
-
 
 async function readInvoiceData(invoiceId) {
   const {
@@ -86,23 +97,38 @@ async function readInvoiceData(invoiceId) {
         invoices: [],
       };
     }
-    invoice.value = (
-      parseFloat(invoice?.quantity || "0") * parseFloat(invoice?.rate || "0")
-    ).toFixed(2);
+    // invoice.value = (
+    //   parseFloat((master.calculationType == 'Per Sheet' ? Number(invoice?.quantity || "0") : Number(invoice?.squareMeter  || "0") )) * parseFloat(invoice?.rate || "0")
+    // ).toFixed(4);
+    invoice.value =
+      Number(invoice?.quantity || "0") *
+      parseFloat(invoice?.rate || "0").toFixed(4);
     groupedInvoicesBySize[type].invoices.push(invoice);
     totalBox +=
       Number(invoice.containerTo ?? "0") -
       Number(invoice.containerFrom ?? "0") +
       (invoice.containerTo && invoice.containerFrom ? 1 : 0);
-    });
-    groupedInvoicesBySize = Object.values(groupedInvoicesBySize);
-    
-  let totalAddition = master.additionalChargeType === "percentage"
-  ? (master.totalAmount * master.additionalChargeValue) / 100
-  : master.additionalChargeType === "flat"
-  ? master.additionalChargeValue
-  : 0
-  let CIItems = modifyCustomInvoiceData(groupedInvoicesBySize, totalAddition, master);
+  });
+  groupedInvoicesBySize = Object.values(groupedInvoicesBySize);
+
+  let totalAddition =
+    master.additionalChargeType === "percentage"
+      ? (master.totalAmount * master.additionalChargeValue) / 100
+      : master.additionalChargeType === "flat"
+      ? master.additionalChargeValue
+      : 0;
+  let totalDiscount =
+    master.discountType === "percentage"
+      ? (master.totalAmount * master.discountValue) / 100
+      : master.discountType === "flat"
+      ? master.discountValue
+      : 0;
+  let CIItems = modifyCustomInvoiceData(
+    groupedInvoicesBySize,
+    totalAddition,
+    totalDiscount,
+    master
+  );
 
   const containerSummary = groupedInvoicesBySize.map((item) => ({
     width: item.width,
@@ -173,14 +199,12 @@ async function readInvoiceData(invoiceId) {
       converter.toWords(master.netAmount ?? 0)
     ),
     currencyChar: currency.currencyChar,
-    totalDiscount:
-      master.discountType === "percentage"
-        ? (master.totalAmount * master.discountValue) / 100
-        : master.discountType === "flat"
-        ? master.discountValue
-        : 0,
+    totalDiscount,
     totalAddition,
-    additionSumAmount: Number(totalAddition) + Number(master.totalAmount ?? "0"),
+    additionSumAmount:
+      Number(totalAddition) +
+      Number(master.totalAmount ?? "0") -
+      Number(totalDiscount ?? "0"),
     containerSummary,
     bankName: final.bankName ?? "",
     bankBranch: final.branchName ?? "",
