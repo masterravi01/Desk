@@ -80,7 +80,7 @@ export class BusinessMasterModalComponent {
   constructor(
     private modalService: ModalService,
     private masterService: MasterService
-  ) { }
+  ) {}
 
   ngOnInit() {
     this.loadCustomers();
@@ -92,7 +92,7 @@ export class BusinessMasterModalComponent {
   onTabChange(event: any) {
     let tab = event.tab.textLabel || 'Customer';
     if (tab == 'Customer') this.loadCustomers();
-    if (tab == 'Containers') this.loadContainer();
+    if (tab == 'Container') this.loadContainer();
     if (tab == 'Bottom Note') this.loadBottomNote();
     if (tab == 'Currency') this.loadCurrency();
     if (tab == 'Instruction') this.loadInstruction();
@@ -104,7 +104,6 @@ export class BusinessMasterModalComponent {
       .pipe(untilDestroyed(this))
       .subscribe((data: any) => {
         this.customers = new MatTableDataSource<any>(data);
-        console.log(data);
       });
   }
 
@@ -220,9 +219,9 @@ export class BusinessMasterModalComponent {
         parameter: 'Bottom Note',
         info: note
           ? {
-            id: note.bottomNoteId,
-            value: note.bottomNote,
-          }
+              id: note.bottomNoteId,
+              value: note.bottomNote,
+            }
           : '',
       },
     });
@@ -257,13 +256,13 @@ export class BusinessMasterModalComponent {
       minHeight: '200px',
       position: { top: '40px' },
       data: {
-        title: instruction ? 'Edit Instruction' : 'New Instruction',
+        title: instruction ? 'Edit Instruction' : 'Add Instruction',
         parameter: 'Instruction',
         info: instruction
           ? {
-            id: instruction.BID,
-            value: instruction.Instruction,
-          }
+              id: instruction.BID,
+              value: instruction.Instruction,
+            }
           : '',
       },
     });

@@ -107,7 +107,7 @@ export class ConfirmInvoiceModalComponent implements OnInit {
     const today = new DatePipe('en-US').transform(new Date(), 'yyyy-MM-dd');
     this.finalInvoiceForm = this.fb.group({
       id: [''],
-      invoiceId: [''],
+      invoiceId: ['', Validators.required],
       customerName: [''],
       buyerName: [''],
       buyerAddress: [''],
@@ -162,19 +162,24 @@ export class ConfirmInvoiceModalComponent implements OnInit {
   }
 
   onDelete(): void {
-    if (this.finalInvoiceForm.get('id')?.value) {
-      this.masterService
-        .invoke(
-          'deleteFinalInvoice',
-          this.finalInvoiceForm.get('invoiceId')?.value
-        )
-        .pipe(untilDestroyed(this))
-        .subscribe((data) => {
-          console.log(data);
-          this.ngOnInit();
-        });
-    } else {
-      this.ngOnInit();
+    const confirmed = window.confirm(
+      'Are you sure you want to delete invoice?'
+    );
+    if (confirmed) {
+      if (this.finalInvoiceForm.get('id')?.value) {
+        this.masterService
+          .invoke(
+            'deleteFinalInvoice',
+            this.finalInvoiceForm.get('invoiceId')?.value
+          )
+          .pipe(untilDestroyed(this))
+          .subscribe((data) => {
+            console.log(data);
+            this.ngOnInit();
+          });
+      } else {
+        this.ngOnInit();
+      }
     }
 
     // this.dialogRef.close(true);
@@ -239,7 +244,13 @@ export class ConfirmInvoiceModalComponent implements OnInit {
       .subscribe((result) => {
         if (result) {
           console.log(result);
-          this.invoiceBottomNotes = [...this.invoiceBottomNotes, result];
+          if (
+            !this.invoiceBottomNotes.find(
+              (c) => c.bottomNoteId === result.bottomNoteId
+            )
+          ) {
+            this.invoiceBottomNotes = [...this.invoiceBottomNotes, result];
+          }
         }
       });
   }
@@ -292,7 +303,10 @@ export class ConfirmInvoiceModalComponent implements OnInit {
       .pipe(untilDestroyed(this))
       .subscribe((data: any) => {
         console.log(data);
-        this.getFinalInvoiceById(data.invoiceId);
+        if (data.invoiceId) {
+          if (!isClose) alert('Data Saved Successfully!');
+          this.getFinalInvoiceById(data.invoiceId);
+        }
       });
   }
 }

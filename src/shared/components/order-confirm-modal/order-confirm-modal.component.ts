@@ -366,16 +366,24 @@ export class OrderConfirmModalComponent implements OnInit {
   }
 
   onDelete(): void {
-    if (this.invoiceForm.get('invoiceId')?.value) {
-      this.masterService
-        .invoke('deleteInvoice', this.invoiceForm.get('invoiceId')?.value)
-        .pipe(untilDestroyed(this))
-        .subscribe((data) => {
-          console.log(data);
-          this.ngOnInit();
-        });
+    const confirmed = window.confirm(
+      'Are you sure you want to delete invoice?'
+    );
+
+    if (confirmed) {
+      if (this.invoiceForm.get('invoiceId')?.value) {
+        this.masterService
+          .invoke('deleteInvoice', this.invoiceForm.get('invoiceId')?.value)
+          .pipe(untilDestroyed(this))
+          .subscribe((data) => {
+            console.log(data);
+            this.ngOnInit();
+          });
+      } else {
+        this.ngOnInit();
+      }
     } else {
-      this.ngOnInit();
+      console.log('User cancelled!');
     }
 
     // this.dialogRef.close(true);
