@@ -631,19 +631,19 @@
     class="d-flex"
     style="justify-content: center; margin-top: 20px; margin-bottom: 10px"
   >
-<!-- Hidden file input -->
-<input
-  type="file"
-  accept=".json"
-  (change)="onFileSelected($event)"
-  #fileInput
-  style="display: none"
-/>
+    <!-- Hidden file input -->
+    <input
+      type="file"
+      accept=".json"
+      (change)="onFileSelected($event)"
+      #fileInput
+      style="display: none"
+    />
 
-<!-- Button that triggers the file input -->
-<button mat-raised-button  class="btn" (click)="fileInput.click()">
-  Import
-</button>
+    <!-- Button that triggers the file input -->
+    <button mat-raised-button class="btn" (click)="fileInput.click()">
+      Import
+    </button>
 
     <button class="btn" mat-raised-button (click)="initForm()">New</button>
     <button
@@ -682,11 +682,12 @@
       Clear
     </button>
     <button
-    class="btn"
-    mat-raised-button
-    (click)="exportData(24)"
-  >
-  Export
-  </button>
+      class="btn"
+      [disabled]="!finalInvoiceForm.get('invoiceId')?.value"
+      mat-raised-button
+      (click)="exportData()"
+    >
+      Export
+    </button>
   </div>
 </ng-template>
