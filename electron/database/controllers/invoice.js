@@ -502,6 +502,339 @@ async function getInvoice(invoiceId) {
   }
 }
 
+async function exportInvoice(invoiceId) {
+  try {
+    const invoiceData = await getInvoice(invoiceId);
+
+    // Convert to JSON string
+    return invoiceData;
+  } catch (error) {
+    console.error(`❌ Error fetching invoice data: ${error.message}`);
+    throw new Error(`Failed to fetch invoice: ${error.message}`);
+  }
+}
+async function importInvoice(data) {
+  try {
+    let {
+      invoiceId,
+      invoiceMaster,
+      invoiceDetails,
+      invoiceInstruction,
+      invoiceBottomNote,
+      finalInvoice,
+    } = data;
+
+    invoiceMaster = invoiceMaster[0];
+    finalInvoice = finalInvoice?.[0];
+
+    if (!invoiceMaster) throw new Error(`No data present in invoice`);
+
+    if (invoiceId) {
+      return new Promise((resolve, reject) => {
+        db.serialize(() => {
+          db.run("BEGIN TRANSACTION");
+
+          const masterUpdateQuery = `UPDATE invoiceMaster SET 
+              customerOrderNo = ?, invoiceDate = ?, invoiceSerial = ?, invoicePiNo = ?, customerId = ?,
+              customerName = ?, customerAddress = ?, customerCity = ?, customerZip = ?, customerState = ?,
+              customerCountry = ?, buyerAddress = ?, buyerCity = ?, buyerZip = ?, buyerState = ?,
+              buyerCountry = ?, currency = ?, status = ?, discountType = ?, discountValue = ?,
+              additionalChargeType = ?, additionalChargeValue = ?, reference = ?, totalQuantity = ?,
+              totalAmount = ?, totalSquareMeters = ?, rounding = ?, netAmount = ?, deliveryTerms = ?,
+              deliveryDetails = ?, shippingDetails = ?, paymentTerms = ?, portOfDischarge = ?,
+              dispatchTerms = ?, bankName = ?, bankBranch = ?, bankCity = ?, swiftNumber = ?,
+              comments = ?, calculationType = ?, bankAddress = ? WHERE invoiceId = ?`;
+
+          runQuery(masterUpdateQuery, [
+            invoiceMaster.customerOrderNo ?? null,
+            invoiceMaster.invoiceDate ?? null,
+            invoiceMaster.invoiceSerial ?? null,
+            invoiceMaster.invoicePiNo ?? null,
+            invoiceMaster.customerId ?? null,
+            invoiceMaster.customerName ?? null,
+            invoiceMaster.customerAddress ?? null,
+            invoiceMaster.customerCity ?? null,
+            invoiceMaster.customerZip ?? null,
+            invoiceMaster.customerState ?? null,
+            invoiceMaster.customerCountry ?? null,
+            invoiceMaster.buyerAddress ?? null,
+            invoiceMaster.buyerCity ?? null,
+            invoiceMaster.buyerZip ?? null,
+            invoiceMaster.buyerState ?? null,
+            invoiceMaster.buyerCountry ?? null,
+            invoiceMaster.currency ?? null,
+            invoiceMaster.status ?? null,
+            invoiceMaster.discountType ?? null,
+            invoiceMaster.discountValue ?? null,
+            invoiceMaster.additionalChargeType ?? null,
+            invoiceMaster.additionalChargeValue ?? null,
+            invoiceMaster.reference ?? null,
+            invoiceMaster.totalQuantity ?? null,
+            invoiceMaster.totalAmount ?? null,
+            invoiceMaster.totalSquareMeters ?? null,
+            invoiceMaster.rounding ?? null,
+            invoiceMaster.netAmount ?? null,
+            invoiceMaster.deliveryTerms ?? null,
+            invoiceMaster.deliveryDetails ?? null,
+            invoiceMaster.shippingDetails ?? null,
+            invoiceMaster.paymentTerms ?? null,
+            invoiceMaster.portOfDischarge ?? null,
+            invoiceMaster.dispatchTerms ?? null,
+            invoiceMaster.bankName ?? null,
+            invoiceMaster.bankBranch ?? null,
+            invoiceMaster.bankCity ?? null,
+            invoiceMaster.swiftNumber ?? null,
+            invoiceMaster.comments ?? null,
+            invoiceMaster.calculationType ?? null,
+            invoiceMaster.bankAddress ?? null,
+            invoiceId,
+          ])
+            .then(() => {
+              // Fetch existing records
+              Promise.all([
+                runQuery("DELETE FROM invoiceDetails WHERE invoiceId = ?", [
+                  invoiceId,
+                ]),
+                runQuery("DELETE FROM invoiceInstruction WHERE invoiceId = ?", [
+                  invoiceId,
+                ]),
+                runQuery("DELETE FROM invoiceBottomNote WHERE invoiceId = ?", [
+                  invoiceId,
+                ]),
+              ]).then(() => {});
+            })
+            .catch((error) => {
+              db.run("ROLLBACK", () => reject(`Transaction failed: ${error}`));
+            });
+        });
+      });
+    } else {
+      return new Promise((resolve, reject) => {
+        db.serialize(() => {
+          db.run("BEGIN TRANSACTION");
+
+          const handleRollback = (err) => {
+            db.run("ROLLBACK", () => reject(`Transaction failed: ${err}`));
+          };
+
+          const masterInsertQuery = `INSERT INTO invoiceMaster (
+            customerOrderNo, invoiceDate, invoiceSerial, invoicePiNo, customerId,
+            customerName, customerAddress, customerCity, customerZip, customerState,
+            customerCountry, buyerAddress, buyerCity, buyerZip, buyerState,
+            buyerCountry, currency, status, discountType, discountValue,
+            additionalChargeType, additionalChargeValue, reference, totalQuantity,
+            totalAmount, totalSquareMeters, rounding, netAmount, deliveryTerms,
+            deliveryDetails, shippingDetails, paymentTerms, portOfDischarge,
+            dispatchTerms, bankName, bankBranch, bankCity, swiftNumber,
+            comments, calculationType, bankAddress
+          ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?)`;
+
+          runQuery(masterInsertQuery, [
+            invoiceMaster.customerOrderNo ?? null,
+            invoiceMaster.invoiceDate ?? null,
+            invoiceMaster.invoiceSerial ?? null,
+            invoiceMaster.invoicePiNo ?? null,
+            invoiceMaster.customerId ?? null,
+            invoiceMaster.customerName ?? null,
+            invoiceMaster.customerAddress ?? null,
+            invoiceMaster.customerCity ?? null,
+            invoiceMaster.customerZip ?? null,
+            invoiceMaster.customerState ?? null,
+            invoiceMaster.customerCountry ?? null,
+            invoiceMaster.buyerAddress ?? null,
+            invoiceMaster.buyerCity ?? null,
+            invoiceMaster.buyerZip ?? null,
+            invoiceMaster.buyerState ?? null,
+            invoiceMaster.buyerCountry ?? null,
+            invoiceMaster.currency ?? null,
+            invoiceMaster.status ?? null,
+            invoiceMaster.discountType ?? null,
+            invoiceMaster.discountValue ?? null,
+            invoiceMaster.additionalChargeType ?? null,
+            invoiceMaster.additionalChargeValue ?? null,
+            invoiceMaster.reference ?? null,
+            invoiceMaster.totalQuantity ?? null,
+            invoiceMaster.totalAmount ?? null,
+            invoiceMaster.totalSquareMeters ?? null,
+            invoiceMaster.rounding ?? null,
+            invoiceMaster.netAmount ?? null,
+            invoiceMaster.deliveryTerms ?? null,
+            invoiceMaster.deliveryDetails ?? null,
+            invoiceMaster.shippingDetails ?? null,
+            invoiceMaster.paymentTerms ?? null,
+            invoiceMaster.portOfDischarge ?? null,
+            invoiceMaster.dispatchTerms ?? null,
+            invoiceMaster.bankName ?? null,
+            invoiceMaster.bankBranch ?? null,
+            invoiceMaster.bankCity ?? null,
+            invoiceMaster.swiftNumber ?? null,
+            invoiceMaster.comments ?? null,
+            invoiceMaster.calculationType ?? null,
+            invoiceMaster.bankAddress ?? null,
+          ])
+            .then((newInvoiceId) => {
+              invoiceId = newInvoiceId; // Capture for later inserts
+
+              const detailPromises = Array.isArray(invoiceDetails)
+                ? invoiceDetails.map((detail) =>
+                    runQuery(
+                      `INSERT INTO invoiceDetails (
+                        invoiceId, customerId, containerType, containerTo, containerFrom, length,
+                        width, thickness, squareMeter, materialGrade, brandName,
+                        materialQuality, finishType, thicknessDetail, quantity, rate,
+                        remarks, designType, prefixCode, grossWeight, netWeight, boxType, subWeight
+                      ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
+                      [
+                        invoiceId,
+                        detail.customerId ?? null,
+                        detail.containerType ?? null,
+                        detail.containerTo ?? null,
+                        detail.containerFrom ?? null,
+                        detail.length ?? null,
+                        detail.width ?? null,
+                        detail.thickness ?? null,
+                        detail.squareMeter ?? null,
+                        detail.materialGrade ?? null,
+                        detail.brandName ?? null,
+                        detail.materialQuality ?? null,
+                        detail.finishType ?? null,
+                        detail.thicknessDetail ?? null,
+                        detail.quantity ?? null,
+                        detail.rate ?? null,
+                        detail.remarks ?? null,
+                        detail.designType ?? null,
+                        detail.prefixCode ?? null,
+                        detail.grossWeight ?? null,
+                        detail.netWeight ?? null,
+                        detail.boxType ?? null,
+                        detail.subWeight ?? null,
+                      ]
+                    )
+                  )
+                : [];
+
+              const instructionPromises = Array.isArray(invoiceInstruction)
+                ? invoiceInstruction.map((instruction) =>
+                    runQuery(
+                      `INSERT INTO invoiceInstruction (
+                        invoiceId, instructionId, invoiceInstruction
+                      ) VALUES (?, ?, ?)`,
+                      [
+                        invoiceId,
+                        instruction.instructionId ?? null,
+                        instruction.invoiceInstruction ?? null,
+                      ]
+                    )
+                  )
+                : [];
+
+              const bottomNotePromises = Array.isArray(invoiceBottomNote)
+                ? invoiceBottomNote.map((note) =>
+                    runQuery(
+                      `INSERT INTO invoiceBottomNote (
+                        invoiceId, bottomNoteId, bottomNote
+                      ) VALUES (?, ?, ?)`,
+                      [
+                        invoiceId,
+                        note.bottomNoteId ?? null,
+                        note.bottomNote ?? null,
+                      ]
+                    )
+                  )
+                : [];
+
+              const allInsertPromises = [
+                ...detailPromises,
+                ...instructionPromises,
+                ...bottomNotePromises,
+              ];
+
+              if (finalInvoice) {
+                const finalInvoiceQuery = `
+                  INSERT INTO finalinvoice (
+                    invoiceId, customerName, buyerName, buyerAddress, buyerCity, buyerZip,
+                    buyerState, buyerCountry, consigneeName, consigneeAddress, consigneeCity,
+                    consigneeZip, consigneeState, consigneeCountry, bankName, bankAddress,
+                    bankCity, bankZip, bankState, bankCountry, bankAsConsignee, termsOfDp,
+                    deliveryTerms, precarriage, vesselNo, portOfDischarge, originOfGoods,
+                    receiptPlace, loadingPort, finalDestination, dischargeTerms, privateRemark,
+                    bottomNote, bankShortName, branchName, city, panNo, adCode, acCode, iec,
+                    comment, invoiceDate, finalInvoice
+                  ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+
+                allInsertPromises.push(
+                  runQuery(finalInvoiceQuery, [
+                    invoiceId,
+                    finalInvoice.customerName,
+                    finalInvoice.buyerName,
+                    finalInvoice.buyerAddress,
+                    finalInvoice.buyerCity,
+                    finalInvoice.buyerZip,
+                    finalInvoice.buyerState,
+                    finalInvoice.buyerCountry,
+                    finalInvoice.consigneeName,
+                    finalInvoice.consigneeAddress,
+                    finalInvoice.consigneeCity,
+                    finalInvoice.consigneeZip,
+                    finalInvoice.consigneeState,
+                    finalInvoice.consigneeCountry,
+                    finalInvoice.bankName,
+                    finalInvoice.bankAddress,
+                    finalInvoice.bankCity,
+                    finalInvoice.bankZip,
+                    finalInvoice.bankState,
+                    finalInvoice.bankCountry,
+                    finalInvoice.bankAsConsignee,
+                    finalInvoice.termsOfDp,
+                    finalInvoice.deliveryTerms,
+                    finalInvoice.precarriage,
+                    finalInvoice.vesselNo,
+                    finalInvoice.portOfDischarge,
+                    finalInvoice.originOfGoods,
+                    finalInvoice.receiptPlace,
+                    finalInvoice.loadingPort,
+                    finalInvoice.finalDestination,
+                    finalInvoice.dischargeTerms,
+                    finalInvoice.privateRemark,
+                    finalInvoice.bottomNote,
+                    finalInvoice.bankShortName,
+                    finalInvoice.branchName,
+                    finalInvoice.city,
+                    finalInvoice.panNo,
+                    finalInvoice.adCode,
+                    finalInvoice.acCode,
+                    finalInvoice.iec,
+                    finalInvoice.comment,
+                    finalInvoice.invoiceDate,
+                    finalInvoice.finalInvoice,
+                  ])
+                );
+              }
+
+              return Promise.all(allInsertPromises)
+                .then(() => {
+                  db.run("COMMIT", (commitErr) => {
+                    if (commitErr)
+                      return reject(`Commit Error: ${commitErr.message}`);
+                    console.log("✅ Invoice created successfully");
+                    resolve({
+                      invoiceId,
+                      message: "Invoice created successfully!",
+                    });
+                  });
+                })
+                .catch(handleRollback);
+            })
+            .catch(handleRollback);
+        });
+      });
+    }
+  } catch (err) {
+    console.error(`❌ Error importing invoice: ${err.message}`);
+    return { error: err.message };
+  }
+}
+
 // Add a new final invoice
 async function addFinalInvoice({ invoice, invoiceBottomNotes = [] }) {
   try {
@@ -768,6 +1101,8 @@ module.exports = {
   updateInvoice,
   deleteInvoice,
   getInvoice,
+  exportInvoice,
+  importInvoice,
   addFinalInvoice,
   updateFinalInvoice,
   deleteFinalInvoice,

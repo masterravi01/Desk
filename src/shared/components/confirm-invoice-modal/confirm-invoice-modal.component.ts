@@ -94,7 +94,7 @@ export class ConfirmInvoiceModalComponent implements OnInit {
     private modalService: ModalService,
     private fb: FormBuilder,
     private masterService: MasterService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.invoiceBottomNotes = [];
@@ -281,9 +281,9 @@ export class ConfirmInvoiceModalComponent implements OnInit {
       ?.setValue(
         this.finalInvoiceForm.get('invoiceDate')?.value
           ? new DatePipe('en-US').transform(
-              new Date(this.finalInvoiceForm.get('invoiceDate')?.value),
-              'yyyy-MM-dd'
-            )
+            new Date(this.finalInvoiceForm.get('invoiceDate')?.value),
+            'yyyy-MM-dd'
+          )
           : ''
       );
     console.log({
@@ -309,4 +309,54 @@ export class ConfirmInvoiceModalComponent implements OnInit {
         }
       });
   }
+  importData() {
+
+  }
+  exportData(invoiceId: any) {
+    this.masterService
+      .invoke('exportInvoice', invoiceId)
+      .pipe(untilDestroyed(this))
+      .subscribe((data: any) => {
+        const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+        const url = window.URL.createObjectURL(blob);
+
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `invoice-${invoiceId}.json`;
+        a.click();
+
+        window.URL.revokeObjectURL(url);
+      });
+
+
+
+  }
+  onFileSelected(event: any) {
+    const file: File = event.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+
+    reader.onload = async () => {
+      try {
+        const json = JSON.parse(reader.result as string);
+        json.invoiceId = this.finalInvoiceForm.get('invoiceId')?.value ? this.finalInvoiceForm.get('invoiceId')?.value : '';
+        this.masterService
+          .invoke('importInvoice', json)
+          .pipe(untilDestroyed(this))
+          .subscribe((data: any) => {
+            console.log(data)
+            alert("✅ Invoice imported successfully.");
+
+          })
+
+      } catch (err) {
+        console.error("Invalid JSON file", err);
+        alert("Invalid JSON file.");
+      }
+    };
+
+    reader.readAsText(file);
+  }
+
 }
