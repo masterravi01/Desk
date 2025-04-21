@@ -152,7 +152,11 @@ export class ConfirmInvoiceModalComponent implements OnInit {
       finalInvoice: [''],
     });
   }
-
+  clearData() {
+    this.invoiceBottomNotes = [];
+    this.selectedBottomIndex = 0;
+    this.initForm();
+  }
   onCancel(): void {
     this.dialogRef.close(false);
   }
