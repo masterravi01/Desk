@@ -66,6 +66,32 @@ function modifyCustomInvoiceData(data, totalAddition, totalDiscount, master) {
   return data;
 }
 
+function calculateTotalBoxes(invoiceDetails) {
+  let totalBox = 0;
+  const seenContainers = new Set();
+  invoiceDetails.forEach((invoice) => {
+    const key = `${invoice.containerFrom}-${invoice.containerTo}`;
+    if (!seenContainers.has(key)) {
+      seenContainers.add(key);
+
+      if (invoice.containerFrom && invoice.containerTo) {
+        const from = Number(invoice.containerFrom);
+        const to = Number(invoice.containerTo);
+        if (!isNaN(from) && !isNaN(to) && to >= from) {
+          totalBox += to - from + 1;
+        }
+      } else if (invoice.containerFrom && !invoice.containerTo) {
+        const from = Number(invoice.containerFrom);
+        if (!isNaN(from)) {
+          totalBox += 1;
+        }
+      }
+    }
+  });
+
+  return totalBox;
+}
+
 async function readInvoiceData(invoiceId) {
   const {
     invoiceMaster = [],
@@ -81,7 +107,7 @@ async function readInvoiceData(invoiceId) {
   const currency = await getCurrencyByName(master.currency);
 
   let groupedInvoicesBySize = {};
-  let totalBox = 0;
+  let totalBox = calculateTotalBoxes(invoiceDetails);
   invoiceDetails.forEach((invoice) => {
     const type = invoice.containerType;
 
@@ -104,10 +130,6 @@ async function readInvoiceData(invoiceId) {
       Number(invoice?.quantity || "0") *
       parseFloat(invoice?.rate || "0").toFixed(4);
     groupedInvoicesBySize[type].invoices.push(invoice);
-    totalBox +=
-      Number(invoice.containerTo ?? "0") -
-      Number(invoice.containerFrom ?? "0") +
-      (invoice.containerTo && invoice.containerFrom ? 1 : 0);
   });
   groupedInvoicesBySize = Object.values(groupedInvoicesBySize);
 
