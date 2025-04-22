@@ -568,14 +568,35 @@ export class OrderConfirmModalComponent implements OnInit {
             )
           : ''
       );
-    console.log({
-      invoiceMaster: {
-        ...this.invoiceForm.value,
-        ...this.calculationForm.value,
-      },
-      invoiceDetails: this.boxes(),
-      invoiceInstruction: this.instructions,
+
+    let invoiceDetails = this.boxes(); // Getting list of invoice items
+    const containerObj: Record<string, any> = {};
+
+    // Mapping containers by container name
+    this.containers.forEach((c: any) => {
+      if (c?.containerName) {
+        containerObj[c.containerName] = c;
+      }
     });
+
+    invoiceDetails.forEach((inv: any) => {
+      const container = inv.containerType
+        ? containerObj[inv.containerType] || {}
+        : {};
+
+      const width = Number(container.width) || 0;
+      const length = Number(container.length) || 0;
+      const height = Number(container.height) || 0;
+      const quantity = Number(inv.quantity) || 0;
+
+      const volume = width * length * height;
+      const density = 1410;
+      const weightInGrams = volume * quantity * density;
+      const weightInTons = weightInGrams / 1000000000;
+
+      inv.netWeight = Math.round(weightInTons); // You round to the nearest whole number
+    });
+
     this.masterService
       .invoke(
         this.invoiceForm.get('invoiceId')?.value
@@ -586,7 +607,7 @@ export class OrderConfirmModalComponent implements OnInit {
             ...this.invoiceForm.value,
             ...this.calculationForm.value,
           },
-          invoiceDetails: this.boxes(),
+          invoiceDetails: invoiceDetails,
           invoiceInstruction: this.instructions,
         }
       )
