@@ -148,8 +148,8 @@ async function readInvoiceData(invoiceId) {
   invoiceDetails = details.invoiceDetails;
   invoiceDetails.forEach((invoice) => {
     const type = invoice.containerType;
-    invoice.squareMeter = Number(invoice.squareMeter.toFixed(4));
-    invoice.rate = Number(invoice.rate.toFixed(4));
+    invoice.squareMeter = toFixedToFour(invoice.squareMeter);
+    invoice.rate = toFixedToFour(invoice.rate);
     if (!groupedInvoicesBySize[type]) {
       const container = containers.find((c) => c.containerName === type);
 
@@ -255,7 +255,7 @@ async function readInvoiceData(invoiceId) {
     totalBox,
     totalGrossWeight,
     totalNetWeight,
-    totalSqMt: Number(master.totalSquareMeters.toFixed(4)) ?? "0",
+    totalSqMt: toFixedToFour(master.totalSquareMeters),
     totalAmount: master.totalAmount ?? "0",
     netAmount: master.netAmount ?? "",
     netAmountWords: convertToCapitalize(
@@ -397,6 +397,11 @@ async function convertToPdf(inputPath, fileName) {
   fs.writeFileSync(outputPath, pdfBuffer);
 
   console.log("PDF generated successfully!");
+}
+
+function toFixedToFour(value) {
+  const num = Number(value);
+  return isNaN(num) ? 0 : Number(num.toFixed(4));
 }
 
 module.exports = {
