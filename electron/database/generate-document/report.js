@@ -328,7 +328,7 @@ async function generateInvoiceDocument(body) {
   }
   let outputPath = await generateWordDocument(data, template, fileName);
   if (format == "ms-word") {
-    openWordDocument(outputPath);
+    openFileByPath(outputPath);
   } else {
     convertToPdf(outputPath, fileName);
   }
@@ -361,14 +361,23 @@ async function generateWordDocument(data, template, fileName) {
 
   // Save the output document
   const outputPath = path.join(app.getPath("documents"), `${fileName}.docx`);
-  fs.writeFileSync(outputPath, buf);
+  try {
+    fs.writeFileSync(outputPath, buf);
+  } catch (error) {
+    if (error && error.code == "EBUSY") {
+      throw new Error(
+        "The document is currently open. Please close it and try again."
+      );
+    }
+    throw new Error(error.message);
+  }
 
   console.log("Word document generated successfully!");
   return outputPath;
 }
 
 // Function to open the Word document
-function openWordDocument(filePath) {
+function openFileByPath(filePath) {
   const command =
     process.platform === "win32"
       ? `start "" "${filePath}"`
@@ -394,8 +403,17 @@ async function convertToPdf(inputPath, fileName) {
   const pdfBuffer = await libre.convertAsync(docxBuffer, ".pdf", undefined);
 
   // Save the PDF
-  fs.writeFileSync(outputPath, pdfBuffer);
-
+  try {
+    fs.writeFileSync(outputPath, pdfBuffer);
+  } catch (error) {
+    if (error && error.code == "EBUSY") {
+      throw new Error(
+        "The document is currently open. Please close it and try again."
+      );
+    }
+    throw new Error(error.message);
+  }
+  openFileByPath(outputPath);
   console.log("PDF generated successfully!");
 }
 
