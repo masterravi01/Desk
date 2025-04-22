@@ -63,6 +63,14 @@ function modifyCustomInvoiceData(data, totalAddition, totalDiscount, master) {
         : Number(maxInvoice.totalSq));
   }
 
+  data.forEach((item) => {
+    item.invoices.forEach((invoice) => {
+      invoice.value = toFixedToFour(invoice.value);
+      invoice.totalSq = toFixedToFour(invoice.totalSq);
+      invoice.rate = toFixedToFour(invoice.rate);
+    });
+  });
+
   return data;
 }
 
@@ -195,11 +203,15 @@ async function readInvoiceData(invoiceId) {
     width: item.width,
     height: item.height,
     length: item.length,
-    totalSqMtPerType: item.invoices.reduce(
-      (sum, invoice) => sum + parseFloat(invoice.squareMeter),
-      0
+    totalSqMtPerType: toFixedToFour(
+      item.invoices.reduce(
+        (sum, invoice) => sum + parseFloat(invoice.squareMeter),
+        0
+      )
     ),
-    avgWeight: (item.width * item.height * item.length * 1410) / 1000000000,
+    avgWeight: toFixedToFour(
+      (item.width * item.height * item.length * 1410) / 1000000000
+    ),
   }));
 
   let docData = {
@@ -264,10 +276,11 @@ async function readInvoiceData(invoiceId) {
     currencyChar: currency.currencyChar,
     totalDiscount,
     totalAddition,
-    additionSumAmount:
+    additionSumAmount: toFixedToFour(
       Number(totalAddition) +
-      Number(master.totalAmount ?? "0") -
-      Number(totalDiscount ?? "0"),
+        Number(master.totalAmount ?? "0") -
+        Number(totalDiscount ?? "0")
+    ),
     containerSummary,
     bankName: final.bankName ?? "",
     bankBranch: final.branchName ?? "",
