@@ -89,11 +89,46 @@ function calculateTotalBoxes(invoiceDetails) {
     }
   });
 
-  return totalBox;
+  const fromOnlyMap = {};
+  const defaultBoxWeight = 100;
+  let totalNetWeight = 0;
+  let totalGrossWeight = 0;
+
+  invoiceDetails.forEach((item, index) => {
+    if (item.containerFrom && !item.containerTo) {
+      const key = item.containerFrom;
+      if (!fromOnlyMap[key]) fromOnlyMap[key] = [];
+      fromOnlyMap[key].push({ item, index });
+    }
+  });
+  Object.values(fromOnlyMap).forEach((group) => {
+    const totalNet = group.reduce(
+      (sum, entry) => sum + Number(entry.item.netWeight || 0),
+      0
+    );
+    const lastEntry = group[group.length - 1];
+    lastEntry.item.grossWeight = (totalNet + defaultBoxWeight).toFixed(2);
+  });
+  invoiceDetails.forEach((item) => {
+    totalNetWeight += Number(item.netWeight || 0);
+    if (item.containerFrom && item.containerTo) {
+      const from = Number(item.containerFrom);
+      const to = Number(item.containerTo);
+      const totalBoxes = to - from + 1;
+      const netWeight = Number(item.netWeight || 0);
+      const grossWeight = netWeight + defaultBoxWeight * totalBoxes;
+      item.grossWeight = grossWeight.toFixed(2);
+      totalGrossWeight += grossWeight;
+    } else {
+      totalGrossWeight += Number(item.grossWeight);
+    }
+  });
+
+  return { totalBox, invoiceDetails, totalGrossWeight, totalNetWeight };
 }
 
 async function readInvoiceData(invoiceId) {
-  const {
+  let {
     invoiceMaster = [],
     invoiceDetails = [],
     invoiceInstruction = [],
@@ -107,10 +142,14 @@ async function readInvoiceData(invoiceId) {
   const currency = await getCurrencyByName(master.currency);
 
   let groupedInvoicesBySize = {};
-  let totalBox = calculateTotalBoxes(invoiceDetails);
+
+  let details = calculateTotalBoxes(invoiceDetails);
+  let { totalBox, totalNetWeight, totalGrossWeight } = details;
+  invoiceDetails = details.invoiceDetails;
   invoiceDetails.forEach((invoice) => {
     const type = invoice.containerType;
-
+    invoice.squareMeter = Number(invoice.squareMeter.toFixed(4));
+    invoice.rate = Number(invoice.rate.toFixed(4));
     if (!groupedInvoicesBySize[type]) {
       const container = containers.find((c) => c.containerName === type);
 
@@ -214,7 +253,9 @@ async function readInvoiceData(invoiceId) {
     rounding: master.rounding ?? "0",
     totalQuantity: master.totalQuantity ?? "0",
     totalBox,
-    totalSqMt: master.totalSquareMeters ?? "0",
+    totalGrossWeight,
+    totalNetWeight,
+    totalSqMt: Number(master.totalSquareMeters.toFixed(4)) ?? "0",
     totalAmount: master.totalAmount ?? "0",
     netAmount: master.netAmount ?? "",
     netAmountWords: convertToCapitalize(

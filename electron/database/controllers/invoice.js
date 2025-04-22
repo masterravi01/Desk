@@ -488,7 +488,9 @@ async function getInvoice(invoiceId) {
         [invoiceMaster[0].customerId, invoiceMaster[0].invoiceId]
       );
     }
-
+    invoiceDetails = invoiceDetails?.sort(
+      (a, b) => Number(a.containerFrom) - Number(b.containerFrom)
+    );
     return {
       invoiceMaster,
       invoiceDetails,
