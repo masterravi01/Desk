@@ -10,15 +10,11 @@ import {
   MatDialogRef,
   MatDialogTitle,
 } from '@angular/material/dialog';
-import { MatTabsModule } from '@angular/material/tabs';
-import { MatTableModule } from '@angular/material/table';
-import { NewCustomerComponent } from '../new-customer/new-customer.component';
+import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { ModalService } from '../../../core/services/modal.service';
-import { ContainerModalComponent } from '../container-modal/container-modal.component';
-import { NewCurrencyModalComponent } from '../new-currency-modal/new-currency-modal.component';
-import { SingleParamenterComponent } from '../single-paramenter/single-paramenter.component';
 import { MasterService } from '../../../core/services/master.service';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
+import { TableComponent } from '../table/table.component';
 
 @UntilDestroy()
 @Component({
@@ -31,8 +27,7 @@ import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
     MatDialogClose,
     MatDialogTitle,
     MatDialogContent,
-    MatTableModule,
-    MatTabsModule,
+    TableComponent,
   ],
   templateUrl: './select-customer.component.html',
   styleUrl: './select-customer.component.css',
@@ -40,34 +35,34 @@ import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 export class SelectCustomerComponent {
   readonly dialogRef = inject(MatDialogRef<SelectCustomerComponent>);
   readonly data = inject<any>(MAT_DIALOG_DATA);
-  customers = [];
+  customers = new MatTableDataSource<any>([]);
   displayedColumns: string[] = [
-    'Name',
-    'Phone',
-    'Email',
-    'Contact Person',
-    'Designation',
-    'Other Phone',
-    'URL',
-    'Fax',
-    'Remark',
-    'Address',
-    'City',
-    'State',
-    'Zip',
-    'Country',
-    'Buyer Address',
-    'Buyer City',
-    'Buyer State',
-    'Buyer Zipcode',
-    'Buyer Country',
-    'Bank Name',
-    'Bank Branch',
-    'Bank City',
-    'Bank Address',
-    'Bank State',
-    'Bank Zip',
-    'Bank Country',
+    'name',
+    'phone',
+    'email',
+    'contactPerson',
+    'designation',
+    'otherPhone',
+    'url',
+    'fax',
+    'remark',
+    'address',
+    'city',
+    'state',
+    'zip',
+    'country',
+    'buyerAddress',
+    'buyerCity',
+    'buyerState',
+    'buyerZipcode',
+    'buyerCountry',
+    'bankName',
+    'bankBranch',
+    'bankCity',
+    'bankAddress',
+    'bankState',
+    'bankZip',
+    'bankCountry',
   ];
 
   constructor(
@@ -82,7 +77,7 @@ export class SelectCustomerComponent {
       .invoke('getAllCustomers')
       .pipe(untilDestroyed(this))
       .subscribe((data: any) => {
-        this.customers = data;
+        this.customers = new MatTableDataSource<any>(data);
       });
   }
   selectCustomer(row: any) {

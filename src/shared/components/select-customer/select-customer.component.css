@@ -1,3 +1,8 @@
+.clickable-cell {
+  cursor: pointer;
+  font-weight: 500;
+}
+
 .table-container tr:hover td {
   background-color: #e0e0e0; /* Light gray */
   cursor: pointer;

@@ -168,6 +168,7 @@ export class BusinessMasterModalComponent {
       .openModal(NewCustomerComponent, {
         width: '95vw',
         height: '90%',
+        minHeight: '95vh',
         maxWidth: '95vw',
         position: {
           top: '20px',
