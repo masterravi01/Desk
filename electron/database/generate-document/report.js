@@ -199,20 +199,27 @@ async function readInvoiceData(invoiceId) {
     master
   );
 
-  const containerSummary = groupedInvoicesBySize.map((item) => ({
-    width: item.width,
-    height: item.height,
-    length: item.length,
-    totalSqMtPerType: toFixedToFour(
-      item.invoices.reduce(
-        (sum, invoice) => sum + parseFloat(invoice.squareMeter),
-        0
-      )
-    ),
-    avgWeight: toFixedToFour(
-      (item.width * item.height * item.length * 1410) / 1000000000
-    ),
-  }));
+  const containerSummary = groupedInvoicesBySize.map((item) => {
+    item.invoices.forEach((inv) => {
+      inv.value = toFixedToFour(inv.value);
+      inv.rate = toFixedToFour(inv.rate);
+    });
+
+    return {
+      width: item.width,
+      height: item.height,
+      length: item.length,
+      totalSqMtPerType: toFixedToFour(
+        item.invoices.reduce(
+          (sum, invoice) => sum + parseFloat(invoice.squareMeter),
+          0
+        )
+      ),
+      avgWeight: toFixedToFour(
+        (item.width * item.height * item.length * 1410) / 1000000000
+      ),
+    };
+  });
 
   let docData = {
     invoiceNo: final.finalInvoice ?? "",
