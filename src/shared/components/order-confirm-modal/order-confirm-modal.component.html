@@ -407,6 +407,14 @@
 
       <div class="form-field">
         <label class="label">&nbsp;</label>
+        <button
+          class="btn"
+          mat-raised-button
+          style="height: 32px"
+          (click)="initInvoiceDetailsForm()"
+        >
+          Clear
+        </button>
       </div>
       <div class="form-field">
         <label class="label">&nbsp;</label>
@@ -610,6 +618,7 @@
                     formControlName="deliveryTerms"
                   >
                     <option value="FOB">FOB</option>
+                    <option value="FDB">FDB</option>
                     <option value="CIF">CIF</option>
                     <option value="C&F">C&F</option>
                     <option value="C&I">C&I</option>
