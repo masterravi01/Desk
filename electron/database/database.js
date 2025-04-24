@@ -107,26 +107,38 @@ const migrations = [
     version: 3,
     description: "Create Containers Table",
     script: `
-        DROP TABLE IF EXISTS containers;
-        CREATE TABLE containers (
-          id INTEGER PRIMARY KEY AUTOINCREMENT,
-          containerName TEXT DEFAULT NULL,
-          containerType TEXT DEFAULT NULL,
-          width REAL DEFAULT NULL,
-          height REAL DEFAULT NULL,
-          weight REAL DEFAULT NULL,
-          length INTEGER DEFAULT NULL
-        );
-        INSERT INTO containers (id, containerName, containerType, width, height, weight, length) VALUES 
-        (4, 'BOX 100 KG', 'BOX', 1220, 55, 100, 2440),
-        (5, 'BOX 110 KG', 'BOX', 1220, 55, 110, 2440),
-        (6, 'BOX 20 KG', 'BOX 20 KG', 1220, 8, 20, 2440),
-        (7, 'Box 2440x1220x3', 'BOX', 1220, 3, 60, 2440),
-        (8, 'BOX 60 KG', 'BOX', 1220, 55, 60, 2440),
-        (9, 'BOX 70 KG', 'BOX', 1220, 55, 70, 2440),
-        (10, 'DRUM 20 KG', 'DRUM 20 KG', 1220, 8, 20, 2440),
-        (11, 'BOX 150', 'BOX', 1220, 0.7, 150, 2440),
-        (12, 'BOX 115', 'BOX', 1220, 0.6, 115, 2440);
+     DROP TABLE IF EXISTS containers;
+
+CREATE TABLE containers (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  containerName TEXT DEFAULT NULL,
+  containerType TEXT DEFAULT NULL,
+  width REAL DEFAULT NULL,
+  height REAL DEFAULT NULL,
+  weight REAL DEFAULT NULL,
+  length INTEGER DEFAULT NULL,
+  lengthInch INTEGER DEFAULT NULL,
+  widthInch INTEGER DEFAULT NULL,
+  heightInch INTEGER DEFAULT NULL
+);
+
+INSERT INTO containers (
+  id, containerName, containerType, length, width, height, weight,
+  lengthInch, widthInch, heightInch
+) VALUES 
+(4, 'BOX 100 KG', 'BOX', 2440, 1220, 55, 100, 96, 48, 2),
+(5, 'BOX 110 KG', 'BOX', 2440, 1220, 55, 110, 96, 48, 2),
+(6, 'BOX 20 KG', 'BOX 20 KG', 2440, 1220, 8, 20, 96, 48, 0),
+(7, 'Box 2440x1220x3', 'BOX', 2440, 1220, 3, 60, 101, 52, 15),
+(8, 'BOX 60 KG', 'BOX', 2440, 1220, 55, 60, 96, 48, 2),
+(9, 'BOX 70 KG', 'BOX', 2440, 1220, 55, 70, 96, 48, 2),
+(10, 'DRUM 20 KG', 'DRUM 20 KG', 2440, 1220, 8, 20, 96, 48, 0),
+(11, 'BOX 150', 'BOX', 2440, 1220, 0.7, 150, 96, 48, 0),
+(12, 'BOX 115', 'BOX', 2440, 1220, 0.6, 115, 96, 48, 0),
+(13, 'BOX 12', 'BOX', 3050, 1300, 12, 100, 125, 55, 15),
+(14, 'BOX 0.8', 'BOX', 1200, 2440, 1, 100, 47, 96, 0),
+(15, 'BOX 1.0', 'BOX', 1200, 2440, 1, 100, 47, 96, 0),
+(16, 'BOX 2440X1000X10', 'BOX', 1200, 2440, 10, 1000, 47, 96, 0);
       `,
   },
   {

@@ -12,7 +12,7 @@ function getAllContainer() {
 function addContainer(Container) {
   return new Promise((resolve, reject) => {
     const query = `
-      INSERT INTO containers (containerName, containerType, width, height, weight, length) VALUES (?, ?, ?, ?, ?, ?)
+      INSERT INTO containers (containerName, containerType, width, height, weight, length,lengthInch,widthInch,heightInch) VALUES (?, ?, ?, ?, ?, ?,?,?,?)
     `;
     db.run(
       query,
@@ -23,6 +23,9 @@ function addContainer(Container) {
         Container.height ?? null,
         Container.weight ?? null,
         Container.length ?? null,
+        Container.lengthInch ?? null,
+        Container.widthInch ?? null,
+        Container.heightInch ?? null,
       ],
       function (err) {
         if (err) {
@@ -39,7 +42,7 @@ function addContainer(Container) {
 function updateContainer(Container) {
   return new Promise((resolve, reject) => {
     const query = `
-      UPDATE containers SET containerName = ?, containerType = ?, width = ?, height = ?, weight = ?, length = ? WHERE id = ?
+      UPDATE containers SET containerName = ?, containerType = ?, width = ?, height = ?, weight = ?, length = ?,lengthInch = ?,widthInch = ?,heightInch = ? WHERE id = ?
     `;
     db.run(
       query,
@@ -50,6 +53,9 @@ function updateContainer(Container) {
         Container.height,
         Container.weight,
         Container.length,
+        Container.lengthInch ?? null,
+        Container.widthInch ?? null,
+        Container.heightInch ?? null,
         Container.id,
       ],
       function (err) {

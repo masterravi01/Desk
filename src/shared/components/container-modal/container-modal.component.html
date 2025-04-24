@@ -15,7 +15,7 @@
 
   <!-- Basic Details -->
   <div class="section">
-    <div class="grid">
+    <div class="grid three">
       <div class="form-field">
         <label class="label">Container Display Name:</label>
         <mat-form-field appearance="outline">
@@ -29,6 +29,14 @@
           <input matInput formControlName="containerType" />
         </mat-form-field>
       </div>
+
+      <div class="form-field">
+        <label class="label">Container Weight [kg]:</label>
+        <mat-form-field appearance="outline">
+          <input matInput formControlName="weight" />
+        </mat-form-field>
+      </div>
+
       <div class="form-field">
         <label class="label">Length:</label>
         <mat-form-field appearance="outline">
@@ -41,7 +49,6 @@
           <input matInput formControlName="width" />
         </mat-form-field>
       </div>
-
       <div class="form-field">
         <label class="label">Height:</label>
         <mat-form-field appearance="outline">
@@ -50,9 +57,21 @@
       </div>
 
       <div class="form-field">
-        <label class="label">Container Weight [kg]:</label>
+        <label class="label">Length(Inch):</label>
         <mat-form-field appearance="outline">
-          <input matInput formControlName="weight" />
+          <input matInput formControlName="lengthInch" />
+        </mat-form-field>
+      </div>
+      <div class="form-field">
+        <label class="label">Width(Inch):</label>
+        <mat-form-field appearance="outline">
+          <input matInput formControlName="widthInch" />
+        </mat-form-field>
+      </div>
+      <div class="form-field">
+        <label class="label">Height(Inch):</label>
+        <mat-form-field appearance="outline">
+          <input matInput formControlName="heightInch" />
         </mat-form-field>
       </div>
     </div>

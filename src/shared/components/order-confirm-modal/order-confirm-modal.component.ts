@@ -41,6 +41,7 @@ import { SelectInstructionComponent } from '../select-instruction/select-instruc
 import { SelectInvoiceComponent } from '../select-invoice/select-invoice.component';
 import { InvoiceDetailsService } from '../../../core/services/invoice-details.service';
 import { debounceTime } from 'rxjs/internal/operators/debounceTime';
+import { combineLatest } from 'rxjs';
 @UntilDestroy()
 @Component({
   selector: 'app-order-confirm-modal',
@@ -300,14 +301,18 @@ export class OrderConfirmModalComponent implements OnInit {
       boxType: [''],
       subWeight: [''],
     });
+
     if (data) this.invoiceDetailsForm.patchValue(data);
+
     this.invoiceDetailsForm.patchValue({
       invoiceDetailId: '',
       invoiceId: '',
     });
+
     this.invoiceDetailsForm
       .get('customerId')
       ?.patchValue(this.invoiceForm.get('customerId')?.value);
+
     this.invoiceDetailsForm
       .get('materialGrade')
       ?.valueChanges.pipe(debounceTime(500))
@@ -335,6 +340,21 @@ export class OrderConfirmModalComponent implements OnInit {
       error: () => {
         console.warn('No matching data found.');
       },
+    });
+
+    // 🧮 Auto-calculate squareMeter (if not manually changed)
+    combineLatest([
+      this.invoiceDetailsForm.get('length')!.valueChanges,
+      this.invoiceDetailsForm.get('width')!.valueChanges,
+      this.invoiceDetailsForm.get('quantity')!.valueChanges,
+    ]).subscribe(([length, width, quantity]) => {
+      const squareMeter =
+        length && width && quantity
+          ? +Math.round((length * width * quantity) / 10000) / 100
+          : 0;
+      this.invoiceDetailsForm
+        .get('squareMeter')
+        ?.setValue(squareMeter, { emitEvent: false });
     });
   }
 
