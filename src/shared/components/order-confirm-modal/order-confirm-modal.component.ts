@@ -42,6 +42,7 @@ import { SelectInvoiceComponent } from '../select-invoice/select-invoice.compone
 import { InvoiceDetailsService } from '../../../core/services/invoice-details.service';
 import { debounceTime } from 'rxjs/internal/operators/debounceTime';
 import { combineLatest } from 'rxjs';
+import { SnackbarService } from '../../../core/services/snackbar.service';
 @UntilDestroy()
 @Component({
   selector: 'app-order-confirm-modal',
@@ -200,7 +201,8 @@ export class OrderConfirmModalComponent implements OnInit {
     private modalService: ModalService,
     private fb: FormBuilder,
     private masterService: MasterService,
-    private invoiceDetailsService: InvoiceDetailsService
+    private invoiceDetailsService: InvoiceDetailsService,
+    private _snackBar: SnackbarService
   ) {}
 
   ngOnInit(): void {
@@ -635,7 +637,7 @@ export class OrderConfirmModalComponent implements OnInit {
       .subscribe((data: any) => {
         console.log(data);
         if (data.invoiceId) {
-          if (!isClose) alert('Data Saved Successfully!');
+          this._snackBar.showSuccess('Data Saved Successfully!');
           this.getInvoiceById(data.invoiceId);
         }
       });
