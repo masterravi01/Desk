@@ -121,7 +121,7 @@ export class OrderConfirmModalComponent implements OnInit {
     discountValue: 0,
     additionalChargeType: '',
     additionalChargeValue: 0,
-    calculationType: 'Per Sq. Mt',
+    calculationType: 'Per Sheet',
   });
   // Remove form patching logic from computed signals
   totalQuantity = computed(() =>
@@ -271,7 +271,7 @@ export class OrderConfirmModalComponent implements OnInit {
       discountValue: [0],
       additionalChargeType: [''],
       additionalChargeValue: [0],
-      calculationType: ['Per Sq. Mt'],
+      calculationType: ['Per Sheet'],
     });
     this.calculationForm.valueChanges.subscribe((data) => {
       this.formData.set(data);
@@ -569,7 +569,7 @@ export class OrderConfirmModalComponent implements OnInit {
       discountValue: 0,
       additionalChargeType: '',
       additionalChargeValue: 0,
-      calculationType: 'Per Sq. Mt',
+      calculationType: 'Per Sheet',
     });
   }
   onSave(isClose = false) {
