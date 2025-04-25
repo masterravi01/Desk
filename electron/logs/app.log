@@ -483,3 +483,34 @@
 2025-04-02 12:40:55 [INFO]: 🔗 Foreign Key support enabled.
 2025-04-11 10:21:35 [INFO]: ✅ Connected to SQLite Database at: C:\Users\Harun\AppData\Roaming\alfa\database.sqlite
 2025-04-11 10:21:35 [INFO]: 🔗 Foreign Key support enabled.
+2025-04-22 07:55:42 [INFO]: ✅ Connected to SQLite Database at: C:\Users\Harun\AppData\Roaming\alfa\database.sqlite
+2025-04-22 07:55:43 [INFO]: 🔗 Foreign Key support enabled.
+2025-04-24 05:11:41 [INFO]: ✅ Connected to SQLite Database at: C:\Users\Harun\AppData\Roaming\alfa\database.sqlite
+2025-04-24 05:11:41 [INFO]: 🔗 Foreign Key support enabled.
+2025-04-24 05:45:43 [INFO]: ✅ Connected to SQLite Database at: C:\Users\Harun\AppData\Roaming\alfa\database.sqlite
+2025-04-24 05:45:43 [INFO]: 🔗 Foreign Key support enabled.
+2025-04-24 06:01:39 [INFO]: ✅ Connected to SQLite Database at: C:\Users\Harun\AppData\Roaming\alfa\database.sqlite
+2025-04-24 06:01:40 [INFO]: 🔗 Foreign Key support enabled.
+2025-04-24 06:01:40 [ERROR]: ❌ Migration 3 Failed: SQLITE_ERROR: near "(": syntax error
+2025-04-24 06:02:00 [INFO]: ✅ Connected to SQLite Database at: C:\Users\Harun\AppData\Roaming\alfa\database.sqlite
+2025-04-24 06:02:00 [INFO]: 🔗 Foreign Key support enabled.
+2025-04-24 06:02:00 [ERROR]: ❌ Migration 3 Failed: SQLITE_ERROR: near "(": syntax error
+2025-04-24 06:02:17 [INFO]: ✅ Connected to SQLite Database at: C:\Users\Harun\AppData\Roaming\alfa\database.sqlite
+2025-04-24 06:02:17 [INFO]: 🔗 Foreign Key support enabled.
+2025-04-24 06:02:17 [ERROR]: ❌ Migration 3 Failed: SQLITE_ERROR: near "(": syntax error
+2025-04-24 06:02:57 [INFO]: ✅ Connected to SQLite Database at: C:\Users\Harun\AppData\Roaming\alfa\database.sqlite
+2025-04-24 06:02:57 [INFO]: 🔗 Foreign Key support enabled.
+2025-04-24 06:02:57 [ERROR]: ❌ Migration 3 Failed: SQLITE_ERROR: near "(": syntax error
+2025-04-24 06:03:36 [INFO]: ✅ Connected to SQLite Database at: C:\Users\Harun\AppData\Roaming\alfa\database.sqlite
+2025-04-24 06:03:36 [INFO]: 🔗 Foreign Key support enabled.
+2025-04-24 06:03:36 [INFO]: ✅ Migration 3: Create Containers Table
+2025-04-24 06:30:59 [INFO]: ✅ Connected to SQLite Database at: C:\Users\Harun\AppData\Roaming\alfa\database.sqlite
+2025-04-24 06:30:59 [INFO]: 🔗 Foreign Key support enabled.
+2025-04-24 06:34:18 [INFO]: ✅ Connected to SQLite Database at: C:\Users\Harun\AppData\Roaming\alfa\database.sqlite
+2025-04-24 06:34:19 [INFO]: 🔗 Foreign Key support enabled.
+2025-04-24 06:35:33 [INFO]: ✅ Connected to SQLite Database at: C:\Users\Harun\AppData\Roaming\alfa\database.sqlite
+2025-04-24 06:35:34 [INFO]: 🔗 Foreign Key support enabled.
+2025-04-24 06:38:11 [INFO]: ✅ Connected to SQLite Database at: C:\Users\Harun\AppData\Roaming\alfa\database.sqlite
+2025-04-24 06:38:11 [INFO]: 🔗 Foreign Key support enabled.
+2025-04-24 06:50:05 [INFO]: ✅ Connected to SQLite Database at: C:\Users\Harun\AppData\Roaming\alfa\database.sqlite
+2025-04-24 06:50:05 [INFO]: 🔗 Foreign Key support enabled.

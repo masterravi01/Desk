@@ -48,6 +48,7 @@ import { SelectCustomerComponent } from '../select-customer/select-customer.comp
 import { SelectInvoiceComponent } from '../select-invoice/select-invoice.component';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { SelectBottomNoteComponent } from '../select-bottom-note/select-bottom-note.component';
+import { SnackbarService } from '../../../core/services/snackbar.service';
 
 @UntilDestroy()
 @Component({
@@ -93,7 +94,8 @@ export class ConfirmInvoiceModalComponent implements OnInit {
   constructor(
     private modalService: ModalService,
     private fb: FormBuilder,
-    private masterService: MasterService
+    private masterService: MasterService,
+    private _snackBar: SnackbarService
   ) {}
 
   ngOnInit(): void {
@@ -308,7 +310,7 @@ export class ConfirmInvoiceModalComponent implements OnInit {
       .subscribe((data: any) => {
         console.log(data);
         if (data.invoiceId) {
-          if (!isClose) alert('Data Saved Successfully!');
+          this._snackBar.showSuccess('Data Saved Successfully!');
           this.getFinalInvoiceById(data.invoiceId);
         }
       });
@@ -334,7 +336,7 @@ export class ConfirmInvoiceModalComponent implements OnInit {
           window.URL.revokeObjectURL(url);
         });
     } else {
-      alert('Please Select invoice First !');
+      this._snackBar.showError('Please Select invoice First !');
     }
   }
   onFileSelected(event: any) {
@@ -354,12 +356,13 @@ export class ConfirmInvoiceModalComponent implements OnInit {
           .pipe(untilDestroyed(this))
           .subscribe((data: any) => {
             console.log(data);
-            alert('✅ Invoice imported successfully.');
+            this._snackBar.showSuccess('Invoice imported successfully!');
             this.getFinalInvoiceById(data.invoiceId);
           });
       } catch (err) {
         console.error('Invalid JSON file', err);
-        alert('Invalid JSON file.');
+
+        this._snackBar.showError('Invalid JSON file!');
       }
     };
 

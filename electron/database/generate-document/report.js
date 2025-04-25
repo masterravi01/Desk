@@ -169,6 +169,9 @@ async function readInvoiceData(invoiceId) {
         width: container.width ?? 0,
         height: container.height ?? 0,
         length: container.length ?? 0,
+        lengthInch: container.lengthInch ?? 0,
+        widthInch: container.widthInch ?? 0,
+        heightInch: container.heightInch ?? 0,
         invoices: [],
       };
     }

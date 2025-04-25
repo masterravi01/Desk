@@ -52,6 +52,9 @@ export class ContainerModalComponent {
       height: [''],
       weight: [''],
       length: [''],
+      lengthInch: [''],
+      widthInch: [''],
+      heightInch: [''],
     });
     if (this.data?.id) {
       this.containerForm.patchValue(this.data);

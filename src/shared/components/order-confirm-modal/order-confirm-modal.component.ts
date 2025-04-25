@@ -41,6 +41,8 @@ import { SelectInstructionComponent } from '../select-instruction/select-instruc
 import { SelectInvoiceComponent } from '../select-invoice/select-invoice.component';
 import { InvoiceDetailsService } from '../../../core/services/invoice-details.service';
 import { debounceTime } from 'rxjs/internal/operators/debounceTime';
+import { combineLatest } from 'rxjs';
+import { SnackbarService } from '../../../core/services/snackbar.service';
 @UntilDestroy()
 @Component({
   selector: 'app-order-confirm-modal',
@@ -199,7 +201,8 @@ export class OrderConfirmModalComponent implements OnInit {
     private modalService: ModalService,
     private fb: FormBuilder,
     private masterService: MasterService,
-    private invoiceDetailsService: InvoiceDetailsService
+    private invoiceDetailsService: InvoiceDetailsService,
+    private _snackBar: SnackbarService
   ) { }
 
   ngOnInit(): void {
@@ -300,14 +303,18 @@ export class OrderConfirmModalComponent implements OnInit {
       boxType: [''],
       subWeight: [''],
     });
+
     if (data) this.invoiceDetailsForm.patchValue(data);
+
     this.invoiceDetailsForm.patchValue({
       invoiceDetailId: '',
       invoiceId: '',
     });
+
     this.invoiceDetailsForm
       .get('customerId')
       ?.patchValue(this.invoiceForm.get('customerId')?.value);
+
     this.invoiceDetailsForm
       .get('materialGrade')
       ?.valueChanges.pipe(debounceTime(500))
@@ -335,6 +342,21 @@ export class OrderConfirmModalComponent implements OnInit {
       error: () => {
         console.warn('No matching data found.');
       },
+    });
+
+    // 🧮 Auto-calculate squareMeter (if not manually changed)
+    combineLatest([
+      this.invoiceDetailsForm.get('length')!.valueChanges,
+      this.invoiceDetailsForm.get('width')!.valueChanges,
+      this.invoiceDetailsForm.get('quantity')!.valueChanges,
+    ]).subscribe(([length, width, quantity]) => {
+      const squareMeter =
+        length && width && quantity
+          ? +Math.round((length * width * quantity) / 10000) / 100
+          : 0;
+      this.invoiceDetailsForm
+        .get('squareMeter')
+        ?.setValue(squareMeter, { emitEvent: false });
     });
   }
 
@@ -615,7 +637,7 @@ export class OrderConfirmModalComponent implements OnInit {
       .subscribe((data: any) => {
         console.log(data);
         if (data.invoiceId) {
-          if (!isClose) alert('Data Saved Successfully!');
+          this._snackBar.showSuccess('Data Saved Successfully!');
           this.getInvoiceById(data.invoiceId);
         }
       });
