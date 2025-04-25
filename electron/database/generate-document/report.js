@@ -56,19 +56,24 @@ function modifyCustomInvoiceData(data, totalAddition, totalDiscount, master) {
       Number(maxInvoice.value ?? "0") +
       Number(totalAddition ?? "0") -
       Number(totalDiscount ?? "0");
-    maxInvoice.rate =
+    maxInvoice.rate = toFixedToFour(
       maxInvoice.value /
-      (master.calculationType == "Per Sheet"
-        ? Number(maxInvoice.quantity)
-        : Number(maxInvoice.totalSq));
+        (master.calculationType == "Per Sheet"
+          ? Number(maxInvoice.quantity)
+          : Number(maxInvoice.totalSq))
+    );
   }
 
-  data.forEach((item) => {
+  data.forEach((item, index) => {
     item.invoices.forEach((invoice) => {
       invoice.value = toFixedToFour(invoice.value);
       invoice.totalSq = toFixedToFour(invoice.totalSq);
       invoice.rate = toFixedToFour(invoice.rate);
     });
+    item.showThickness = true;
+    if (index > 0 && item.thicknessDetail == data[index - 1].thicknessDetail) {
+      item.showThickness = false;
+    }
   });
 
   return data;
@@ -135,7 +140,7 @@ function calculateTotalBoxes(invoiceDetails) {
   return { totalBox, invoiceDetails, totalGrossWeight, totalNetWeight };
 }
 
-async function readInvoiceData(invoiceId) {
+async function readInvoiceData(invoiceId, isCustom) {
   let {
     invoiceMaster = [],
     invoiceDetails = [],
@@ -163,7 +168,10 @@ async function readInvoiceData(invoiceId) {
 
       groupedInvoicesBySize[type] = {
         containerType: type,
-        thicknessDetail: invoice.thicknessDetail,
+        thicknessDetail:
+          invoice.thicknessDetail.toUpperCase() +
+          " " +
+          "DECORATIVE LAMINATES WITH BARRIER PAPER",
         width: container.width ?? 0,
         height: container.height ?? 0,
         length: container.length ?? 0,
@@ -195,6 +203,24 @@ async function readInvoiceData(invoiceId) {
       : master.discountType === "flat"
       ? master.discountValue
       : 0;
+
+  groupedInvoicesBySize.forEach((item, index) => {
+    item.showThickness = true;
+    if (
+      index > 0 &&
+      item.thicknessDetail == groupedInvoicesBySize[index - 1].thicknessDetail
+    ) {
+      item.showThickness = false;
+    }
+    if (isCustom || master.calculationType != "Per Sheet") {
+      item.invoices.forEach((invoice) => {
+        invoice.rate = toFixedToFour(
+          Number(invoice.value) / Number(invoice.squareMeter)
+        );
+      });
+    }
+  });
+
   let CIItems = modifyCustomInvoiceData(
     groupedInvoicesBySize,
     totalAddition,
@@ -308,7 +334,7 @@ async function readInvoiceData(invoiceId) {
     discountValue: master.discountValue ?? "",
     additionalChargeType: master.additionalChargeType ?? "",
     additionalChargeValue: master.additionalChargeValue ?? "",
-    deliveryTerms: master.deliveryTerms ?? "",
+    deliveryTerms: final.deliveryTerms ?? "",
     shippingDetails: master.shippingDetails ?? "",
     paymentTerms: master.paymentTerms ?? "",
     dispatchTerms: master.dispatchTerms ?? "",
@@ -327,7 +353,8 @@ async function readInvoiceData(invoiceId) {
 
 async function generateInvoiceDocument(body) {
   const { invoiceId, format, type, document } = body;
-  let data = await readInvoiceData(invoiceId);
+  const isCustom = type === "custom";
+  let data = await readInvoiceData(invoiceId, isCustom);
 
   let template;
   let fileName = "output";
