@@ -158,11 +158,11 @@ async function readInvoiceData(invoiceId) {
   invoiceDetails = details.invoiceDetails;
   invoiceDetails.forEach((invoice) => {
     const type = invoice.containerType;
+    const container = containers.find((c) => c.containerName === type);
     invoice.squareMeter = toFixedToFour(invoice.squareMeter);
     invoice.rate = toFixedToFour(invoice.rate);
+    invoice.lwh = `${container.length} X ${container.width} X ${container.height}`;
     if (!groupedInvoicesBySize[type]) {
-      const container = containers.find((c) => c.containerName === type);
-
       groupedInvoicesBySize[type] = {
         containerType: type,
         thicknessDetail: invoice.thicknessDetail,
@@ -451,11 +451,16 @@ function toFixedToFour(value) {
 }
 
 async function generateOrderConfirmation(body) {
-  const { invoiceId, country, format } = body;
+  const { invoiceId, country, format, type } = body;
   let data = await readInvoiceData(invoiceId);
 
   let template = "order-confirmation.docx";
   let fileName = `PI ${invoiceId}`;
+
+  if (type == "opf") {
+    template = "order-processing-form.docx";
+    fileName = "OPF";
+  }
 
   let outputPath = await generateWordDocument(data, template, fileName);
   if (format == "ms-word") {
