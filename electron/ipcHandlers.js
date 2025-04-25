@@ -74,6 +74,7 @@ const {
 
 const {
   generateInvoiceDocument,
+  generateOrderConfirmation,
 } = require("./database/generate-document/report");
 
 function setupIpcHandlers() {
@@ -221,6 +222,10 @@ function setupIpcHandlers() {
 
   ipcMain.handle("generateInvoiceDocument", async (event, body) => {
     return await generateInvoiceDocument(body);
+  });
+
+  ipcMain.handle("generateOrderConfirmation", async (event, body) => {
+    return await generateOrderConfirmation(body);
   });
 }
 

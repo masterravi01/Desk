@@ -50,7 +50,7 @@
               border-radius: 4px;
               margin: 5px 0px;
             "
-            [(ngModel)]="selectedFormat"
+            [(ngModel)]="reportType"
           >
             <option value="ms-word">MS-Word</option>
             <option value="pdf">PDF</option>
@@ -60,7 +60,8 @@
           <button
             class="btn table-btn"
             mat-raised-button
-            (click)="openSelectModal()"
+            [disabled]="orderForm.disabled"
+            (click)="generateDocument()"
           >
             Order Confirmation
           </button>
@@ -69,7 +70,8 @@
           <button
             class="btn table-btn"
             mat-raised-button
-            (click)="openSelectModal()"
+            [disabled]="orderForm.disabled"
+            (click)="generateDocument()"
           >
             Order Confirmation (UK)
           </button>
@@ -81,7 +83,8 @@
           <button
             class="btn table-btn"
             mat-raised-button
-            (click)="openSelectModal()"
+            [disabled]="orderForm.disabled"
+            (click)="generateDocument()"
           >
             Order Confirmation (Aus)
           </button>

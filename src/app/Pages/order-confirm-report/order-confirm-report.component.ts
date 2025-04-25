@@ -16,7 +16,7 @@ export class OrderConfirmReportComponent {
   constructor(private modalService: ModalService) { }
 
   ngOnInit(): void {
-    // this.openModal();
+    this.openModal();
   }
   openModal() {
     this.modalService.openModal(OrderConfirmReportModalComponent, {

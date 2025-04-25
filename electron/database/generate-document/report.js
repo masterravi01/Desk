@@ -13,6 +13,7 @@ const { getAllContainer } = require("../controllers/container");
 const { getCurrencyByName } = require("../controllers/currency");
 const { convertToCapitalize } = require("../utills/helper");
 const { app } = require("electron");
+const { getCompany } = require("../controllers/company");
 
 function modifyCustomInvoiceData(data, totalAddition, totalDiscount, master) {
   data = data.map((container) => {
@@ -148,6 +149,7 @@ async function readInvoiceData(invoiceId, isCustom) {
     finalInvoice = [],
     invoiceBottomNote = [],
   } = await getInvoice(invoiceId);
+  let companyData = await getCompany(1);
   const master = invoiceMaster[0] || {};
   const final = finalInvoice[0] || {};
 
@@ -255,6 +257,7 @@ async function readInvoiceData(invoiceId, isCustom) {
     invoiceDate: final.invoiceDate ?? "",
     buyersOrderNo: master.customerOrderNo ?? "",
     orderDate: master.invoiceDate ?? "",
+    invoicePiNo: master.invoicePiNo ?? "",
 
     consigneeName: final.consigneeName ?? "",
     consigneeAddress: final.consigneeAddress ?? "",
@@ -318,15 +321,16 @@ async function readInvoiceData(invoiceId, isCustom) {
         Number(totalDiscount ?? "0")
     ),
     containerSummary,
-    bankName: final.bankName ?? "",
-    bankBranch: final.branchName ?? "",
-    bankCity: final.bankCity ?? "",
-    swiftNumber: master.swiftNumber ?? "",
-    bankAddress: final.bankAddress ?? "",
-    panNo: final.panNo ?? "",
-    adCode: final.adCode ?? "",
-    acCode: final.acCode ?? "",
-    iec: final.iec ?? "",
+
+    bankName: companyData.bankName ?? "",
+    bankBranch: companyData.bankAddressLine2 ?? "",
+    bankCity: companyData.bankCity ?? "",
+    swiftNumber: companyData.swiftCode ?? "",
+    bankAddress: companyData.bankAddressLine1 ?? "",
+    panNo: companyData.taxIdentificationNumber ?? "",
+    adCode: companyData.additionalNumber ?? "",
+    acCode: companyData.accountNumber ?? "",
+    iec: companyData.importExportCode ?? "",
 
     bottomNotes: invoiceBottomNote.map((note) => note?.bottomNote ?? ""),
 
@@ -335,6 +339,7 @@ async function readInvoiceData(invoiceId, isCustom) {
     additionalChargeType: master.additionalChargeType ?? "",
     additionalChargeValue: master.additionalChargeValue ?? "",
     deliveryTerms: final.deliveryTerms ?? "",
+    deliveryDetails: master.deliveryDetails ?? "",
     shippingDetails: master.shippingDetails ?? "",
     paymentTerms: master.paymentTerms ?? "",
     dispatchTerms: master.dispatchTerms ?? "",
@@ -472,6 +477,22 @@ function toFixedToFour(value) {
   return isNaN(num) ? 0 : Number(num.toFixed(4));
 }
 
+async function generateOrderConfirmation(body) {
+  const { invoiceId, country, format } = body;
+  let data = await readInvoiceData(invoiceId);
+
+  let template = "order-confirmation.docx";
+  let fileName = `PI ${invoiceId}`;
+
+  let outputPath = await generateWordDocument(data, template, fileName);
+  if (format == "ms-word") {
+    openFileByPath(outputPath);
+  } else {
+    convertToPdf(outputPath, fileName);
+  }
+}
+
 module.exports = {
   generateInvoiceDocument,
+  generateOrderConfirmation,
 };
