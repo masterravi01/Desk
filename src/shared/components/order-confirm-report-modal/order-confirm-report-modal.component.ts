@@ -52,7 +52,8 @@ import { SelectInvoiceComponent } from '../select-invoice/select-invoice.compone
 export class OrderConfirmReportModalComponent {
   readonly dialogRef = inject(MatDialogRef<OrderConfirmReportModalComponent>);
   orderForm!: FormGroup;
-  selectedFormat: string = 'ms-word';
+  reportType: string = 'ms-word';
+
   constructor(
     private modalService: ModalService,
     private fb: FormBuilder,
@@ -87,15 +88,27 @@ export class OrderConfirmReportModalComponent {
       .subscribe((result) => {
         if (result && result.invoiceId) {
           console.log(result);
-          this.masterService
-            .invoke('getInvoice', result.invoiceId)
-            .pipe(untilDestroyed(this))
-            .subscribe((data: any) => {
-              console.log(data);
-              this.initForm();
-              this.orderForm.patchValue(data.invoiceMaster);
-            });
+          this.initForm();
+          this.orderForm.patchValue(result);
+          console.log(this.orderForm.value);
         }
+      });
+  }
+
+
+  generateDocument(country?: any) {
+    let body = {
+      ...this.orderForm.value,
+      format: this.reportType,
+      country
+    };
+    console.log(body);
+
+    this.masterService
+      .invoke('generateOrderConfirmation', body)
+      .pipe(untilDestroyed(this))
+      .subscribe((data: any) => {
+        console.log(data);
       });
   }
 
