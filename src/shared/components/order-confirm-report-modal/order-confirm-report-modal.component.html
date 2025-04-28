@@ -51,6 +51,7 @@
               margin: 5px 0px;
             "
             [(ngModel)]="reportType"
+            [disabled]="orderForm.disabled"
           >
             <option value="ms-word">MS-Word</option>
             <option value="pdf">PDF</option>
@@ -61,7 +62,7 @@
             class="btn table-btn"
             mat-raised-button
             [disabled]="orderForm.disabled"
-            (click)="generateDocument()"
+            (click)="generateDocument('confirmation', '')"
           >
             Order Confirmation
           </button>
@@ -71,7 +72,7 @@
             class="btn table-btn"
             mat-raised-button
             [disabled]="orderForm.disabled"
-            (click)="generateDocument()"
+            (click)="generateDocument('confirmation', 'UK')"
           >
             Order Confirmation (UK)
           </button>
@@ -84,7 +85,7 @@
             class="btn table-btn"
             mat-raised-button
             [disabled]="orderForm.disabled"
-            (click)="generateDocument()"
+            (click)="generateDocument('confirmation', 'AUS')"
           >
             Order Confirmation (Aus)
           </button>
@@ -93,7 +94,8 @@
           <button
             class="btn table-btn"
             mat-raised-button
-            (click)="openSelectModal()"
+            [disabled]="orderForm.disabled"
+            (click)="generateDocument('opf', '')"
           >
             OPF Report
           </button>

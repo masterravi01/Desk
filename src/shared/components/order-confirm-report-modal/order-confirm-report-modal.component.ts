@@ -62,6 +62,7 @@ export class OrderConfirmReportModalComponent {
 
   ngOnInit(): void {
     this.initForm();
+    this.orderForm.disable();
   }
 
   initForm() {
@@ -96,10 +97,11 @@ export class OrderConfirmReportModalComponent {
   }
 
 
-  generateDocument(country?: any) {
+  generateDocument(type: any, country?: any) {
     let body = {
       ...this.orderForm.value,
       format: this.reportType,
+      type,
       country
     };
     console.log(body);
