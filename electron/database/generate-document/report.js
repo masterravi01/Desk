@@ -104,42 +104,7 @@ function calculateTotalBoxes(invoiceDetails) {
     }
   });
 
-  const fromOnlyMap = {};
-  const defaultBoxWeight = 100;
-  let totalNetWeight = 0;
-  let totalGrossWeight = 0;
-
-  invoiceDetails.forEach((item, index) => {
-    if (item.containerFrom && !item.containerTo) {
-      const key = item.containerFrom;
-      if (!fromOnlyMap[key]) fromOnlyMap[key] = [];
-      fromOnlyMap[key].push({ item, index });
-    }
-  });
-  Object.values(fromOnlyMap).forEach((group) => {
-    const totalNet = group.reduce(
-      (sum, entry) => sum + Number(entry.item.netWeight || 0),
-      0
-    );
-    const lastEntry = group[group.length - 1];
-    lastEntry.item.grossWeight = (totalNet + defaultBoxWeight).toFixed(2);
-  });
-  invoiceDetails.forEach((item) => {
-    totalNetWeight += Number(item.netWeight || 0);
-    if (item.containerFrom && item.containerTo) {
-      const from = Number(item.containerFrom);
-      const to = Number(item.containerTo);
-      const totalBoxes = to - from + 1;
-      const netWeight = Number(item.netWeight || 0);
-      const grossWeight = netWeight + defaultBoxWeight * totalBoxes;
-      item.grossWeight = grossWeight.toFixed(2);
-      totalGrossWeight += grossWeight;
-    } else {
-      totalGrossWeight += Number(item.grossWeight);
-    }
-  });
-
-  return { totalBox, invoiceDetails, totalGrossWeight, totalNetWeight };
+  return totalBox;
 }
 
 async function readInvoiceData(invoiceId, isCustom, country = "") {
@@ -157,19 +122,47 @@ async function readInvoiceData(invoiceId, isCustom, country = "") {
   const containers = await getAllContainer();
   const currency = await getCurrencyByName(master.currency);
 
-  let groupedInvoicesBySize = {};
+  let groupedInvoicesBySize = [];
 
-  let details = calculateTotalBoxes(invoiceDetails);
-  let { totalBox, totalNetWeight, totalGrossWeight } = details;
-  invoiceDetails = details.invoiceDetails;
+  let totalBox = calculateTotalBoxes(invoiceDetails);
+
   invoiceDetails.forEach((invoice) => {
     const type = invoice.containerType;
     const container = containers.find((c) => c.containerName === type);
+
     invoice.squareMeter = toFixedToFour(invoice.squareMeter);
     invoice.rate = toFixedToFour(invoice.rate);
     invoice.lwh = `${container.length} X ${container.width} X ${container.height}`;
-    if (!groupedInvoicesBySize[type]) {
-      groupedInvoicesBySize[type] = {
+
+    // Prepare invoice value
+    invoice.value = (
+      Number(invoice?.quantity || "0") * parseFloat(invoice?.rate || "0")
+    ).toFixed(4);
+
+    let addedToExistingGroup = false;
+
+    // Check if it can be added to existing group
+    for (let i = groupedInvoicesBySize.length - 1; i >= 0; i--) {
+      const group = groupedInvoicesBySize[i];
+
+      if (group.containerType === type) {
+        const lastInvoice = group.invoices[group.invoices.length - 1];
+        const lastTo =
+          Number(lastInvoice.containerTo) || Number(lastInvoice.containerFrom);
+        const currentFrom = Number(invoice.containerFrom);
+
+        // Check if the current invoice is in order
+        if (currentFrom === lastTo || currentFrom === lastTo + 1) {
+          group.invoices.push(invoice);
+          addedToExistingGroup = true;
+          break; // No need to check further
+        }
+      }
+    }
+
+    if (!addedToExistingGroup) {
+      // Create new group
+      groupedInvoicesBySize.push({
         containerType: type,
         thicknessDetail:
           invoice.thicknessDetail.toUpperCase() +
@@ -181,18 +174,10 @@ async function readInvoiceData(invoiceId, isCustom, country = "") {
         lengthInch: container.lengthInch ?? 0,
         widthInch: container.widthInch ?? 0,
         heightInch: container.heightInch ?? 0,
-        invoices: [],
-      };
+        invoices: [invoice],
+      });
     }
-    // invoice.value = (
-    //   parseFloat((master.calculationType == 'Per Sheet' ? Number(invoice?.quantity || "0") : Number(invoice?.squareMeter  || "0") )) * parseFloat(invoice?.rate || "0")
-    // ).toFixed(4);
-    invoice.value =
-      Number(invoice?.quantity || "0") *
-      parseFloat(invoice?.rate || "0").toFixed(4);
-    groupedInvoicesBySize[type].invoices.push(invoice);
   });
-  groupedInvoicesBySize = Object.values(groupedInvoicesBySize);
 
   let totalAddition =
     master.additionalChargeType === "percentage"
@@ -222,6 +207,51 @@ async function readInvoiceData(invoiceId, isCustom, country = "") {
         );
       });
     }
+  });
+  let fromMap = {};
+  let totalGrossWeight = 0;
+  let totalNetWeight = 0;
+  const defaultBoxWeight = 100;
+
+  groupedInvoicesBySize.forEach((item, boxIndex) => {
+    item.invoices.forEach((inv, invIndex) => {
+      totalNetWeight += Number(inv.netWeight || 0);
+      if (inv.containerFrom && inv.containerTo) {
+        const from = Number(inv.containerFrom);
+        const to = Number(inv.containerTo);
+        const totalBoxes = to - from + 1;
+        const netWeight = Number(inv.netWeight || 0);
+        const grossWeight = netWeight + defaultBoxWeight * totalBoxes;
+        inv.grossWeight = grossWeight.toFixed(2);
+        totalGrossWeight += Number(grossWeight);
+      } else {
+        const fromKey = inv.containerFrom;
+        if (fromMap[fromKey]) {
+          const lastLocation = fromMap[fromKey];
+          const lastInv =
+            groupedInvoicesBySize[lastLocation.boxIndex].invoices[
+              lastLocation.invIndex
+            ];
+
+          if (lastInv) {
+            inv.grossWeight = (
+              Number(lastInv.grossWeight) + Number(inv.netWeight)
+            ).toFixed(2);
+            lastInv.grossWeight = "";
+          }
+
+          // Update location to current invoice
+          fromMap[fromKey] = { boxIndex, invIndex };
+          totalGrossWeight += Number(inv.netWeight);
+        } else {
+          // First time seeing this fromKey
+          fromMap[fromKey] = { boxIndex, invIndex };
+          const grossWeight = Number(inv.netWeight || 0) + defaultBoxWeight;
+          inv.grossWeight = grossWeight.toFixed(2);
+          totalGrossWeight += grossWeight;
+        }
+      }
+    });
   });
 
   let CIItems = modifyCustomInvoiceData(

@@ -428,7 +428,23 @@ export class OrderConfirmModalComponent implements OnInit {
             ?.patchValue(data.invoiceMaster[0].customerId);
           this.calculationForm.patchValue(data.invoiceMaster[0]);
         }
+        // const containerObj: Record<string, any> = {};
 
+        // // Mapping containers by container name
+        // this.containers.forEach((c: any) => {
+        //   if (c?.containerName) {
+        //     containerObj[c.containerName] = c;
+        //   }
+        // });
+        // data.invoiceDetails.forEach((inv: any) => {
+        //   const container = inv.containerType
+        //     ? containerObj[inv.containerType] || {}
+        //     : {};
+        //   let { length = 0, width = 0, height = 0 } = container;
+        //   inv.length = length;
+        //   inv.width = width;
+        //   inv.thickness = height;
+        // });
         this.boxes.set(data.invoiceDetails);
         this.instructions = data.invoiceInstruction;
       });
@@ -593,23 +609,11 @@ export class OrderConfirmModalComponent implements OnInit {
       );
 
     let invoiceDetails = this.boxes(); // Getting list of invoice items
-    const containerObj: Record<string, any> = {};
-
-    // Mapping containers by container name
-    this.containers.forEach((c: any) => {
-      if (c?.containerName) {
-        containerObj[c.containerName] = c;
-      }
-    });
 
     invoiceDetails.forEach((inv: any) => {
-      const container = inv.containerType
-        ? containerObj[inv.containerType] || {}
-        : {};
-
-      const width = Number(container.width) || 0;
-      const length = Number(container.length) || 0;
-      const height = Number(container.height) || 0;
+      const width = Number(inv.width) || 0;
+      const length = Number(inv.length) || 0;
+      const height = Number(inv.thickness) || 0;
       const quantity = Number(inv.quantity) || 0;
 
       const volume = width * length * height;
