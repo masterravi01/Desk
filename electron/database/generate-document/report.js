@@ -66,7 +66,8 @@ function modifyCustomInvoiceData(data, totalAddition, totalDiscount, master) {
   }
 
   data.forEach((item, index) => {
-    item.invoices.forEach((invoice) => {
+    item.invoices.forEach((invoice, idx) => {
+      invoice.isFirst = idx === 0;
       invoice.value = toFixedToFour(invoice.value);
       invoice.totalSq = toFixedToFour(invoice.totalSq);
       invoice.rate = toFixedToFour(invoice.rate);
@@ -141,7 +142,7 @@ function calculateTotalBoxes(invoiceDetails) {
   return { totalBox, invoiceDetails, totalGrossWeight, totalNetWeight };
 }
 
-async function readInvoiceData(invoiceId, isCustom) {
+async function readInvoiceData(invoiceId, isCustom, country = "") {
   let {
     invoiceMaster = [],
     invoiceDetails = [],
@@ -258,6 +259,7 @@ async function readInvoiceData(invoiceId, isCustom) {
     buyersOrderNo: master.customerOrderNo ?? "",
     orderDate: master.invoiceDate ?? "",
     invoicePiNo: master.invoicePiNo ?? "",
+    fsc: master.fsc ?? "",
 
     consigneeName: final.consigneeName ?? "",
     consigneeAddress: final.consigneeAddress ?? "",
@@ -351,15 +353,16 @@ async function readInvoiceData(invoiceId, isCustom) {
 
     privateRemark: final.privateRemark ?? "",
     bottomNotes: invoiceBottomNote,
+    isAus: country === "aus",
   };
 
   return docData;
 }
 
 async function generateInvoiceDocument(body) {
-  const { invoiceId, format, type, document } = body;
+  const { invoiceId, format, type, document, country } = body;
   const isCustom = type === "custom";
-  let data = await readInvoiceData(invoiceId, isCustom);
+  let data = await readInvoiceData(invoiceId, isCustom, country);
 
   let template;
   let fileName = "output";

@@ -586,12 +586,30 @@
         </table>
       </div>
       <mat-divider></mat-divider>
-      <div class="d-flex" style="max-width: 600px; margin: 20px 20px 0 20px">
-        <div class="label-cell">Reference</div>
+      <div class="outer-div">
+        <table class="form-table">
+          <tbody>
+            <tr>
+              <td class="input-cell" colspan="2">
+                <div class="grid">
+                  <div class="d-flex">
+                    <div class="label-cell">Reference</div>
+                    <mat-form-field appearance="outline">
+                      <input matInput formControlName="reference" />
+                    </mat-form-field>
+                  </div>
 
-        <mat-form-field appearance="outline" style="margin-left: 16px">
-          <input matInput formControlName="reference" />
-        </mat-form-field>
+                  <div class="d-flex">
+                    <div class="label-cell">FSC Note</div>
+                    <mat-form-field appearance="outline">
+                      <input matInput formControlName="fsc" />
+                    </mat-form-field>
+                  </div>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
       </div>
     </ng-container>
 

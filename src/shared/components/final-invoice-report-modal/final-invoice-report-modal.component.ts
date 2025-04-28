@@ -1,7 +1,4 @@
-import {
-  Component,
-  inject,
-} from '@angular/core';
+import { Component, inject } from '@angular/core';
 import {
   MAT_DIALOG_DATA,
   MatDialogRef,
@@ -24,13 +21,12 @@ import {
   FormGroup,
   ReactiveFormsModule,
   Validators,
-  FormsModule
+  FormsModule,
 } from '@angular/forms';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { SelectInvoiceComponent } from '../select-invoice/select-invoice.component';
 
 @UntilDestroy()
-
 @Component({
   selector: 'app-final-invoice-report-modal',
   standalone: true,
@@ -45,10 +41,10 @@ import { SelectInvoiceComponent } from '../select-invoice/select-invoice.compone
     MatTableModule,
     MatTabsModule,
     MatDividerModule,
-    MatRadioModule
+    MatRadioModule,
   ],
   templateUrl: './final-invoice-report-modal.component.html',
-  styleUrl: './final-invoice-report-modal.component.css'
+  styleUrl: './final-invoice-report-modal.component.css',
 })
 export class FinalInvoiceReportModalComponent {
   readonly dialogRef = inject(MatDialogRef<FinalInvoiceReportModalComponent>);
@@ -60,7 +56,7 @@ export class FinalInvoiceReportModalComponent {
     private modalService: ModalService,
     private fb: FormBuilder,
     private masterService: MasterService
-  ) { }
+  ) {}
 
   ngOnInit(): void {
     this.initForm();
@@ -98,13 +94,13 @@ export class FinalInvoiceReportModalComponent {
       });
   }
 
-  generateInvoice(template: any, country: any) {
+  generateInvoice(template: any, country: any = '') {
     let body = {
       ...this.invoiceForm.value,
       format: this.reportType,
       type: this.documentType,
       document: template,
-      country
+      country,
     };
     console.log(body);
 
@@ -115,5 +111,4 @@ export class FinalInvoiceReportModalComponent {
         console.log(data);
       });
   }
-
 }

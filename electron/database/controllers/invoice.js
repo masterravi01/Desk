@@ -53,8 +53,8 @@ function insertInvoice({ invoiceMaster, invoiceDetails, invoiceInstruction }) {
         totalAmount, totalSquareMeters, rounding, netAmount, deliveryTerms,
         deliveryDetails, shippingDetails, paymentTerms, portOfDischarge,
         dispatchTerms, bankName, bankBranch, bankCity, swiftNumber,
-        comments, calculationType, bankAddress
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?)`;
+        comments, calculationType, bankAddress,fsc
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?,?)`;
 
       runQuery(masterInsertQuery, [
         invoiceMaster.customerOrderNo ?? null,
@@ -98,6 +98,7 @@ function insertInvoice({ invoiceMaster, invoiceDetails, invoiceInstruction }) {
         invoiceMaster.comments ?? null,
         invoiceMaster.calculationType ?? null,
         invoiceMaster.bankAddress ?? null,
+        invoiceMaster.fsc ?? null,
       ])
         .then((invoiceId) => {
           const detailPromises = Array.isArray(invoiceDetails)
@@ -193,7 +194,7 @@ function updateInvoice({ invoiceMaster, invoiceDetails, invoiceInstruction }) {
           totalAmount = ?, totalSquareMeters = ?, rounding = ?, netAmount = ?, deliveryTerms = ?,
           deliveryDetails = ?, shippingDetails = ?, paymentTerms = ?, portOfDischarge = ?,
           dispatchTerms = ?, bankName = ?, bankBranch = ?, bankCity = ?, swiftNumber = ?,
-          comments = ?, calculationType = ?, bankAddress = ? WHERE invoiceId = ?`;
+          comments = ?, calculationType = ?, bankAddress = ?,fsc = ? WHERE invoiceId = ?`;
 
       runQuery(masterUpdateQuery, [
         invoiceMaster.customerOrderNo ?? null,
@@ -237,6 +238,7 @@ function updateInvoice({ invoiceMaster, invoiceDetails, invoiceInstruction }) {
         invoiceMaster.comments ?? null,
         invoiceMaster.calculationType ?? null,
         invoiceMaster.bankAddress ?? null,
+        invoiceMaster.fsc ?? null,
         invoiceMaster.invoiceId,
       ])
         .then(() => {
@@ -549,7 +551,7 @@ async function importInvoice(data) {
           totalAmount = ?, totalSquareMeters = ?, rounding = ?, netAmount = ?, deliveryTerms = ?,
           deliveryDetails = ?, shippingDetails = ?, paymentTerms = ?, portOfDischarge = ?,
           dispatchTerms = ?, bankName = ?, bankBranch = ?, bankCity = ?, swiftNumber = ?,
-          comments = ?, calculationType = ?, bankAddress = ? 
+          comments = ?, calculationType = ?, bankAddress = ?,fsc = ? 
           WHERE invoiceId = ?`;
 
           await runQuery(masterUpdateQuery, [
@@ -594,6 +596,7 @@ async function importInvoice(data) {
             invoiceMaster.comments ?? null,
             invoiceMaster.calculationType ?? null,
             invoiceMaster.bankAddress ?? null,
+            invoiceMaster.fsc ?? null,
             invoiceId,
           ]);
 
@@ -837,8 +840,8 @@ async function importInvoice(data) {
         totalAmount, totalSquareMeters, rounding, netAmount, deliveryTerms,
         deliveryDetails, shippingDetails, paymentTerms, portOfDischarge,
         dispatchTerms, bankName, bankBranch, bankCity, swiftNumber,
-        comments, calculationType, bankAddress
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?)`;
+        comments, calculationType, bankAddress,fsc
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?)`;
 
         runQuery(masterInsertQuery, [
           invoiceMaster.customerOrderNo ?? null,
@@ -882,6 +885,7 @@ async function importInvoice(data) {
           invoiceMaster.comments ?? null,
           invoiceMaster.calculationType ?? null,
           invoiceMaster.bankAddress ?? null,
+          invoiceMaster.fsc ?? null,
         ])
           .then((newInvoiceId) => {
             invoiceId = newInvoiceId; // Capture for later inserts

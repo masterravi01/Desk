@@ -92,8 +92,8 @@ function addInvoiceMaster(invoice) {
         reference, totalQuantity, totalAmount, totalSquareMeters, rounding, netAmount, 
         deliveryTerms, deliveryDetails, shippingDetails, paymentTerms, portOfDischarge, 
         dispatchTerms, bankName, bankBranch, bankCity, swiftNumber, comments, calculationType, 
-        bankAddress
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        bankAddress,fsc
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?)
     `;
     db.run(
       query,
@@ -139,6 +139,7 @@ function addInvoiceMaster(invoice) {
         invoice.comments,
         invoice.calculationType,
         invoice.bankAddress,
+        invoice.fsc,
       ],
       function (err) {
         if (err) reject(err);
@@ -160,7 +161,7 @@ function updateInvoiceMaster(invoice) {
         reference = ?, totalQuantity = ?, totalAmount = ?, totalSquareMeters = ?, rounding = ?, netAmount = ?,
         deliveryTerms = ?, deliveryDetails = ?, shippingDetails = ?, paymentTerms = ?, portOfDischarge = ?,
         dispatchTerms = ?, bankName = ?, bankBranch = ?, bankCity = ?, swiftNumber = ?, comments = ?, calculationType = ?,
-        bankAddress = ?
+        bankAddress = ?, fsc = ?
       WHERE invoiceId = ?
     `;
     db.run(
@@ -207,6 +208,7 @@ function updateInvoiceMaster(invoice) {
         invoice.comments,
         invoice.calculationType,
         invoice.bankAddress,
+        invoice.fsc,
         invoice.invoiceId,
       ],
       function (err) {

@@ -273,7 +273,8 @@ CREATE TABLE invoiceMaster (
     swiftNumber TEXT DEFAULT NULL,
     comments TEXT DEFAULT NULL,
     calculationType INTEGER DEFAULT NULL,
-    bankAddress TEXT DEFAULT NULL
+    bankAddress TEXT DEFAULT NULL,
+    fsc TEXT DEFAULT NULL,
 );
 
 INSERT INTO invoiceMaster (
@@ -284,7 +285,7 @@ INSERT INTO invoiceMaster (
     reference, totalQuantity, totalAmount, totalSquareMeters, rounding, netAmount,
     deliveryTerms, deliveryDetails, shippingDetails, paymentTerms, portOfDischarge,
     dispatchTerms, bankName, bankBranch, bankCity, swiftNumber, comments, calculationType,
-    bankAddress
+    bankAddress,fsc
 ) VALUES 
 (
     20, '2488637', '06-06-2016', '49', '2488637/49', 11,
@@ -296,7 +297,7 @@ INSERT INTO invoiceMaster (
     '', '5600', '32280.0', '16670.080', '0.00', '32280',
     'CIF', 'JULY 01, 2016', '', 'ON 60 DAYS D.A. - L.C.', 'FELIXSTOWE',
     'FELIXSTOWE (U.K)', 'FORTIS BANK S.A. / N.V.BRUSSELS', '', '', '',
-    NULL, 2, 'ALL BELGIAN OFFICES\nBRUSSELS'
+    NULL, 2, 'ALL BELGIAN OFFICES\nBRUSSELS',''
 ),
 (
     23, '2487600', '10-06-2016', '52', '2487600/52', 11,
@@ -308,7 +309,7 @@ INSERT INTO invoiceMaster (
     'ADDITION - FREIGHT CHARGES', '3240', '39036.0', '9644.8324', '0.00', '39036',
     'CIF', 'JULY 25, 2016', '', 'ON 60 DAYS D.A. - L.C.', 'GRANGEMOUTH',
     'GRANGEMOUTH (U.K)', 'FORTIS BANK S.A. / N.V.BRUSSELS', '', '', '',
-    NULL, 2, 'ALL BELGIAN OFFICES\nBRUSSELS'
+    NULL, 2, 'ALL BELGIAN OFFICES\nBRUSSELS',''
 );`,
   },
   {
@@ -448,6 +449,7 @@ CREATE TABLE invoiceBottomNote (
 ];
 
 // db.run("DELETE FROM migrations WHERE version = ?", [13]);
+// db.run("ALTER TABLE invoiceMaster ADD fsc TEXT DEFAULT NULL");
 // Ensure Migrations Table Exists
 db.run(
   `
