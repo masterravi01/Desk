@@ -108,7 +108,7 @@ function insertInvoice({ invoiceMaster, invoiceDetails, invoiceInstruction }) {
                 invoiceId,customerId, containerType, containerTo, containerFrom, length,
                 width, thickness, squareMeter, materialGrade, brandName,
                 materialQuality, finishType, thicknessDetail, quantity, rate,
-                remarks, designType, prefixCode, grossWeight, netWeight, boxType, subWeight
+                remarks, designType, prefixCode, grossWeight, netWeight, boxType, tableIndex
               ) VALUES (?,?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
                   [
                     invoiceId,
@@ -133,22 +133,23 @@ function insertInvoice({ invoiceMaster, invoiceDetails, invoiceInstruction }) {
                     detail.grossWeight ?? null,
                     detail.netWeight ?? null,
                     detail.boxType ?? null,
-                    detail.subWeight ?? null,
+                    detail.tableIndex ?? null,
                   ]
                 )
               )
             : [];
 
           const instructionPromises = Array.isArray(invoiceInstruction)
-            ? invoiceInstruction.map((instruction) =>
+            ? invoiceInstruction.map((instruction, index) =>
                 runQuery(
                   `INSERT INTO invoiceInstruction (
-                invoiceId, instructionId, invoiceInstruction
-              ) VALUES (?, ?, ?)`,
+                invoiceId, instructionId, invoiceInstruction,instructionIndex
+              ) VALUES (?, ?, ?,?)`,
                   [
                     invoiceId,
                     instruction.instructionId ?? null,
                     instruction.invoiceInstruction ?? null,
+                    index,
                   ]
                 )
               )
@@ -250,7 +251,7 @@ function updateInvoice({ invoiceMaster, invoiceDetails, invoiceInstruction }) {
               [invoiceId]
             ).then((data) => (Array.isArray(data) ? data : [])),
             runQuery(
-              "SELECT instructionId FROM invoiceInstruction WHERE invoiceId = ?",
+              "SELECT instructionId FROM invoiceInstruction WHERE invoiceId = ? ORDER BY instructionIndex",
               [invoiceId]
             ).then((data) => (Array.isArray(data) ? data : [])),
           ]).then(([oldDetails, oldInstructions]) => {
@@ -298,7 +299,7 @@ function updateInvoice({ invoiceMaster, invoiceDetails, invoiceInstruction }) {
                       width = ?, thickness = ?, squareMeter = ?, materialGrade = ?, brandName = ?,
                       materialQuality = ?, finishType = ?, thicknessDetail = ?, quantity = ?, rate = ?,
                       remarks = ?, designType = ?, prefixCode = ?, grossWeight = ?, netWeight = ?,
-                      boxType = ?, subWeight = ? WHERE invoiceDetailId = ?`,
+                      boxType = ?, tableIndex = ? WHERE invoiceDetailId = ?`,
                     [
                       detail.customerId ?? null,
                       detail.containerType ?? null,
@@ -321,7 +322,7 @@ function updateInvoice({ invoiceMaster, invoiceDetails, invoiceInstruction }) {
                       detail.grossWeight ?? null,
                       detail.netWeight ?? null,
                       detail.boxType ?? null,
-                      detail.subWeight ?? null,
+                      detail.tableIndex ?? null,
                       detail.invoiceDetailId,
                     ]
                   )
@@ -330,7 +331,7 @@ function updateInvoice({ invoiceMaster, invoiceDetails, invoiceInstruction }) {
                       invoiceId,customerId, containerType, containerTo, containerFrom, length,
                       width, thickness, squareMeter, materialGrade, brandName,
                       materialQuality, finishType, thicknessDetail, quantity, rate,
-                      remarks, designType, prefixCode, grossWeight, netWeight, boxType, subWeight
+                      remarks, designType, prefixCode, grossWeight, netWeight, boxType, tableIndex
                     ) VALUES (?,?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
                     [
                       invoiceId,
@@ -355,31 +356,33 @@ function updateInvoice({ invoiceMaster, invoiceDetails, invoiceInstruction }) {
                       detail.grossWeight ?? null,
                       detail.netWeight ?? null,
                       detail.boxType ?? null,
-                      detail.subWeight ?? null,
+                      detail.tableIndex ?? null,
                     ]
                   )
             );
 
             const upsertInstructionPromises = (invoiceInstruction || []).map(
-              (instruction) =>
+              (instruction, index) =>
                 instruction.instructionId && instruction.invoiceId
                   ? runQuery(
-                      `UPDATE invoiceInstruction SET invoiceInstruction = ?
+                      `UPDATE invoiceInstruction SET invoiceInstruction = ?,instructionIndex=?
                         WHERE invoiceId = ? AND instructionId = ?`,
                       [
                         instruction.invoiceInstruction ?? null,
+                        index,
                         invoiceId,
                         instruction.instructionId ?? null,
                       ]
                     )
                   : runQuery(
                       `INSERT INTO invoiceInstruction (
-                          invoiceId, instructionId, invoiceInstruction
-                        ) VALUES (?, ?, ?)`,
+                          invoiceId, instructionId, invoiceInstruction,instructionIndex
+                        ) VALUES (?, ?, ?,?)`,
                       [
                         invoiceId,
                         instruction.instructionId ?? null,
                         instruction.invoiceInstruction ?? null,
+                        index,
                       ]
                     )
             );
@@ -450,10 +453,10 @@ async function getInvoice(invoiceId) {
   try {
     const queries = {
       invoiceMasterQuery: `SELECT * FROM invoiceMaster WHERE invoiceId = ?`,
-      invoiceDetailsQuery: `SELECT * FROM invoiceDetails WHERE invoiceId = ?`,
-      invoiceInstructionQuery: `SELECT * FROM invoiceInstruction WHERE invoiceId = ?`,
+      invoiceDetailsQuery: `SELECT * FROM invoiceDetails WHERE invoiceId = ? ORDER BY instructionIndex`,
+      invoiceInstructionQuery: `SELECT * FROM invoiceInstruction WHERE invoiceId = ? ORDER BY instructionIndex`,
       invoiceFinalQuery: `SELECT * FROM finalinvoice WHERE invoiceId = ?`,
-      invoiceBottomNoteQuery: `SELECT * FROM invoiceBottomNote WHERE invoiceId = ?`,
+      invoiceBottomNoteQuery: `SELECT * FROM invoiceBottomNote WHERE invoiceId = ? ORDER BY bottomNoteIndex`,
     };
 
     // Run queries in parallel for better performance
@@ -485,14 +488,13 @@ async function getInvoice(invoiceId) {
             WHERE customerId = ? AND invoiceId != ?
             ORDER BY invoiceId DESC
             LIMIT 1
-        ) latest_invoice ON ibn.invoiceId = latest_invoice.invoiceId;
+        ) latest_invoice ON ibn.invoiceId = latest_invoice.invoiceId
+           ORDER BY ibn.bottomNoteIndex;
       `,
         [invoiceMaster[0].customerId, invoiceMaster[0].invoiceId]
       );
     }
-    invoiceDetails = invoiceDetails?.sort(
-      (a, b) => Number(a.containerFrom) - Number(b.containerFrom)
-    );
+
     return {
       invoiceMaster,
       invoiceDetails,
@@ -619,7 +621,7 @@ async function importInvoice(data) {
                   invoiceId,customerId, containerType, containerTo, containerFrom, length,
                   width, thickness, squareMeter, materialGrade, brandName,
                   materialQuality, finishType, thicknessDetail, quantity, rate,
-                  remarks, designType, prefixCode, grossWeight, netWeight, boxType, subWeight
+                  remarks, designType, prefixCode, grossWeight, netWeight, boxType, tableIndex
                 ) VALUES (?,?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
                 [
                   invoiceId,
@@ -644,7 +646,7 @@ async function importInvoice(data) {
                   detail.grossWeight ?? null,
                   detail.netWeight ?? null,
                   detail.boxType ?? null,
-                  detail.subWeight ?? null,
+                  detail.tableIndex ?? null,
                 ]
               );
             }
@@ -652,15 +654,16 @@ async function importInvoice(data) {
 
           // ✅ Re-insert invoiceInstruction
           if (Array.isArray(invoiceInstruction)) {
-            for (const instruction of invoiceInstruction) {
+            for (let i = 0; i < invoiceInstruction.length; i++) {
               await runQuery(
                 `INSERT INTO invoiceInstruction (
-                invoiceId, instructionId, invoiceInstruction
-              ) VALUES (?, ?, ?)`,
+                invoiceId, instructionId, invoiceInstruction,instructionIndex
+              ) VALUES (?, ?, ?,?)`,
                 [
                   invoiceId,
-                  instruction.instructionId ?? null,
-                  instruction.invoiceInstruction ?? null,
+                  invoiceInstruction[i].instructionId ?? null,
+                  invoiceInstruction[i].invoiceInstruction ?? null,
+                  i,
                 ]
               );
             }
@@ -668,12 +671,18 @@ async function importInvoice(data) {
 
           // ✅ Re-insert invoiceBottomNote
           if (Array.isArray(invoiceBottomNote)) {
-            for (const note of invoiceBottomNote) {
+            for (let i = 0; i < invoiceBottomNote?.length; i++) {
+              const note = invoiceBottomNote[i];
               await runQuery(
                 `INSERT INTO invoiceBottomNote (
-                invoiceId, bottomNoteId, bottomNote
-              ) VALUES (?, ?, ?)`,
-                [invoiceId, note.bottomNoteId ?? null, note.bottomNote ?? null]
+                invoiceId, bottomNoteId, bottomNote,bottomNoteIndex
+              ) VALUES (?, ?, ?,?)`,
+                [
+                  invoiceId,
+                  note.bottomNoteId ?? null,
+                  note.bottomNote ?? null,
+                  i,
+                ]
               );
             }
           }
@@ -897,7 +906,7 @@ async function importInvoice(data) {
                   invoiceId,customerId, containerType, containerTo, containerFrom, length,
                   width, thickness, squareMeter, materialGrade, brandName,
                   materialQuality, finishType, thicknessDetail, quantity, rate,
-                  remarks, designType, prefixCode, grossWeight, netWeight, boxType, subWeight
+                  remarks, designType, prefixCode, grossWeight, netWeight, boxType, tableIndex
                 ) VALUES (?,?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
                     [
                       invoiceId,
@@ -922,37 +931,39 @@ async function importInvoice(data) {
                       detail.grossWeight ?? null,
                       detail.netWeight ?? null,
                       detail.boxType ?? null,
-                      detail.subWeight ?? null,
+                      detail.tableIndex ?? null,
                     ]
                   )
                 )
               : [];
 
             const instructionPromises = Array.isArray(invoiceInstruction)
-              ? invoiceInstruction.map((instruction) =>
+              ? invoiceInstruction.map((instruction, index) =>
                   runQuery(
                     `INSERT INTO invoiceInstruction (
-                    invoiceId, instructionId, invoiceInstruction
-                  ) VALUES (?, ?, ?)`,
+                    invoiceId, instructionId, invoiceInstruction,instructionIndex
+                  ) VALUES (?, ?, ?,?)`,
                     [
                       invoiceId,
                       instruction.instructionId ?? null,
                       instruction.invoiceInstruction ?? null,
+                      index,
                     ]
                   )
                 )
               : [];
 
             const bottomNotePromises = Array.isArray(invoiceBottomNote)
-              ? invoiceBottomNote.map((note) =>
+              ? invoiceBottomNote.map((note, index) =>
                   runQuery(
                     `INSERT INTO invoiceBottomNote (
-                    invoiceId, bottomNoteId, bottomNote
-                  ) VALUES (?, ?, ?)`,
+                    invoiceId, bottomNoteId, bottomNote,bottomNoteIndex
+                  ) VALUES (?, ?, ?,?)`,
                     [
                       invoiceId,
                       note.bottomNoteId ?? null,
                       note.bottomNote ?? null,
+                      index,
                     ]
                   )
                 )
@@ -1050,7 +1061,6 @@ async function importInvoice(data) {
 async function addFinalInvoice({ invoice, invoiceBottomNotes = [] }) {
   try {
     await runQuery("BEGIN TRANSACTION");
-    console.log(invoice, invoiceBottomNotes);
     const query = `
       INSERT INTO finalinvoice (
         invoiceId, customerName, buyerName, buyerAddress, buyerCity, buyerZip,
@@ -1111,16 +1121,17 @@ async function addFinalInvoice({ invoice, invoiceBottomNotes = [] }) {
     ]);
 
     const insertBottomNotePromises = Array.isArray(invoiceBottomNotes)
-      ? invoiceBottomNotes.map((bottomnote) =>
+      ? invoiceBottomNotes.map((bottomnote, index) =>
           runQuery(
             `INSERT INTO invoiceBottomNote (
-              invoiceId, bottomNoteId, bottomNote
-            ) VALUES (?, ?, ?)`,
+              invoiceId, bottomNoteId, bottomNote,bottomNoteIndex
+            ) VALUES (?, ?, ?,?)`,
 
             [
               invoice.invoiceId,
               bottomnote.bottomNoteId ?? null,
               bottomnote.bottomNote ?? null,
+              index,
             ]
           )
         )
@@ -1210,7 +1221,7 @@ async function updateFinalInvoice({ invoice, invoiceBottomNotes = [] }) {
     // ✅ Step 2: Handle Bottom Notes
     // Get existing bottom notes
     const existingBottomNotes = await runQuery(
-      `SELECT bottomNoteId FROM invoiceBottomNote WHERE invoiceId = ?`,
+      `SELECT bottomNoteId FROM invoiceBottomNote WHERE invoiceId = ? ORDER BY bottomNoteIndex`,
       [invoice.invoiceId]
     );
 
@@ -1232,17 +1243,18 @@ async function updateFinalInvoice({ invoice, invoiceBottomNotes = [] }) {
     );
 
     // Upsert (Insert or Update) Bottom Notes
-    const upsertPromises = invoiceBottomNotes.map((bottomnote) =>
+    const upsertPromises = invoiceBottomNotes.map((bottomnote, index) =>
       runQuery(
         `INSERT INTO invoiceBottomNote (
-          invoiceId, bottomNoteId, bottomNote
-        ) VALUES (?, ?, ?)
+          invoiceId, bottomNoteId, bottomNote,bottomNoteIndex
+        ) VALUES (?, ?, ?,?)
         ON CONFLICT(invoiceId,bottomNoteId) DO UPDATE SET
           bottomNote = excluded.bottomNote`,
         [
           invoice.invoiceId,
           bottomnote.bottomNoteId ?? null,
           bottomnote.bottomNote ?? null,
+          index,
         ]
       )
     );
