@@ -384,6 +384,8 @@ async function readInvoiceData(invoiceId, isCustom, country = "") {
     privateRemark: final.privateRemark ?? "",
     bottomNotes: invoiceBottomNote,
     isAus: country === "aus",
+    isUK: country === "uk",
+    isGen: country === "",
   };
 
   return docData;
@@ -512,7 +514,7 @@ function toFixedToFour(value) {
 
 async function generateOrderConfirmation(body) {
   const { invoiceId, country, format, type } = body;
-  let data = await readInvoiceData(invoiceId);
+  let data = await readInvoiceData(invoiceId, false, country);
 
   let template = "order-confirmation.docx";
   let fileName = `PI ${invoiceId}`;
