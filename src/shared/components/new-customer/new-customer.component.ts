@@ -17,6 +17,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MasterService } from '../../../core/services/master.service';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { MatCardModule } from '@angular/material/card';
+import { TextFieldModule } from '@angular/cdk/text-field';
 
 @UntilDestroy()
 @Component({
@@ -33,6 +34,7 @@ import { MatCardModule } from '@angular/material/card';
     MatInputModule,
     MatButtonModule,
     MatCardModule,
+    TextFieldModule,
   ],
   templateUrl: './new-customer.component.html',
   styleUrl: './new-customer.component.css',

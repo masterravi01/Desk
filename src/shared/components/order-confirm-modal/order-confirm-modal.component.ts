@@ -43,6 +43,8 @@ import { InvoiceDetailsService } from '../../../core/services/invoice-details.se
 import { debounceTime } from 'rxjs/internal/operators/debounceTime';
 import { combineLatest } from 'rxjs';
 import { SnackbarService } from '../../../core/services/snackbar.service';
+import { TextFieldModule } from '@angular/cdk/text-field';
+
 @UntilDestroy()
 @Component({
   selector: 'app-order-confirm-modal',
@@ -65,6 +67,7 @@ import { SnackbarService } from '../../../core/services/snackbar.service';
     MatRadioModule,
     TitleCasePipe,
     CommonModule,
+    TextFieldModule,
   ],
   providers: [provideNativeDateAdapter()],
   templateUrl: './order-confirm-modal.component.html',
@@ -279,6 +282,7 @@ export class OrderConfirmModalComponent implements OnInit {
     });
   }
   initInvoiceDetailsForm(data?: any) {
+    // Step 1: Initialize form
     this.invoiceDetailsForm = this.fb.group({
       invoiceDetailId: [''],
       invoiceId: [''],
@@ -305,23 +309,17 @@ export class OrderConfirmModalComponent implements OnInit {
       subWeight: [''],
     });
 
-    if (data) this.invoiceDetailsForm.patchValue(data);
-
-    this.invoiceDetailsForm.patchValue({
-      invoiceDetailId: '',
-      invoiceId: '',
-    });
-
+    // Step 2: Set customerId from parent form
     this.invoiceDetailsForm
       .get('customerId')
       ?.patchValue(this.invoiceForm.get('customerId')?.value);
 
+    // Step 3: Listen to materialGrade changes (after form init)
     this.invoiceDetailsForm
       .get('materialGrade')
       ?.valueChanges.pipe(debounceTime(500))
       .subscribe((materialGrade) => {
         const customerId = this.invoiceDetailsForm.get('customerId')?.value;
-        console.log(materialGrade, customerId);
         if (materialGrade && customerId) {
           this.invoiceDetailsService.setSearchParams({
             materialGrade,
@@ -330,22 +328,7 @@ export class OrderConfirmModalComponent implements OnInit {
         }
       });
 
-    this.invoiceDetailsService.getSearchResults().subscribe({
-      next: (result) => {
-        console.log(result);
-        if (result && result?.length) {
-          this.invoiceDetailsForm.patchValue({
-            ...result[0],
-            invoiceDetailId: '',
-          });
-        }
-      },
-      error: () => {
-        console.warn('No matching data found.');
-      },
-    });
-
-    // 🧮 Auto-calculate squareMeter (if not manually changed)
+    // Step 4: Auto-calculate square meter
     combineLatest([
       this.invoiceDetailsForm.get('length')!.valueChanges,
       this.invoiceDetailsForm.get('width')!.valueChanges,
@@ -358,6 +341,42 @@ export class OrderConfirmModalComponent implements OnInit {
       this.invoiceDetailsForm
         .get('squareMeter')
         ?.setValue(squareMeter, { emitEvent: false });
+    });
+
+    // Step 5: Patch incoming data (after subscriptions)
+    if (data) {
+      this.invoiceDetailsForm.patchValue(data);
+
+      // 🔁 Recalculate square meter manually after patch
+      const { length, width, quantity } = this.invoiceDetailsForm.value;
+      const squareMeter =
+        length && width && quantity
+          ? +Math.round((length * width * quantity) / 10000) / 100
+          : 0;
+      this.invoiceDetailsForm
+        .get('squareMeter')
+        ?.setValue(squareMeter, { emitEvent: false });
+    }
+
+    // Step 6: Reset specific fields regardless
+    this.invoiceDetailsForm.patchValue({
+      invoiceDetailId: '',
+      invoiceId: '',
+    });
+
+    // Step 7: Fetch matched data (optional auto-fill)
+    this.invoiceDetailsService.getSearchResults().subscribe({
+      next: (result) => {
+        if (result?.length) {
+          this.invoiceDetailsForm.patchValue({
+            ...result[0],
+            invoiceDetailId: '',
+          });
+        }
+      },
+      error: () => {
+        console.warn('No matching data found.');
+      },
     });
   }
 

@@ -32,7 +32,13 @@
         </td>
         <td class="input-cell">
           <mat-form-field appearance="outline" class="full-width">
-            <textarea matInput rows="3" formControlName="value"></textarea>
+            <textarea
+              matInput
+              rows="3"
+              cdkTextareaAutosize
+              cdkAutosizeMinRows="2"
+              formControlName="value"
+            ></textarea>
           </mat-form-field>
         </td>
       </tr>

@@ -20,7 +20,7 @@ function modifyCustomInvoiceData(data, totalAddition, totalDiscount, master) {
     const groupedInvoices = {};
 
     container.invoices.forEach((invoice) => {
-      const rateKey = invoice.rate;
+      const rateKey = invoice.preRate;
 
       if (!groupedInvoices[rateKey]) {
         groupedInvoices[rateKey] = {
@@ -132,6 +132,7 @@ async function readInvoiceData(invoiceId, isCustom, country = "") {
 
     invoice.squareMeter = toFixedToFour(invoice.squareMeter);
     invoice.rate = toFixedToFour(invoice.rate);
+    invoice.preRate = invoice.rate;
     invoice.lwh = `${container.length} X ${container.width} X ${container.height}`;
 
     // Prepare invoice value
