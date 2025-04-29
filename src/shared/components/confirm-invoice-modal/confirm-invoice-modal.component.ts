@@ -49,6 +49,7 @@ import { SelectInvoiceComponent } from '../select-invoice/select-invoice.compone
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { SelectBottomNoteComponent } from '../select-bottom-note/select-bottom-note.component';
 import { SnackbarService } from '../../../core/services/snackbar.service';
+import { TextFieldModule } from '@angular/cdk/text-field';
 
 @UntilDestroy()
 @Component({
@@ -74,6 +75,7 @@ import { SnackbarService } from '../../../core/services/snackbar.service';
     CommonModule,
     SlicePipe,
     MatCheckboxModule,
+    TextFieldModule,
   ],
   providers: [provideNativeDateAdapter()],
   templateUrl: './confirm-invoice-modal.component.html',

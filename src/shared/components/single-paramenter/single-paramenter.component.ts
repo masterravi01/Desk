@@ -14,6 +14,8 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
+import { TextFieldModule } from '@angular/cdk/text-field';
+
 @Component({
   selector: 'app-single-paramenter',
   standalone: true,
@@ -27,12 +29,12 @@ import { MatButtonModule } from '@angular/material/button';
     ReactiveFormsModule,
     MatInputModule,
     MatButtonModule,
+    TextFieldModule,
   ],
   templateUrl: './single-paramenter.component.html',
   styleUrl: './single-paramenter.component.css',
 })
 export class SingleParamenterComponent {
-
   singleForm!: FormGroup;
   title = '';
   parameter = '';
