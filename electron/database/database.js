@@ -342,13 +342,13 @@ INSERT INTO invoiceMaster (
         grossWeight INTEGER DEFAULT NULL,
         netWeight INTEGER DEFAULT NULL,
         boxType TEXT DEFAULT NULL,
-        subWeight INTEGER DEFAULT NULL
+        tableIndex INTEGER DEFAULT NULL
       );
 
       INSERT INTO invoiceDetails (
         invoiceDetailId, invoiceId,customerId, containerType, containerTo, containerFrom, length, width, thickness,
         squareMeter, materialGrade, brandName, materialQuality, finishType, thicknessDetail, 
-        quantity, rate, remarks, designType, prefixCode, grossWeight, netWeight, boxType, subWeight
+        quantity, rate, remarks, designType, prefixCode, grossWeight, netWeight, boxType, tableIndex
       ) VALUES
       (68, 20,1, 'BOX 150', '8', 1, '2440', '1220', '0.7', '9525.7600', 'SHPAWHGLZZZZ30007', '', NULL, 'GL+F', 'Single Side', '3200', '7.14', NULL, '5203', '49', 10602, 1, '101 X 52 X 14', 1),
       (69, 20,1, 'BOX 150', '14', 9, '2440', '1220', '0.7', '7144.3200', 'ALBAWHITZMAZ30070', '', NULL, 'MT', 'Single Side', '2400', '3.93', NULL, '5002', '49', 7951, 1, '101 X 52 X 14', 2),
@@ -366,17 +366,19 @@ INSERT INTO invoiceMaster (
 CREATE TABLE invoiceInstruction (
   invoiceId INTEGER DEFAULT NULL,
   instructionId INTEGER DEFAULT NULL,
-  invoiceInstruction TEXT DEFAULT NULL
+  invoiceInstruction TEXT DEFAULT NULL,
+  instructionIndex INTEGER DEFAULT NULL
 );
 
 INSERT INTO invoiceInstruction (
   invoiceId,
   instructionId,
-  invoiceInstruction
+  invoiceInstruction,
+  instructionIndex
 ) VALUES 
-  (22, 14, 'ALL SHEETS TO BE PRODUCED WITH OVERLAY.'),
-  (22, 15, 'SHEETS SHOULD PASS BOILING WATER NEMA LD TEST PLUS 70 MINUTES EN438 TEST.'),
-  (22, 16, 'STUFFING SHOULD BE AS PER PLAN AND PHOTOGRAPHS SHOULD BE SUPPLIED WITH B/L.');
+  (22, 14, 'ALL SHEETS TO BE PRODUCED WITH OVERLAY.',1),
+  (22, 15, 'SHEETS SHOULD PASS BOILING WATER NEMA LD TEST PLUS 70 MINUTES EN438 TEST.',2),
+  (22, 16, 'STUFFING SHOULD BE AS PER PLAN AND PHOTOGRAPHS SHOULD BE SUPPLIED WITH B/L.',3);
 `,
   },
   {
@@ -388,6 +390,7 @@ CREATE TABLE invoiceBottomNote (
   invoiceId INTEGER DEFAULT NULL,
   bottomNoteId INTEGER DEFAULT NULL,
   bottomNote TEXT DEFAULT NULL,
+  bottomNoteIndex INTEGER DEFAULT NULL,
   PRIMARY KEY (invoiceId, bottomNoteId)
 );
 `,
@@ -449,7 +452,9 @@ CREATE TABLE invoiceBottomNote (
 ];
 
 // db.run("DELETE FROM migrations WHERE version = ?", [13]);
-// db.run("ALTER TABLE invoiceMaster ADD fsc TEXT DEFAULT NULL");
+// db.run(
+//   "ALTER TABLE invoiceBottomNote ADD bottomNoteIndex INTEGER DEFAULT NULL"
+// );
 // Ensure Migrations Table Exists
 db.run(
   `

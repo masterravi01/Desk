@@ -53,16 +53,17 @@ function deleteInstruction(Instruction) {
 function getInstructionsByCustomer(customerId) {
   return new Promise((resolve, reject) => {
     const query = `
-      SELECT ii.instructionId, ii.invoiceInstruction
-      FROM invoiceInstruction ii
-      JOIN (
-          SELECT invoiceId
-          FROM invoiceMaster
-          WHERE customerId = ?
-          ORDER BY invoiceId DESC
-          LIMIT 1
-      ) latest_invoice ON ii.invoiceId = latest_invoice.invoiceId;
-    `;
+  SELECT ii.instructionId, ii.invoiceInstruction
+  FROM invoiceInstruction ii
+  JOIN (
+      SELECT invoiceId
+      FROM invoiceMaster
+      WHERE customerId = ?
+      ORDER BY invoiceId DESC
+      LIMIT 1
+  ) latest_invoice ON ii.invoiceId = latest_invoice.invoiceId
+  ORDER BY ii.instructionIndex;
+`;
 
     db.all(query, [customerId], (err, rows) => {
       if (err) {

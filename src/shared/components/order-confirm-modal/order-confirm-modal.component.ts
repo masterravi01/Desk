@@ -306,7 +306,6 @@ export class OrderConfirmModalComponent implements OnInit {
       grossWeight: [''],
       netWeight: [''],
       boxType: [''],
-      subWeight: [''],
     });
 
     // Step 2: Set customerId from parent form
@@ -629,7 +628,7 @@ export class OrderConfirmModalComponent implements OnInit {
 
     let invoiceDetails = this.boxes(); // Getting list of invoice items
 
-    invoiceDetails.forEach((inv: any) => {
+    invoiceDetails.forEach((inv: any, index) => {
       const width = Number(inv.width) || 0;
       const length = Number(inv.length) || 0;
       const height = Number(inv.thickness) || 0;
@@ -641,6 +640,7 @@ export class OrderConfirmModalComponent implements OnInit {
       const weightInTons = weightInGrams / 1000000000;
 
       inv.netWeight = Math.round(weightInTons); // You round to the nearest whole number
+      inv.tableIndex = index;
     });
 
     this.masterService
