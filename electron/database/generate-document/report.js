@@ -118,14 +118,17 @@ async function readInvoiceData(invoiceId, isCustom, country = "") {
 
   const containers = await getAllContainer();
   const currency = await getCurrencyByName(master.currency);
-
+  const containerObj = {};
+  containers.forEach((c) => {
+    containerObj[c.containerName] = c;
+  });
   let groupedInvoicesBySize = [];
 
   let totalBox = calculateTotalBoxes(invoiceDetails);
 
   invoiceDetails.forEach((invoice) => {
     const type = invoice.containerType;
-    const container = containers.find((c) => c.containerName === type);
+    const container = containerObj[type];
 
     invoice.squareMeter = toFixedToFour(invoice.squareMeter);
     invoice.rate = toFixedToFour(invoice.rate);
@@ -209,17 +212,19 @@ async function readInvoiceData(invoiceId, isCustom, country = "") {
   let fromMap = {};
   let totalGrossWeight = 0;
   let totalNetWeight = 0;
-  const defaultBoxWeight = 100;
 
   groupedInvoicesBySize.forEach((item, boxIndex) => {
     item.invoices.forEach((inv, invIndex) => {
       totalNetWeight += Number(inv.netWeight || 0);
+      const containerWeight = Number(
+        containerObj[inv.containerType].weight || 0
+      );
       if (inv.containerFrom && inv.containerTo) {
         const from = Number(inv.containerFrom);
         const to = Number(inv.containerTo);
         const totalBoxes = to - from + 1;
         const netWeight = Number(inv.netWeight || 0);
-        const grossWeight = netWeight + defaultBoxWeight * totalBoxes;
+        const grossWeight = netWeight + containerWeight * totalBoxes;
         inv.grossWeight = grossWeight.toFixed(2);
         totalGrossWeight += Number(grossWeight);
       } else {
@@ -244,7 +249,7 @@ async function readInvoiceData(invoiceId, isCustom, country = "") {
         } else {
           // First time seeing this fromKey
           fromMap[fromKey] = { boxIndex, invIndex };
-          const grossWeight = Number(inv.netWeight || 0) + defaultBoxWeight;
+          const grossWeight = Number(inv.netWeight || 0) + containerWeight;
           inv.grossWeight = grossWeight.toFixed(2);
           totalGrossWeight += grossWeight;
         }
