@@ -35,8 +35,7 @@ const migrations = [
     version: 1,
     description: "Create BottomNote Table",
     script: `
-        DROP TABLE IF EXISTS bottomnote;
-        CREATE TABLE bottomnote (
+        CREATE TABLE IF NOT EXISTS bottomnote (
             bottomNoteId INTEGER PRIMARY KEY AUTOINCREMENT,
             bottomNote TEXT DEFAULT NULL
         );
@@ -58,8 +57,7 @@ const migrations = [
     version: 2,
     description: "Create Company Table",
     script: `
-      DROP TABLE IF EXISTS company;
-  CREATE TABLE company (
+      CREATE TABLE IF NOT EXISTS company (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     companyCode TEXT DEFAULT NULL,
     companyName TEXT DEFAULT NULL,
@@ -107,9 +105,7 @@ const migrations = [
     version: 3,
     description: "Create Containers Table",
     script: `
-     DROP TABLE IF EXISTS containers;
-
-CREATE TABLE containers (
+     CREATE TABLE IF NOT EXISTS containers (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   containerName TEXT DEFAULT NULL,
   containerType TEXT DEFAULT NULL,
@@ -145,8 +141,7 @@ INSERT INTO containers (
     version: 4,
     description: "Create Currency Table",
     script: `
-      DROP TABLE IF EXISTS Currency;
-      CREATE TABLE Currency (
+      CREATE TABLE IF NOT EXISTS Currency (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         currencyName TEXT DEFAULT NULL,
         currencyChar TEXT DEFAULT NULL,
@@ -165,8 +160,7 @@ INSERT INTO containers (
     version: 5,
     description: "Create System Parameter",
     script: `
-      DROP TABLE IF EXISTS systemparameter;
-      CREATE TABLE systemparameter (
+      CREATE TABLE IF NOT EXISTS systemparameter (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         parameterName TEXT DEFAULT NULL,
         parameterValue TEXT DEFAULT NULL
@@ -182,8 +176,7 @@ INSERT INTO containers (
     version: 6,
     description: "Create Instruction Table",
     script: `
-        DROP TABLE IF EXISTS instruction;
-        CREATE TABLE instruction (
+        CREATE TABLE IF NOT EXISTS instruction (
             BID INTEGER PRIMARY KEY AUTOINCREMENT,
             Instruction TEXT DEFAULT NULL
         );
@@ -195,8 +188,7 @@ INSERT INTO containers (
     version: 7,
     description: "Create Customer Table",
     script: `
-      DROP TABLE IF EXISTS customers;
-      CREATE TABLE customers (
+      CREATE TABLE IF NOT EXISTS customers (
           id INTEGER PRIMARY KEY AUTOINCREMENT,
           name TEXT DEFAULT NULL,
           phone TEXT DEFAULT NULL,
@@ -230,8 +222,7 @@ INSERT INTO containers (
   {
     version: 8,
     description: "Create Invoice Master",
-    script: `DROP TABLE IF EXISTS invoiceMaster;
-CREATE TABLE invoiceMaster (
+    script: `CREATE TABLE IF NOT EXISTS invoiceMaster (
     invoiceId INTEGER PRIMARY KEY AUTOINCREMENT,
     customerOrderNo TEXT DEFAULT NULL,
     invoiceDate TEXT DEFAULT NULL,
@@ -274,7 +265,7 @@ CREATE TABLE invoiceMaster (
     comments TEXT DEFAULT NULL,
     calculationType INTEGER DEFAULT NULL,
     bankAddress TEXT DEFAULT NULL,
-    fsc TEXT DEFAULT NULL,
+    fsc TEXT DEFAULT NULL
 );
 
 INSERT INTO invoiceMaster (
@@ -316,9 +307,7 @@ INSERT INTO invoiceMaster (
     version: 9,
     description: "Create InvoiceDetails Table",
     script: `
-      DROP TABLE IF EXISTS invoiceDetails;
-
-      CREATE TABLE invoiceDetails (
+      CREATE TABLE IF NOT EXISTS invoiceDetails (
         invoiceDetailId INTEGER PRIMARY KEY AUTOINCREMENT,
         invoiceId INTEGER DEFAULT NULL,
           customerId INTEGER DEFAULT NULL,
@@ -361,9 +350,7 @@ INSERT INTO invoiceMaster (
   {
     version: 10,
     description: "Create Invoice Instructions",
-    script: `DROP TABLE IF EXISTS invoiceInstruction;
-
-CREATE TABLE invoiceInstruction (
+    script: `CREATE TABLE IF NOT EXISTS invoiceInstruction (
   invoiceId INTEGER DEFAULT NULL,
   instructionId INTEGER DEFAULT NULL,
   invoiceInstruction TEXT DEFAULT NULL,
@@ -384,9 +371,7 @@ INSERT INTO invoiceInstruction (
   {
     version: 11,
     description: "Create invoiceBottomNote",
-    script: `DROP TABLE IF EXISTS invoiceBottomNote;
-
-CREATE TABLE invoiceBottomNote (
+    script: `CREATE TABLE IF NOT EXISTS invoiceBottomNote (
   invoiceId INTEGER DEFAULT NULL,
   bottomNoteId INTEGER DEFAULT NULL,
   bottomNote TEXT DEFAULT NULL,
@@ -396,11 +381,10 @@ CREATE TABLE invoiceBottomNote (
 `,
   },
   {
-    version: 13,
+    version: 12,
     description: "Create Final Invoice Table",
     script: `
-      DROP TABLE IF EXISTS finalinvoice;
-      CREATE TABLE finalinvoice (
+      CREATE TABLE IF NOT EXISTS finalinvoice (
           id INTEGER PRIMARY KEY AUTOINCREMENT,
           invoiceId INTEGER DEFAULT NULL,
           customerName TEXT DEFAULT NULL,
