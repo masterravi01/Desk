@@ -21,11 +21,12 @@ export class OrderConfirmReportComponent {
   openModal() {
     this.modalService.openModal(OrderConfirmReportModalComponent, {
       data: {},
-      width: '45%',
-      height: '42vh',
+      width: '50%',
+      height: '50vh',
       position: {
         top: '80px',
       },
+      minHeight: '380px',
       maxWidth: '98vw',
       maxHeight: '98vh',
     });

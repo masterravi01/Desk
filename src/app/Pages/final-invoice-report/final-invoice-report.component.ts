@@ -12,7 +12,7 @@ import { FinalInvoiceReportModalComponent } from '../../../shared/components/fin
   styleUrl: './final-invoice-report.component.css',
 })
 export class FinalInvoiceReportComponent {
-  constructor(private modalService: ModalService) {}
+  constructor(private modalService: ModalService) { }
 
   ngOnInit(): void {
     this.openModal();
@@ -20,7 +20,7 @@ export class FinalInvoiceReportComponent {
   openModal() {
     this.modalService.openModal(FinalInvoiceReportModalComponent, {
       data: {},
-      width: '45%',
+      width: '50%',
       height: '50vh',
       position: {
         top: '80px',
