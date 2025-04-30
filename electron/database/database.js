@@ -274,7 +274,7 @@ CREATE TABLE invoiceMaster (
     comments TEXT DEFAULT NULL,
     calculationType INTEGER DEFAULT NULL,
     bankAddress TEXT DEFAULT NULL,
-    fsc TEXT DEFAULT NULL,
+    fsc TEXT DEFAULT NULL
 );
 
 INSERT INTO invoiceMaster (
@@ -396,7 +396,7 @@ CREATE TABLE invoiceBottomNote (
 `,
   },
   {
-    version: 13,
+    version: 12,
     description: "Create Final Invoice Table",
     script: `
       DROP TABLE IF EXISTS finalinvoice;
