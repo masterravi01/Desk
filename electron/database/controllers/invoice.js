@@ -453,7 +453,7 @@ async function getInvoice(invoiceId) {
   try {
     const queries = {
       invoiceMasterQuery: `SELECT * FROM invoiceMaster WHERE invoiceId = ?`,
-      invoiceDetailsQuery: `SELECT * FROM invoiceDetails WHERE invoiceId = ? ORDER BY instructionIndex`,
+      invoiceDetailsQuery: `SELECT * FROM invoiceDetails WHERE invoiceId = ? ORDER BY tableIndex`,
       invoiceInstructionQuery: `SELECT * FROM invoiceInstruction WHERE invoiceId = ? ORDER BY instructionIndex`,
       invoiceFinalQuery: `SELECT * FROM finalinvoice WHERE invoiceId = ?`,
       invoiceBottomNoteQuery: `SELECT * FROM invoiceBottomNote WHERE invoiceId = ? ORDER BY bottomNoteIndex`,
