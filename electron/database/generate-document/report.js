@@ -58,10 +58,7 @@ function modifyCustomInvoiceData(data, totalAddition, totalDiscount, master) {
       Number(totalAddition ?? "0") -
       Number(totalDiscount ?? "0");
     maxInvoice.rate = toFixedToFour(
-      maxInvoice.value /
-        (master.calculationType == "Per Sheet"
-          ? Number(maxInvoice.quantity)
-          : Number(maxInvoice.totalSq))
+      maxInvoice.value / Number(maxInvoice.totalSq)
     );
   }
 
