@@ -14,6 +14,7 @@ const { getCurrencyByName } = require("../controllers/currency");
 const { convertToCapitalize } = require("../utills/helper");
 const { app } = require("electron");
 const { getCompany } = require("../controllers/company");
+const { getCustomer } = require("../controllers/customer");
 
 function modifyCustomInvoiceData(data, totalAddition, totalDiscount, master) {
   data = data.map((container) => {
@@ -118,6 +119,7 @@ async function readInvoiceData(invoiceId, isCustom, country = "") {
 
   const containers = await getAllContainer();
   const currency = await getCurrencyByName(master.currency);
+  const customer = await getCustomer(master.customerId);
   const containerObj = {};
   containers.forEach((c) => {
     containerObj[c.containerName] = c;
@@ -300,6 +302,8 @@ async function readInvoiceData(invoiceId, isCustom, country = "") {
     consigneeState: final.consigneeState ?? master.customerState ?? "",
     consigneeCountry: final.consigneeCountry ?? master.customerCountry ?? "",
     consigneeZip: final.consigneeZip ?? master.customerZip ?? "",
+    consigneePhone: customer.phone ?? "",
+    consigneeEmail: customer.email ?? "",
 
     buyerAddress: final.buyerAddress ?? master.buyerAddress ?? "",
     buyerCity: final.buyerCity ?? master.buyerCity ?? "",
