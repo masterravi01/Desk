@@ -362,7 +362,7 @@ async function readInvoiceData(invoiceId, isCustom, country = "") {
     containerSummary,
 
     bankName: companyData.bankName ?? "",
-    bankBranch: companyData.bankAddressLine2 ?? "",
+    bankBranch: companyData.bankAddressLine1 ?? "",
     bankCity: companyData.bankCity ?? "",
     swiftNumber: companyData.swiftCode ?? "",
     bankAddress: companyData.bankAddressLine1 ?? "",
