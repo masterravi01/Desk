@@ -37,7 +37,7 @@ function createWindow() {
   });
 
   // Open DevTools only in dev mode
-  mainWindow.webContents.openDevTools();
+  // mainWindow.webContents.openDevTools();
 
   globalShortcut.register("CommandOrControl+R", () => mainWindow.reload());
 

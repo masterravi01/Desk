@@ -425,9 +425,9 @@ async function generateInvoiceDocument(body) {
   }
   let outputPath = await generateWordDocument(data, template, fileName);
   if (format == "ms-word") {
-    openFileByPath(outputPath);
+    await openFileByPath(outputPath);
   } else {
-    convertToPdf(outputPath, fileName);
+    await convertToPdf(outputPath, fileName);
   }
 }
 
@@ -510,7 +510,7 @@ async function convertToPdf(inputPath, fileName) {
     }
     throw new Error(error.message);
   }
-  openFileByPath(outputPath);
+  await openFileByPath(outputPath);
   console.log("PDF generated successfully!");
 }
 
@@ -533,9 +533,9 @@ async function generateOrderConfirmation(body) {
 
   let outputPath = await generateWordDocument(data, template, fileName);
   if (format == "ms-word") {
-    openFileByPath(outputPath);
+    await openFileByPath(outputPath);
   } else {
-    convertToPdf(outputPath, fileName);
+    await convertToPdf(outputPath, fileName);
   }
 }
 

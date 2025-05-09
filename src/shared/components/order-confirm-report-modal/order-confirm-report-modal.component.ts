@@ -105,12 +105,14 @@ export class OrderConfirmReportModalComponent {
       country
     };
     console.log(body);
+    this.orderForm.disable();
 
     this.masterService
       .invoke('generateOrderConfirmation', body)
       .pipe(untilDestroyed(this))
       .subscribe((data: any) => {
         console.log(data);
+        this.orderForm.enable();
       });
   }
 

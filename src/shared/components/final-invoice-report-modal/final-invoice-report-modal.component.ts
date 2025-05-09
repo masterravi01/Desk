@@ -56,7 +56,7 @@ export class FinalInvoiceReportModalComponent {
     private modalService: ModalService,
     private fb: FormBuilder,
     private masterService: MasterService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.initForm();
@@ -103,12 +103,13 @@ export class FinalInvoiceReportModalComponent {
       country,
     };
     console.log(body);
-
+    this.invoiceForm.disable();
     this.masterService
       .invoke('generateInvoiceDocument', body)
       .pipe(untilDestroyed(this))
       .subscribe((data: any) => {
         console.log(data);
+        this.invoiceForm.enable();
       });
   }
 }
