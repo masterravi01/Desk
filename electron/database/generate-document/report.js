@@ -124,37 +124,38 @@ async function readInvoiceData(invoiceId, isCustom, country = "") {
   containers.forEach((c) => {
     containerObj[c.containerName] = c;
   });
+
   let groupedInvoicesBySize = [];
 
   let totalBox = calculateTotalBoxes(invoiceDetails);
 
   invoiceDetails.forEach((invoice) => {
     const type = invoice.containerType;
-    const container = containerObj[type];
 
     invoice.squareMeter = toFixedToFour(invoice.squareMeter);
     invoice.rate = toFixedToFour(invoice.rate);
     invoice.preRate = invoice.rate;
-    invoice.lwh = `${container.length} X ${container.width} X ${container.height}`;
+    invoice.lwh = `${invoice?.length} X ${invoice?.width} X ${invoice?.thickness}`;
 
-    // Prepare invoice value
-    invoice.value = (
-      Number(invoice?.quantity || "0") * parseFloat(invoice?.rate || "0")
-    ).toFixed(4);
+    const size = invoice.lwh;
+
+    const quantity = Number(invoice?.quantity || 0);
+    const rate = parseFloat(invoice?.rate || 0);
+    invoice.value = parseFloat((quantity * rate).toFixed(4));
 
     let addedToExistingGroup = false;
 
-    // Check if it can be added to existing group
+    // Try adding to an existing group
     for (let i = groupedInvoicesBySize.length - 1; i >= 0; i--) {
       const group = groupedInvoicesBySize[i];
 
-      if (group.containerType === type) {
+      if (group.containerSize === size) {
         const lastInvoice = group.invoices[group.invoices.length - 1];
         const lastTo =
-          Number(lastInvoice.containerTo) || Number(lastInvoice.containerFrom);
-        const currentFrom = Number(invoice.containerFrom);
+          Number(lastInvoice.containerTo) ||
+          Number(lastInvoice.containerFrom || 0);
+        const currentFrom = Number(invoice.containerFrom || 0);
 
-        // Check if the current invoice is in order
         if (currentFrom === lastTo || currentFrom === lastTo + 1) {
           group.invoices.push(invoice);
           addedToExistingGroup = true;
@@ -163,20 +164,17 @@ async function readInvoiceData(invoiceId, isCustom, country = "") {
       }
     }
 
+    // Create a new group if not added to an existing one
     if (!addedToExistingGroup) {
-      // Create new group
       groupedInvoicesBySize.push({
         containerType: type,
-        thicknessDetail:
-          invoice.thicknessDetail.toUpperCase() +
-          " " +
-          "DECORATIVE LAMINATES WITH BARRIER PAPER",
-        width: container.width ?? 0,
-        height: container.height ?? 0,
-        length: container.length ?? 0,
-        lengthInch: container.lengthInch ?? 0,
-        widthInch: container.widthInch ?? 0,
-        heightInch: container.heightInch ?? 0,
+        containerSize: size,
+        thicknessDetail: `${(
+          invoice.thicknessDetail ?? ""
+        ).toUpperCase()} DECORATIVE LAMINATES WITH BARRIER PAPER`,
+        width: invoice?.width ?? 0,
+        height: invoice?.thickness ?? 0,
+        length: invoice?.length ?? 0,
         invoices: [invoice],
       });
     }
@@ -229,6 +227,13 @@ async function readInvoiceData(invoiceId, isCustom, country = "") {
         const grossWeight = netWeight + containerWeight * totalBoxes;
         inv.grossWeight = grossWeight.toFixed(2);
         totalGrossWeight += Number(grossWeight);
+        inv.sizeInch = mmToInch(
+          inv?.length,
+          inv?.width,
+          inv?.thickness,
+          inv?.quantity || 0,
+          totalBoxes
+        );
       } else {
         const fromKey = inv.containerFrom;
         if (fromMap[fromKey]) {
@@ -243,6 +248,17 @@ async function readInvoiceData(invoiceId, isCustom, country = "") {
               Number(lastInv.grossWeight) + Number(inv.netWeight)
             ).toFixed(2);
             lastInv.grossWeight = "";
+            inv.sizeInch = mmToInch(
+              inv?.length,
+              inv?.width,
+              inv?.thickness,
+              Number(inv?.quantity) + Number(lastInv?.prevQuantity) || 0,
+              1
+            );
+            inv.prevQuantity =
+              Number(inv?.quantity) + Number(lastInv?.prevQuantity);
+            lastInv.prevQuantity = 0;
+            lastInv.sizeInch = "";
           }
 
           // Update location to current invoice
@@ -254,6 +270,14 @@ async function readInvoiceData(invoiceId, isCustom, country = "") {
           const grossWeight = Number(inv.netWeight || 0) + containerWeight;
           inv.grossWeight = grossWeight.toFixed(2);
           totalGrossWeight += grossWeight;
+          inv.sizeInch = mmToInch(
+            inv?.length,
+            inv?.width,
+            inv?.thickness,
+            inv?.quantity || 0,
+            1
+          );
+          inv.prevQuantity = Number(inv?.quantity) || 0;
         }
       }
     });
@@ -537,6 +561,36 @@ async function generateOrderConfirmation(body) {
   } else {
     await convertToPdf(outputPath, fileName);
   }
+}
+
+function mmToInch(length, width, thickness, quantity, totalBoxes) {
+  length = Number(length);
+  width = Number(width);
+  thickness = Number(thickness);
+  quantity = Number(quantity);
+  const obj = {
+    3050: "125",
+    1300: "55",
+    1240: "53",
+    2440: "101",
+    1220: "52",
+    2400: "99",
+    2410: "99",
+    1200: "51",
+    1205: "51",
+    2700: "111",
+  };
+
+  // Use approximation factor (~24) and offset (+3) for practical inches
+  const toApproxInch = (mm) => Math.round((mm / 25 + 3) / 5) * 5;
+
+  const lengthInch = obj[length] ?? toApproxInch(length);
+  const widthInch = obj[width] ?? toApproxInch(width);
+
+  // Fix: typo in variable name 'thickess' → 'thickness'
+  const heightInch = Math.round((quantity * thickness) / (25 * totalBoxes) + 3);
+
+  return `${lengthInch} X ${widthInch} X ${heightInch}"`;
 }
 
 module.exports = {
