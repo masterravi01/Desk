@@ -379,7 +379,7 @@ async function readInvoiceData(invoiceId, isCustom, country = "") {
     additionalChargeValue: master.additionalChargeValue ?? "",
     deliveryTerms: final.deliveryTerms ?? "",
     deliveryDetails: master.deliveryDetails ?? "",
-    shippingDetails: master.shippingDetails ?? "",
+    shippingDetails: master.shippingDetails ?? "ICD - AHD",
     paymentTerms: master.paymentTerms ?? "",
     dispatchTerms: master.dispatchTerms ?? "",
     calculationType: master.calculationType ?? "",
@@ -528,7 +528,10 @@ async function generateOrderConfirmation(body) {
 
   if (type == "opf") {
     template = "order-processing-form.docx";
-    fileName = "OPF";
+    fileName = `OPF ${invoiceId}`;
+  } else if (type == "contract") {
+    template = "contract-review.docx";
+    fileName = `Contract Review ${invoiceId}`;
   }
 
   let outputPath = await generateWordDocument(data, template, fileName);

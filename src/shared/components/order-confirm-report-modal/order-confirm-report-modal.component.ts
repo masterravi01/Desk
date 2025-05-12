@@ -2,6 +2,7 @@ import {
   Component,
   inject,
 } from '@angular/core';
+import { finalize } from 'rxjs/operators';
 import {
   MAT_DIALOG_DATA,
   MatDialogRef,
@@ -109,7 +110,10 @@ export class OrderConfirmReportModalComponent {
 
     this.masterService
       .invoke('generateOrderConfirmation', body)
-      .pipe(untilDestroyed(this))
+      .pipe(untilDestroyed(this),
+        finalize(() => {
+          this.orderForm.enable();
+        }))
       .subscribe((data: any) => {
         console.log(data);
         this.orderForm.enable();

@@ -1,4 +1,5 @@
 import { Component, inject } from '@angular/core';
+import { finalize } from 'rxjs/operators';
 import {
   MAT_DIALOG_DATA,
   MatDialogRef,
@@ -102,14 +103,17 @@ export class FinalInvoiceReportModalComponent {
       document: template,
       country,
     };
+
     console.log(body);
     this.invoiceForm.disable();
     this.masterService
       .invoke('generateInvoiceDocument', body)
-      .pipe(untilDestroyed(this))
+      .pipe(untilDestroyed(this),
+        finalize(() => {
+          this.invoiceForm.enable();
+        }))
       .subscribe((data: any) => {
         console.log(data);
-        this.invoiceForm.enable();
       });
   }
 }

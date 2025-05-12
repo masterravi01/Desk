@@ -21,7 +21,7 @@ export class OrderConfirmReportComponent {
   openModal() {
     this.modalService.openModal(OrderConfirmReportModalComponent, {
       data: {},
-      width: '50%',
+      width: '52%',
       height: '50vh',
       position: {
         top: '80px',

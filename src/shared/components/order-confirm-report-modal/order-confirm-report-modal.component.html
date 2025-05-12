@@ -101,6 +101,20 @@
           </button>
         </td>
       </tr>
+      <tr>
+        <td class="label-cell"></td>
+        <td>
+          <button
+            class="btn table-btn"
+            mat-raised-button
+            [disabled]="orderForm.disabled"
+            (click)="generateDocument('contract', '')"
+          >
+            Contract Review
+          </button>
+        </td>
+        <td></td>
+      </tr>
     </tbody>
   </table>
 </div>
