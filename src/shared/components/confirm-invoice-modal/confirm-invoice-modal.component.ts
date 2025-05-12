@@ -24,6 +24,7 @@ import { MatDividerModule } from '@angular/material/divider';
 import {
   FormBuilder,
   FormGroup,
+  FormsModule,
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
@@ -76,6 +77,7 @@ import { TextFieldModule } from '@angular/cdk/text-field';
     SlicePipe,
     MatCheckboxModule,
     TextFieldModule,
+    FormsModule,
   ],
   providers: [provideNativeDateAdapter()],
   templateUrl: './confirm-invoice-modal.component.html',
@@ -91,7 +93,7 @@ export class ConfirmInvoiceModalComponent implements OnInit {
     bottomNoteId: 'Id',
     bottomNote: 'Bottom Note',
   };
-  selectedBottomIndex: number = 0;
+  selectedBottomIndex: number = -1;
 
   constructor(
     private modalService: ModalService,
@@ -102,7 +104,7 @@ export class ConfirmInvoiceModalComponent implements OnInit {
 
   ngOnInit(): void {
     this.invoiceBottomNotes = [];
-    this.selectedBottomIndex = 0;
+    this.selectedBottomIndex = -1;
     this.initForm();
     this.finalInvoiceForm.disable();
   }
@@ -158,7 +160,7 @@ export class ConfirmInvoiceModalComponent implements OnInit {
   }
   clearData() {
     this.invoiceBottomNotes = [];
-    this.selectedBottomIndex = 0;
+    this.selectedBottomIndex = -1;
     this.initForm();
   }
   onCancel(): void {
@@ -273,11 +275,12 @@ export class ConfirmInvoiceModalComponent implements OnInit {
         (_, index) => index !== this.selectedBottomIndex
       );
       this.invoiceBottomNotes = updatedBoxes;
-      this.selectedBottomIndex = updatedBoxes.length - 1;
+      this.selectedBottomIndex = -1;
     }
   }
 
   onSave(isClose = false) {
+    this.selectedBottomIndex = -1;
     if (this.finalInvoiceForm.disabled) {
       this.finalInvoiceForm.enable();
     }

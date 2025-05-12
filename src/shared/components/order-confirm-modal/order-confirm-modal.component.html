@@ -477,7 +477,47 @@
           <th mat-header-cell *matHeaderCellDef>
             {{ columnHeaderMap[column] || column | titlecase }}
           </th>
-          <td mat-cell *matCellDef="let element">{{ element[column] }}</td>
+          <td mat-cell *matCellDef="let element; let rowIndex = index">
+            @if(selectedIndex === rowIndex){ @if(column==='containerType'){
+            <select
+              style="background: #fff; min-width: 100px"
+              [(ngModel)]="element[column]"
+              [ngModelOptions]="{ standalone: true }"
+            >
+              @for (c of containers; track c) {
+              <option [value]="c.containerName">
+                {{ c.containerName }}
+              </option>
+              }
+            </select>
+            }@else if(column==='thicknessDetail') {
+            <select
+              style="background: #fff; min-width: 100px"
+              [(ngModel)]="element[column]"
+              [ngModelOptions]="{ standalone: true }"
+            >
+              <option value="Single Side">Single Side</option>
+              <option value="Double Side">Double Side</option>
+            </select>
+            }@else if(column === 'length' || column === 'width'||
+            column==='quantity' ){
+            <input
+              matInput
+              type="number"
+              [(ngModel)]="element[column]"
+              [ngModelOptions]="{ standalone: true }"
+              (ngModelChange)="updateSquareMeter(rowIndex)"
+            />
+            }@else {
+            <input
+              matInput
+              [(ngModel)]="element[column]"
+              [ngModelOptions]="{ standalone: true }"
+            />
+            } }@else {
+            {{ element[column] }}
+            }
+          </td>
         </ng-container>
 
         <tr
@@ -488,7 +528,7 @@
         <tr
           mat-row
           *matRowDef="let row; let i = index; columns: displayedColumns"
-          (click)="selectRowIndex(i)"
+          (click)="onRowClick(i)"
           [ngClass]="{ highlighted: selectedIndex === i }"
         ></tr>
       </table>
@@ -799,8 +839,24 @@
           </ng-contaier>
           <ng-contaier matColumnDef="invoiceInstruction">
             <th mat-header-cell *matHeaderCellDef>Instructions</th>
-            <td mat-cell *matCellDef="let element" style="cursor: pointer">
+            <td
+              mat-cell
+              *matCellDef="let element; let rowIndex = index"
+              style="cursor: pointer"
+            >
+              @if(selectedIntructionIndex === rowIndex){
+              <textarea
+                matInput
+                rows="2"
+                [(ngModel)]="element.invoiceInstruction"
+                [ngModelOptions]="{ standalone: true }"
+                cdkTextareaAutosize
+                cdkAutosizeMinRows="1"
+                style="width: 100%"
+              ></textarea>
+              }@else {
               {{ element.invoiceInstruction || "-" }}
+              }
             </td>
           </ng-contaier>
           <!-- Use 'displayedColumns' for consistency -->

@@ -24,6 +24,7 @@ import { MatDividerModule } from '@angular/material/divider';
 import {
   FormBuilder,
   FormGroup,
+  FormsModule,
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
@@ -68,6 +69,7 @@ import { TextFieldModule } from '@angular/cdk/text-field';
     TitleCasePipe,
     CommonModule,
     TextFieldModule,
+    FormsModule,
   ],
   providers: [provideNativeDateAdapter()],
   templateUrl: './order-confirm-modal.component.html',
@@ -115,8 +117,8 @@ export class OrderConfirmModalComponent implements OnInit {
     prefixCode: 'Prefix',
   };
   calculationForm!: FormGroup;
-  selectedIndex: number = 0;
-  selectedIntructionIndex: number = 0;
+  selectedIndex: number = -1;
+  selectedIntructionIndex: number = -1;
 
   boxes = signal<any[]>([]); // Using signal for your `boxes` data
   formData = signal({
@@ -399,8 +401,11 @@ export class OrderConfirmModalComponent implements OnInit {
   onCancel(): void {
     this.dialogRef.close(false);
   }
-  selectRowIndex(i: any) {
-    this.selectedIndex = i;
+  onRowClick(i: any) {
+    if (this.selectedIndex !== i) {
+      this.boxes.set([...this.boxes()]);
+      this.selectedIndex = i;
+    }
   }
   onConfirm(): void {
     this.dialogRef.close(true);
@@ -432,6 +437,20 @@ export class OrderConfirmModalComponent implements OnInit {
   enableEdit() {
     this.invoiceForm.enable();
   }
+  updateSquareMeter(index: number) {
+    const currentBoxes = this.boxes();
+    const row = currentBoxes[index];
+    const length = parseFloat(row.length) || 0;
+    const width = parseFloat(row.width) || 0;
+    const quantity = parseFloat(row.quantity) || 0;
+
+    row.squareMeter =
+      length && width && quantity
+        ? +Math.round((length * width * quantity) / 10000) / 100
+        : 0; // Optional: limit to 2 decimals
+    this.boxes.set([...currentBoxes]); // Trigger signal update
+  }
+
   getInvoiceById(invoiceId: any) {
     this.masterService
       .invoke('getInvoice', invoiceId)
@@ -544,7 +563,7 @@ export class OrderConfirmModalComponent implements OnInit {
         (_, index) => index !== this.selectedIndex
       );
       this.boxes.set(updatedBoxes);
-      this.selectedIndex = updatedBoxes.length - 1;
+      this.selectedIndex = -1;
     }
   }
   deleteInstruction() {
@@ -556,7 +575,7 @@ export class OrderConfirmModalComponent implements OnInit {
         (_, index) => index !== this.selectedIntructionIndex
       );
       this.instructions = updatedBoxes;
-      this.selectedIntructionIndex = updatedBoxes.length - 1;
+      this.selectedIntructionIndex = -1;
     }
   }
   copyValue() {
@@ -606,8 +625,12 @@ export class OrderConfirmModalComponent implements OnInit {
       additionalChargeValue: 0,
       calculationType: 'Per Sheet',
     });
+    this.selectedIntructionIndex = -1;
+    this.selectedIndex = -1;
   }
   onSave(isClose = false) {
+    this.selectedIntructionIndex = -1;
+    this.selectedIndex = -1;
     if (this.invoiceForm.disabled) {
       this.invoiceForm.enable();
     }
@@ -641,6 +664,8 @@ export class OrderConfirmModalComponent implements OnInit {
 
       inv.netWeight = Math.round(weightInTons); // You round to the nearest whole number
       inv.tableIndex = index;
+      inv.containerTo =
+        inv.containerTo === inv.containerFrom ? '' : inv.containerTo;
     });
 
     this.masterService

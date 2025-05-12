@@ -524,8 +524,20 @@
           </ng-contaier>
           <ng-contaier matColumnDef="bottomNote">
             <th mat-header-cell *matHeaderCellDef>Bottom Note</th>
-            <td mat-cell *matCellDef="let element">
+            <td mat-cell *matCellDef="let element; let rowIndex = index">
+              @if(selectedBottomIndex === rowIndex){
+              <textarea
+                matInput
+                rows="2"
+                [(ngModel)]="element.bottomNote"
+                [ngModelOptions]="{ standalone: true }"
+                cdkTextareaAutosize
+                cdkAutosizeMinRows="1"
+                style="width: 100%"
+              ></textarea>
+              } @else {
               {{ element.bottomNote || "-" }}
+              }
             </td>
           </ng-contaier>
           <!-- Use 'displayedColumns' for consistency -->
@@ -545,7 +557,7 @@
           ></tr>
         </table>
       </div>
-      <mat-card appearance="outlined">
+      <!-- <mat-card appearance="outlined">
         <mat-card-content>
           <table class="form-table">
             <tbody>
@@ -630,7 +642,7 @@
             </tbody>
           </table>
         </mat-card-content>
-      </mat-card>
+      </mat-card> -->
     </div>
     <ng-container *ngTemplateOutlet="bottomButtons"></ng-container>
   </mat-tab>
