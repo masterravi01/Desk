@@ -116,7 +116,6 @@ export class OrderConfirmReportModalComponent {
         }))
       .subscribe((data: any) => {
         console.log(data);
-        this.orderForm.enable();
       });
   }
 
