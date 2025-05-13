@@ -376,9 +376,9 @@ async function readInvoiceData(invoiceId, isCustom, country = "") {
 
     let docData = {
       invoiceNo: final.finalInvoice ?? "",
-      invoiceDate: final.invoiceDate ?? "",
+      invoiceDate: formatDateToDDMMYYYY(final.invoiceDate) ?? "",
       buyersOrderNo: master.customerOrderNo ?? "",
-      orderDate: master.invoiceDate ?? "",
+      orderDate: formatDateToDDMMYYYY(master.invoiceDate) ?? "",
       invoicePiNo: master.invoicePiNo ?? "",
       fsc: master.fsc ?? "",
 
@@ -678,6 +678,12 @@ function mmToInch(length, width, thickness, quantity, totalBoxes) {
   } catch (error) {
     console.log(error);
   }
+}
+
+function formatDateToDDMMYYYY(dateStr) {
+  if (!dateStr) return "";
+  const [year, month, day] = dateStr.split("-");
+  return `${day}-${month}-${year}`;
 }
 
 module.exports = {
