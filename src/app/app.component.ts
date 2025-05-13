@@ -15,10 +15,10 @@ export class AppComponent {
 
   constructor(private router: Router, private ngZone: NgZone) {
     if (window.electron) {
+      // 🚀 Navigation
       window.electron.navigate((route: string) => {
         this.ngZone.run(() => {
           if (this.router.url === route) {
-            // Force reload when navigating to the same route
             this.router
               .navigateByUrl('/', { skipLocationChange: true })
               .then(() => {
@@ -28,6 +28,21 @@ export class AppComponent {
             this.router.navigateByUrl(route);
           }
         });
+      });
+
+      // 🔄 Auto Update Events
+      window.electron.onUpdateAvailable(() => {
+        alert('A new update is available. Downloading...');
+      });
+
+      window.electron.onUpdateDownloaded(() => {
+        console.log('[Angular] Inside update_downloaded handler');
+        const confirmInstall = confirm(
+          'Update downloaded. Do you want to restart and install now?'
+        );
+        if (confirmInstall) {
+          window.electron.invoke('install_update');
+        }
       });
     }
   }

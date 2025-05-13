@@ -9,6 +9,10 @@ const path = require("path");
 const isDev = !app.isPackaged;
 const { setupIpcHandlers } = require("./ipcHandlers");
 
+// Auto-Updater
+const { autoUpdater } = require("electron-updater");
+autoUpdater.autoDownload = true;
+autoUpdater.autoInstallOnAppQuit = true;
 let mainWindow;
 
 function createWindow() {
@@ -31,32 +35,26 @@ function createWindow() {
 
   mainWindow.loadURL(startURL);
 
-  // Handle load failure (retry)
+  // Retry loading on failure
   mainWindow.webContents.on("did-fail-load", () => {
-    mainWindow.loadURL(startURL);
+    setTimeout(() => mainWindow.loadURL(startURL), 1000);
   });
 
-  // Open DevTools only in dev mode
-  // mainWindow.webContents.openDevTools();
-
+  // Developer Shortcuts
   globalShortcut.register("CommandOrControl+R", () => mainWindow.reload());
-
-  // Reload shortcuts
   globalShortcut.register("F5", () => mainWindow.reload());
   globalShortcut.register("CommandOrControl+Shift+I", () => {
-    if (mainWindow) {
-      mainWindow.webContents.toggleDevTools(); // Toggle instead of open
-    }
+    if (mainWindow) mainWindow.webContents.toggleDevTools();
   });
 
-  // Prevent external navigation in production
+  // Block external links in prod
   mainWindow.webContents.on("will-navigate", (event, url) => {
     if (!url.startsWith("file://") && !isDev) {
       event.preventDefault();
     }
   });
 
-  // Custom application menu
+  // Set up custom menu
   const menuTemplate = [
     {
       label: "Master",
@@ -71,7 +69,6 @@ function createWindow() {
           click: () =>
             mainWindow.webContents.send("navigate", "/systemParameter"),
         },
-
         { type: "separator" },
         { label: "Exit", role: "quit" },
       ],
@@ -112,8 +109,29 @@ function createWindow() {
   mainWindow.on("closed", () => {
     mainWindow = null;
   });
-}
 
+  if (!isDev) {
+    autoUpdater.on("update-available", () => {
+      mainWindow.webContents.send("update_available");
+    });
+    autoUpdater.on("update-downloaded", () => {
+      mainWindow.webContents.send("update_downloaded");
+    });
+    autoUpdater.on("error", (error) => {
+      console.error("❌ Auto-updater error:", error);
+    });
+    autoUpdater.on("download-progress", (progressObj) => {
+      console.log(`Download speed: ${progressObj.bytesPerSecond}`);
+      console.log(`Downloaded: ${progressObj.percent}%`);
+    });
+
+    ipcMain.handle("install_update", async () => {
+      autoUpdater.quitAndInstall();
+    });
+
+    autoUpdater.checkForUpdatesAndNotify();
+  }
+}
 app.whenReady().then(() => {
   createWindow();
   setupIpcHandlers();
