@@ -404,6 +404,7 @@ async function readInvoiceData(invoiceId, isCustom, country = "") {
     deliveryTerms: final.deliveryTerms ?? "",
     deliveryDetails: master.deliveryDetails ?? "",
     shippingDetails: master.shippingDetails ?? "ICD - AHD",
+    transportationMode: master.transportationMode ?? "",
     paymentTerms: master.paymentTerms ?? "",
     dispatchTerms: master.dispatchTerms ?? "",
     calculationType: master.calculationType ?? "",

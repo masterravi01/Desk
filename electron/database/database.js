@@ -268,6 +268,7 @@ INSERT INTO containers (
     deliveryTerms TEXT DEFAULT NULL,
     deliveryDetails TEXT DEFAULT NULL,
     shippingDetails TEXT DEFAULT NULL,
+    transportationMode TEXT DEFAULT NULL,
     paymentTerms TEXT DEFAULT NULL,
     portOfDischarge TEXT DEFAULT NULL,
     dispatchTerms TEXT DEFAULT NULL,
@@ -287,7 +288,7 @@ INSERT INTO invoiceMaster (
     buyerAddress, buyerCity, buyerZip, buyerState, buyerCountry, currency,
     status, discountType, discountValue, additionalChargeType, additionalChargeValue,
     reference, totalQuantity, totalAmount, totalSquareMeters, rounding, netAmount,
-    deliveryTerms, deliveryDetails, shippingDetails, paymentTerms, portOfDischarge,
+    deliveryTerms, deliveryDetails, shippingDetails, transportationMode, paymentTerms, portOfDischarge,
     dispatchTerms, bankName, bankBranch, bankCity, swiftNumber, comments, calculationType,
     bankAddress, fsc
 ) VALUES
@@ -296,7 +297,7 @@ INSERT INTO invoiceMaster (
 'NOTIFY - NEPTUNE SHIPPING AGENCYHIGHER SHERWELL , SEVENSTONESCALLINGTON,CORNWALL,PL178H', '', '', '', '', 'GBP',
 NULL, 'None', '', 'None', '',
 '', '5600', '32280.0', '16670.080', '0.00', '32280',
-'CIF', 'JULY 01, 2016', '', 'ON 60 DAYS D.A. - L.C.', 'FELIXSTOWE',
+'CIF', 'JULY 01, 2016', '', 'Sea', 'ON 60 DAYS D.A. - L.C.', 'FELIXSTOWE',
 'FELIXSTOWE (U.K)', 'FORTIS BANK S.A. / N.V.BRUSSELS', '', '', '', NULL, 2,
 'ALL BELGIAN OFFICESBRUSSELS', ''),
 
@@ -305,7 +306,7 @@ NULL, 'None', '', 'None', '',
 'NOTIFY - NEPTUNE SHIPPING AGENCYHIGHER SHERWELL , SEVENSTONESCALLINGTON,CORNWALL,PL178H', '', '', '', '', 'GBP',
 NULL, 'None', '', 'Flat', '400',
 'ADDITION - FREIGHT CHARGES', '3240', '39036.0', '9644.8324', '0.00', '39036',
-'CIF', 'JULY 25, 2016', '', 'ON 60 DAYS D.A. - L.C.', 'GRANGEMOUTH',
+'CIF', 'JULY 25, 2016', '','Sea', 'ON 60 DAYS D.A. - L.C.', 'GRANGEMOUTH',
 'GRANGEMOUTH (U.K)', 'FORTIS BANK S.A. / N.V.BRUSSELS', '', '', '', NULL, 2,
 'ALL BELGIAN OFFICESBRUSSELS', ''),
 
@@ -314,7 +315,7 @@ NULL, 'None', '', 'Flat', '400',
 'DENHOLM GOOD LOGISTIC LTDTAMAR HOUSE ', 'SALTASH', 'PL12 6LX', 'CORNWALL', 'U.K.', 'GBP',
 '', 'flat', '507', '', '0',
 '', '5200', '62157', '15479.36', '0', '61650',
-'CIF', 'MARCH 30, 2025', NULL, 'BY T.T. – 50% ADVANCE ON 3/4th WEEK OF DECEMBER 50% ON RECEIPT OF DOCUMENTS', 'LIVERPOOL',
+'CIF', 'MARCH 30, 2025', NULL, 'Sea', 'BY T.T. – 50% ADVANCE ON 3/4th WEEK OF DECEMBER 50% ON RECEIPT OF DOCUMENTS', 'LIVERPOOL',
 NULL, '', '', '', '', '', 'Per Sheet',
 '', 'FSC MIX CREDIT SGSHK – COC  - 400076'),
 
@@ -323,7 +324,7 @@ NULL, '', '', '', '', '', 'Per Sheet',
 'FOREST ONE AUSTRALIA PTY LTD14-16 GREENLINK ROAD', 'BERRINBA ', 'QLD 4117', '', 'AUSTRALIA', 'USD',
 '', '', '0', 'flat', '500',
 '', '1600', '76320', '4608', '0', '76820',
-'CIF', 'FEBRUARY 14, 2025', NULL, 'BY T.T.', 'BRISBANE',
+'CIF', 'FEBRUARY 14, 2025', NULL, 'Sea', 'BY T.T.', 'BRISBANE',
 NULL, '', '', '', '', '', 'Per Sheet',
 '', ''),
 
@@ -332,7 +333,7 @@ NULL, '', '', '', '', '', 'Per Sheet',
 'LAMINEX NZ-AUCKLAND31 ROCKRIDGE AVE', 'PENROSE', '1061', 'AUCKLAND ', 'NEWZEALAND', 'USD',
 '', '', '0', 'flat', '450',
 '', '840', '56209.2', '2497.25', '-0.2', '56659',
-'CIF', 'MARCH 30, 2025', NULL, 'BY T.T.', 'AUCKLAND',
+'CIF', 'MARCH 30, 2025', NULL, 'Sea', 'BY T.T.', 'AUCKLAND',
 NULL, '', '', '', '', '', 'Per Sheet',
 '', ''),
 
@@ -341,7 +342,7 @@ NULL, '', '', '', '', '', 'Per Sheet',
 'THE LAMINEX GROUP130 SHARPS ROAD', 'MELBOURNE AIRPORT', '', 'PRECINCT', 'VIC 3045', 'USD',
 '', '', '0', 'flat', '1300',
 '', '3693', '70762.92', '12106.41', '0.08', '72063',
-'CIF', 'MARCH 31 , 2025', 'FCL - 20 FT', 'BY T.T.', 'MELBOURNE',
+'CIF', 'MARCH 31 , 2025', 'FCL - 20 FT', 'Sea', 'BY T.T.', 'MELBOURNE',
 NULL, '', '', '', '', '', 'Per Sheet',
 '', ''),
 
@@ -350,7 +351,7 @@ NULL, '', '', '', '', '', 'Per Sheet',
 '', '', '', '', '', 'USD',
 '', '', '0', 'flat', '3750',
 '', '2846', '51132.6', '8669.62', '0.4', '54883',
-'CFR', NULL, NULL, 'BY T.T.', 'ASHDOD',
+'CFR', NULL, NULL, 'Sea', 'BY T.T.', 'ASHDOD',
 NULL, '', '', '', '', '', 'Per Sheet',
 '', '');
 `,
@@ -521,9 +522,7 @@ INSERT INTO finalinvoice (invoiceId, customerName, buyerName, buyerAddress, buye
   },
 ];
 // db.run("DELETE FROM migrations WHERE version = ?", [13]);
-// db.run(
-//   "ALTER TABLE invoiceBottomNote ADD bottomNoteIndex INTEGER DEFAULT NULL"
-// );
+// db.run("ALTER TABLE invoiceMaster ADD transportationMode INTEGER DEFAULT NULL");
 // Ensure Migrations Table Exists
 db.run(
   `

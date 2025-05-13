@@ -51,7 +51,7 @@ function insertInvoice({ invoiceMaster, invoiceDetails, invoiceInstruction }) {
         buyerCountry, currency, status, discountType, discountValue,
         additionalChargeType, additionalChargeValue, reference, totalQuantity,
         totalAmount, totalSquareMeters, rounding, netAmount, deliveryTerms,
-        deliveryDetails, shippingDetails, paymentTerms, portOfDischarge,
+        deliveryDetails, shippingDetails, transportationMode, paymentTerms, portOfDischarge,
         dispatchTerms, bankName, bankBranch, bankCity, swiftNumber,
         comments, calculationType, bankAddress,fsc
       ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?,?)`;
@@ -88,6 +88,7 @@ function insertInvoice({ invoiceMaster, invoiceDetails, invoiceInstruction }) {
         invoiceMaster.deliveryTerms ?? null,
         invoiceMaster.deliveryDetails ?? null,
         invoiceMaster.shippingDetails ?? null,
+        invoiceMaster.transportationMode ?? null,
         invoiceMaster.paymentTerms ?? null,
         invoiceMaster.portOfDischarge ?? null,
         invoiceMaster.dispatchTerms ?? null,
@@ -193,7 +194,7 @@ function updateInvoice({ invoiceMaster, invoiceDetails, invoiceInstruction }) {
           buyerCountry = ?, currency = ?, status = ?, discountType = ?, discountValue = ?,
           additionalChargeType = ?, additionalChargeValue = ?, reference = ?, totalQuantity = ?,
           totalAmount = ?, totalSquareMeters = ?, rounding = ?, netAmount = ?, deliveryTerms = ?,
-          deliveryDetails = ?, shippingDetails = ?, paymentTerms = ?, portOfDischarge = ?,
+          deliveryDetails = ?, shippingDetails = ?, transportationMode = ?, paymentTerms = ?, portOfDischarge = ?,
           dispatchTerms = ?, bankName = ?, bankBranch = ?, bankCity = ?, swiftNumber = ?,
           comments = ?, calculationType = ?, bankAddress = ?,fsc = ? WHERE invoiceId = ?`;
 
@@ -229,6 +230,7 @@ function updateInvoice({ invoiceMaster, invoiceDetails, invoiceInstruction }) {
         invoiceMaster.deliveryTerms ?? null,
         invoiceMaster.deliveryDetails ?? null,
         invoiceMaster.shippingDetails ?? null,
+        invoiceMaster.transportationMode ?? null,
         invoiceMaster.paymentTerms ?? null,
         invoiceMaster.portOfDischarge ?? null,
         invoiceMaster.dispatchTerms ?? null,
@@ -551,7 +553,7 @@ async function importInvoice(data) {
           buyerCountry = ?, currency = ?, status = ?, discountType = ?, discountValue = ?,
           additionalChargeType = ?, additionalChargeValue = ?, reference = ?, totalQuantity = ?,
           totalAmount = ?, totalSquareMeters = ?, rounding = ?, netAmount = ?, deliveryTerms = ?,
-          deliveryDetails = ?, shippingDetails = ?, paymentTerms = ?, portOfDischarge = ?,
+          deliveryDetails = ?, shippingDetails = ?, transportationMode = ?, paymentTerms = ?, portOfDischarge = ?,
           dispatchTerms = ?, bankName = ?, bankBranch = ?, bankCity = ?, swiftNumber = ?,
           comments = ?, calculationType = ?, bankAddress = ?,fsc = ? 
           WHERE invoiceId = ?`;
@@ -588,6 +590,7 @@ async function importInvoice(data) {
             invoiceMaster.deliveryTerms ?? null,
             invoiceMaster.deliveryDetails ?? null,
             invoiceMaster.shippingDetails ?? null,
+            invoiceMaster.transportationMode ?? null,
             invoiceMaster.paymentTerms ?? null,
             invoiceMaster.portOfDischarge ?? null,
             invoiceMaster.dispatchTerms ?? null,
@@ -847,7 +850,7 @@ async function importInvoice(data) {
         buyerCountry, currency, status, discountType, discountValue,
         additionalChargeType, additionalChargeValue, reference, totalQuantity,
         totalAmount, totalSquareMeters, rounding, netAmount, deliveryTerms,
-        deliveryDetails, shippingDetails, paymentTerms, portOfDischarge,
+        deliveryDetails, shippingDetails, transportationMode, paymentTerms, portOfDischarge,
         dispatchTerms, bankName, bankBranch, bankCity, swiftNumber,
         comments, calculationType, bankAddress,fsc
       ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?)`;
@@ -884,6 +887,7 @@ async function importInvoice(data) {
           invoiceMaster.deliveryTerms ?? null,
           invoiceMaster.deliveryDetails ?? null,
           invoiceMaster.shippingDetails ?? null,
+          invoiceMaster.transportationMode ?? null,
           invoiceMaster.paymentTerms ?? null,
           invoiceMaster.portOfDischarge ?? null,
           invoiceMaster.dispatchTerms ?? null,

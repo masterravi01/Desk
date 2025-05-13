@@ -90,7 +90,7 @@ function addInvoiceMaster(invoice) {
         buyerAddress, buyerCity, buyerZip, buyerState, buyerCountry, currency, 
         status, discountType, discountValue, additionalChargeType, additionalChargeValue, 
         reference, totalQuantity, totalAmount, totalSquareMeters, rounding, netAmount, 
-        deliveryTerms, deliveryDetails, shippingDetails, paymentTerms, portOfDischarge, 
+        deliveryTerms, deliveryDetails, shippingDetails, transportationMode, paymentTerms, portOfDischarge, 
         dispatchTerms, bankName, bankBranch, bankCity, swiftNumber, comments, calculationType, 
         bankAddress,fsc
       ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?)
@@ -129,6 +129,7 @@ function addInvoiceMaster(invoice) {
         invoice.deliveryTerms,
         invoice.deliveryDetails,
         invoice.shippingDetails,
+        invoice.transportationMode,
         invoice.paymentTerms,
         invoice.portOfDischarge,
         invoice.dispatchTerms,
@@ -159,7 +160,7 @@ function updateInvoiceMaster(invoice) {
         buyerAddress = ?, buyerCity = ?, buyerZip = ?, buyerState = ?, buyerCountry = ?, currency = ?,
         status = ?, discountType = ?, discountValue = ?, additionalChargeType = ?, additionalChargeValue = ?,
         reference = ?, totalQuantity = ?, totalAmount = ?, totalSquareMeters = ?, rounding = ?, netAmount = ?,
-        deliveryTerms = ?, deliveryDetails = ?, shippingDetails = ?, paymentTerms = ?, portOfDischarge = ?,
+        deliveryTerms = ?, deliveryDetails = ?, shippingDetails = ?, transportationMode = ?, paymentTerms = ?, portOfDischarge = ?,
         dispatchTerms = ?, bankName = ?, bankBranch = ?, bankCity = ?, swiftNumber = ?, comments = ?, calculationType = ?,
         bankAddress = ?, fsc = ?
       WHERE invoiceId = ?
@@ -198,6 +199,7 @@ function updateInvoiceMaster(invoice) {
         invoice.deliveryTerms,
         invoice.deliveryDetails,
         invoice.shippingDetails,
+        invoice.transportationMode,
         invoice.paymentTerms,
         invoice.portOfDischarge,
         invoice.dispatchTerms,
