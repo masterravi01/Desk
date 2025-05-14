@@ -502,7 +502,11 @@ async function generateInvoiceDocument(body) {
         template = "custom-invoice.docx";
         fileName = `INV ${invoiceId} (custom)`;
       } else {
-        template = "party-invoice.docx";
+        if (country == "uk") {
+          template = "party-invoice-uk.docx";
+        } else {
+          template = "party-invoice.docx";
+        }
         fileName = `INV ${invoiceId} (party)`;
       }
     } else {
