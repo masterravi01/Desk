@@ -130,7 +130,7 @@ function AusNzPackingListRoundOf(
       if (currentWeight === 0 || toReduce <= 0) continue;
 
       const reduceBy = Math.min(currentWeight, toReduce);
-      invoice.netWeight = Number((currentWeight - reduceBy).toFixed(2));
+      invoice.netWeight = Number(currentWeight - reduceBy);
       toReduce -= reduceBy;
 
       if (toReduce <= 0) break;
@@ -147,7 +147,7 @@ function AusNzPackingListRoundOf(
       if (currentWeight === 0 || toReduce <= 0) continue;
 
       const reduceBy = Math.min(currentWeight, toReduce);
-      invoice.grossWeight = Number((currentWeight - reduceBy).toFixed(2));
+      invoice.grossWeight = Number(currentWeight - reduceBy);
       toReduce -= reduceBy;
 
       if (toReduce <= 0) break;
@@ -188,6 +188,7 @@ async function readInvoiceData(invoiceId, isCustom, country = "") {
 
       invoice.squareMeter = toFixedToFour(invoice.squareMeter);
       invoice.rate = toFixedToFour(invoice.rate);
+      invoice.netWeight = invoice.netWeight.toFixed(0);
       invoice.preRate = invoice.rate;
       invoice.lwh = `${invoice?.length} X ${invoice?.width} X ${invoice?.thickness}`;
 
@@ -195,7 +196,7 @@ async function readInvoiceData(invoiceId, isCustom, country = "") {
 
       const quantity = Number(invoice?.quantity || 0);
       const rate = parseFloat(invoice?.rate || 0);
-      invoice.value = parseFloat((quantity * rate).toFixed(4));
+      invoice.value = parseFloat((quantity * rate).toFixed(2));
 
       let addedToExistingGroup = false;
 
@@ -279,7 +280,7 @@ async function readInvoiceData(invoiceId, isCustom, country = "") {
           const totalBoxes = to - from + 1;
           const netWeight = Number(inv.netWeight || 0);
           const grossWeight = netWeight + containerWeight * totalBoxes;
-          inv.grossWeight = grossWeight.toFixed(2);
+          inv.grossWeight = grossWeight.toFixed(0);
           totalGrossWeight += Number(grossWeight);
           inv.sizeInch = mmToInch(
             inv?.length,
@@ -322,7 +323,7 @@ async function readInvoiceData(invoiceId, isCustom, country = "") {
             // First time seeing this fromKey
             fromMap[fromKey] = { boxIndex, invIndex };
             const grossWeight = Number(inv.netWeight || 0) + containerWeight;
-            inv.grossWeight = grossWeight.toFixed(2);
+            inv.grossWeight = grossWeight.toFixed(0);
             totalGrossWeight += grossWeight;
             inv.sizeInch = mmToInch(
               inv?.length,
@@ -376,6 +377,7 @@ async function readInvoiceData(invoiceId, isCustom, country = "") {
 
     let docData = {
       invoiceNo: final.finalInvoice ?? "",
+      modifyInvNo: cleanSlashes(final.finalInvoice) ?? "",
       invoiceDate: formatDateToDDMMYYYY(final.invoiceDate) ?? "",
       buyersOrderNo: master.customerOrderNo ?? "",
       orderDate: formatDateToDDMMYYYY(master.invoiceDate) ?? "",
@@ -504,6 +506,8 @@ async function generateInvoiceDocument(body) {
       } else {
         if (country == "uk") {
           template = "party-invoice-uk.docx";
+        } else if (country == "aus") {
+          template = "party-invoice-aus.docx";
         } else {
           template = "party-invoice.docx";
         }
@@ -618,7 +622,7 @@ async function convertToPdf(inputPath, fileName) {
 
 function toFixedToFour(value) {
   const num = Number(value);
-  return isNaN(num) ? 0 : Number(num.toFixed(4));
+  return isNaN(num) ? "0.00" : num.toFixed(2);
 }
 
 async function generateOrderConfirmation(body) {
@@ -688,6 +692,15 @@ function formatDateToDDMMYYYY(dateStr) {
   if (!dateStr) return "";
   const [year, month, day] = dateStr.split("-");
   return `${day}-${month}-${year}`;
+}
+
+function cleanSlashes(value) {
+  if (value == "") return "";
+  const parts = value.split("/");
+  if (parts.length > 2) {
+    parts.splice(1, 1);
+  }
+  return parts.join("/");
 }
 
 module.exports = {
