@@ -507,12 +507,14 @@
               [(ngModel)]="element[column]"
               [ngModelOptions]="{ standalone: true }"
               (ngModelChange)="updateSquareMeter(rowIndex)"
+              style="width: 100%"
             />
             }@else {
             <input
               matInput
               [(ngModel)]="element[column]"
               [ngModelOptions]="{ standalone: true }"
+              style="width: 100%"
             />
             } }@else {
             {{ element[column] }}
