@@ -301,7 +301,7 @@ async function readInvoiceData(invoiceId, isCustom, country = "") {
             if (lastInv) {
               inv.grossWeight = (
                 Number(lastInv.grossWeight) + Number(inv.netWeight)
-              ).toFixed(2);
+              ).toFixed(0);
               lastInv.grossWeight = "";
               inv.sizeInch = mmToInch(
                 inv?.length,
@@ -482,6 +482,7 @@ async function readInvoiceData(invoiceId, isCustom, country = "") {
       isAus: country === "aus",
       isUK: country === "uk",
       isGen: country === "",
+      isCustom,
     };
 
     return docData;
@@ -514,11 +515,17 @@ async function generateInvoiceDocument(body) {
         fileName = `INV ${invoiceId} (party)`;
       }
     } else {
+      if (country == "uk") {
+        template = "packing-uk.docx";
+      } else if (country == "aus") {
+        template = "packing-aus.docx";
+      } else {
+        template = "packing.docx";
+      }
       if (type == "custom") {
-        template = "custom-packing.docx";
         fileName = `PLIST ${invoiceId} (custom)`;
       } else {
-        template = "party-packing.docx";
+        // template = "party-packing.docx";
         fileName = `PLIST ${invoiceId} (party)`;
       }
     }
@@ -622,7 +629,7 @@ async function convertToPdf(inputPath, fileName) {
 
 function toFixedToFour(value) {
   const num = Number(value);
-  return isNaN(num) ? "0.00" : num.toFixed(2);
+  return isNaN(num) ? "0.0000" : num.toFixed(4);
 }
 
 async function generateOrderConfirmation(body) {
