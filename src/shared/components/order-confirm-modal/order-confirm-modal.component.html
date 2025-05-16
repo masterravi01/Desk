@@ -469,7 +469,11 @@
       </div>
     </div>
     <div class="table-container" style="margin-top: 16px; min-height: 200px">
-      <table mat-table [dataSource]="boxes()" class="mat-elevation-z8">
+      <table
+        mat-table
+        [dataSource]="boxes()"
+        class="mat-elevation-z8 small-table"
+      >
         <ng-container
           *ngFor="let column of displayedColumns"
           [matColumnDef]="column"
@@ -480,7 +484,7 @@
           <td mat-cell *matCellDef="let element; let rowIndex = index">
             @if(selectedIndex === rowIndex){ @if(column==='containerType'){
             <select
-              style="background: #fff; min-width: 100px"
+              style="background: #fff"
               [(ngModel)]="element[column]"
               [ngModelOptions]="{ standalone: true }"
             >
@@ -492,7 +496,7 @@
             </select>
             }@else if(column==='thicknessDetail') {
             <select
-              style="background: #fff; min-width: 100px"
+              style="background: #fff"
               [(ngModel)]="element[column]"
               [ngModelOptions]="{ standalone: true }"
             >
@@ -507,14 +511,12 @@
               [(ngModel)]="element[column]"
               [ngModelOptions]="{ standalone: true }"
               (ngModelChange)="updateSquareMeter(rowIndex)"
-              style="width: 100%"
             />
             }@else {
             <input
               matInput
               [(ngModel)]="element[column]"
               [ngModelOptions]="{ standalone: true }"
-              style="width: 100%"
             />
             } }@else {
             {{ element[column] }}

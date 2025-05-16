@@ -33,3 +33,25 @@
 .label-cell {
   font-size: 13px;
 }
+.small-table {
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+.small-table th,
+.small-table td {
+  padding: 0 8px;
+  font-size: 12px;
+  vertical-align: middle;
+}
+
+.small-table input,
+.small-table select {
+  font-size: 12px;
+  padding: 2px 4px;
+  height: 28px;
+  width: 100%;
+  box-sizing: border-box;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
