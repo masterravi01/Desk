@@ -713,29 +713,6 @@
               </td>
             </tr>
             <tr>
-              <td class="input-cell" colspan="2">
-                <div class="d-flex">
-                  <div class="label-cell">Transportation Mode</div>
-                  <select
-                    style="
-                      background: #fff;
-                      height: 32px;
-                      width: 100%;
-                      border-radius: 4px;
-                    "
-                    formControlName="transportationMode"
-                  >
-                    <option value="Sea">Sea</option>
-                    <option value="Air">Air</option>
-                  </select>
-                </div>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-        <table class="form-table" style="height: fit-content">
-          <tbody>
-            <tr>
               <td class="input-cell">
                 <div class="d-flex">
                   <div class="label-cell">Payment</div>
@@ -765,9 +742,43 @@
                 </div>
               </td>
             </tr>
+            <tr>
+              <td class="input-cell" colspan="2">
+                <div class="d-flex">
+                  <div class="label-cell">Transportation Mode</div>
+                  <select
+                    style="
+                      background: #fff;
+                      height: 32px;
+                      width: 100%;
+                      border-radius: 4px;
+                    "
+                    formControlName="transportationMode"
+                  >
+                    <option value="Sea">Sea</option>
+                    <option value="Air">Air</option>
+                  </select>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td class="input-cell">
+                <div class="d-flex">
+                  <div class="label-cell">Delivery At</div>
+                  <mat-form-field appearance="outline">
+                    <input matInput formControlName="deliveryAt" />
+                  </mat-form-field>
+                </div>
+              </td>
+            </tr>
           </tbody>
         </table>
-        <!-- <table class="form-table">
+        <!-- <table class="form-table" style="height: fit-content">
+          <tbody>
+           
+          </tbody>
+        </table> -->
+        <table class="form-table">
           <tbody>
             <tr>
               <td class="input-cell" colspan="2">
@@ -798,8 +809,8 @@
                       matInput
                       rows="2"
                       formControlName="bankAddress"
-                         cdkTextareaAutosize
-                    cdkAutosizeMinRows="2"
+                      cdkTextareaAutosize
+                      cdkAutosizeMinRows="2"
                     ></textarea>
                   </mat-form-field>
                 </div>
@@ -826,7 +837,7 @@
               </td>
             </tr>
           </tbody>
-        </table> -->
+        </table>
       </div>
 
       <h3 class="section-title h3" style="margin-top: 20px">Instrutions</h3>

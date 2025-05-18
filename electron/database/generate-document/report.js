@@ -48,7 +48,7 @@ function modifyCustomInvoiceData(data, totalAddition, totalDiscount, master) {
 
     data.forEach((container) => {
       container.invoices.forEach((invoice) => {
-        if (!maxInvoice || Number(invoice.value) > Number(maxInvoice.value)) {
+        if (!maxInvoice || Number(invoice.rate) > Number(maxInvoice.rate)) {
           maxInvoice = invoice;
         }
       });
@@ -78,6 +78,8 @@ function modifyCustomInvoiceData(data, totalAddition, totalDiscount, master) {
       ) {
         item.showThickness = false;
       }
+
+      item.isLast = index === data.length - 1;
     });
 
     return data;
@@ -113,6 +115,25 @@ function calculateTotalBoxes(invoiceDetails) {
     return totalBox;
   } catch (error) {
     console.log(error);
+  }
+}
+function modifyOC(items, customer) {
+  try {
+    if (!items || items.length === 0) return items;
+
+    items.forEach((inv) => {
+      if (
+        customer?.name?.trim() === "FOREST ONE AUSTRALIA PTY LTD" &&
+        Number(inv.height) === 3
+      ) {
+        inv.extNotes = "ANTIBACTERIAL GRADE";
+      }
+    });
+
+    return items;
+  } catch (error) {
+    console.log(error);
+    return items;
   }
 }
 
@@ -377,7 +398,7 @@ async function readInvoiceData(invoiceId, isCustom, country = "") {
 
     let docData = {
       invoiceNo: final.finalInvoice ?? "",
-      modifyInvNo: cleanSlashes(final.finalInvoice) ?? "",
+      modifyInvNo: cleanSlashes(final.finalInvoice, "removeMiddle") ?? "",
       invoiceDate: formatDateToDDMMYYYY(final.invoiceDate) ?? "",
       buyersOrderNo: master.customerOrderNo ?? "",
       orderDate: formatDateToDDMMYYYY(master.invoiceDate) ?? "",
@@ -427,6 +448,7 @@ async function readInvoiceData(invoiceId, isCustom, country = "") {
       invoiceDetails,
       invoiceItems: groupedInvoicesBySize,
       IPItems: groupedInvoicesBySize,
+      OCItems: modifyOC(groupedInvoicesBySize, customer),
       CIItems,
       rounding: master.rounding ?? "0",
       totalQuantity: master.totalQuantity ?? "0",
@@ -447,6 +469,8 @@ async function readInvoiceData(invoiceId, isCustom, country = "") {
           Number(master.totalAmount ?? "0") -
           Number(totalDiscount ?? "0")
       ),
+      commision: (Number(master.totalAmount ?? "0") * 0.05)?.toFixed(2),
+
       containerSummary,
 
       bankName: companyData.bankName ?? "",
@@ -454,6 +478,13 @@ async function readInvoiceData(invoiceId, isCustom, country = "") {
       bankCity: companyData.bankCity ?? "",
       swiftNumber: companyData.swiftCode ?? "",
       bankAddress: companyData.bankAddressLine1 ?? "",
+
+      bNameOC: master.bankName ?? "",
+      bBranchOC: master.bankBranch ?? "",
+      bAddressOC: master.bankAddress ?? "",
+      bCityOC: master.bankCity ?? "",
+      swiftNumberOC: master.swiftNumber ?? "",
+
       panNo: companyData.taxIdentificationNumber ?? "",
       adCode: companyData.additionalNumber ?? "",
       acCode: companyData.accountNumber ?? "",
@@ -467,8 +498,9 @@ async function readInvoiceData(invoiceId, isCustom, country = "") {
       additionalChargeValue: master.additionalChargeValue ?? "",
       deliveryTerms: final.deliveryTerms ?? "",
       deliveryDetails: master.deliveryDetails ?? "",
-      shippingDetails: master.shippingDetails ?? "ICD - AHD",
+      shippingDetails: master.shippingDetails ?? "",
       transportationMode: master.transportationMode ?? "",
+      deliveryAt: master.deliveryAt ?? "ICD - AHD",
       paymentTerms: master.paymentTerms ?? "",
       dispatchTerms: master.dispatchTerms ?? "",
       calculationType: master.calculationType ?? "",
@@ -476,6 +508,7 @@ async function readInvoiceData(invoiceId, isCustom, country = "") {
       invoiceInstructions: invoiceInstruction.map(
         (inst) => inst?.invoiceInstruction ?? ""
       ),
+      crFirstIns: invoiceInstruction[0]?.invoiceInstruction ?? "",
 
       privateRemark: final.privateRemark ?? "",
       bottomNotes: invoiceBottomNote,
@@ -493,17 +526,19 @@ async function readInvoiceData(invoiceId, isCustom, country = "") {
 
 async function generateInvoiceDocument(body) {
   try {
-    const { invoiceId, format, type, document, country } = body;
+    const { invoiceId, format, type, document, country, finalInvoice } = body;
     const isCustom = type === "custom";
     let data = await readInvoiceData(invoiceId, isCustom, country);
 
     let template;
     let fileName = "output";
 
+    let invID = cleanSlashes(finalInvoice, "getLast");
+
     if (document == "invoice") {
       if (type == "custom") {
         template = "custom-invoice.docx";
-        fileName = `INV ${invoiceId} (custom)`;
+        fileName = `INV ${invID} (custom)`;
       } else {
         if (country == "uk") {
           template = "party-invoice-uk.docx";
@@ -512,7 +547,7 @@ async function generateInvoiceDocument(body) {
         } else {
           template = "party-invoice.docx";
         }
-        fileName = `INV ${invoiceId} (party)`;
+        fileName = `INV ${invID} (party)`;
       }
     } else {
       if (country == "uk") {
@@ -523,10 +558,10 @@ async function generateInvoiceDocument(body) {
         template = "packing.docx";
       }
       if (type == "custom") {
-        fileName = `PLIST ${invoiceId} (custom)`;
+        fileName = `PLIST ${invID} (custom)`;
       } else {
         // template = "party-packing.docx";
-        fileName = `PLIST ${invoiceId} (party)`;
+        fileName = `PLIST ${invID} (party)`;
       }
     }
     let outputPath = await generateWordDocument(data, template, fileName);
@@ -701,13 +736,18 @@ function formatDateToDDMMYYYY(dateStr) {
   return `${day}-${month}-${year}`;
 }
 
-function cleanSlashes(value) {
-  if (value == "") return "";
-  const parts = value.split("/");
-  if (parts.length > 2) {
-    parts.splice(1, 1);
+function cleanSlashes(value, action) {
+  if (!value || value == "") return "";
+  if (action == "removeMiddle") {
+    const parts = value.split("/");
+    if (parts.length > 2) {
+      parts.splice(1, 1);
+    }
+    return parts.join("/");
+  } else {
+    return value.split("/").pop();
   }
-  return parts.join("/");
+  return value;
 }
 
 module.exports = {

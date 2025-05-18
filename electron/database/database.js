@@ -269,6 +269,7 @@ INSERT INTO containers (
     deliveryDetails TEXT DEFAULT NULL,
     shippingDetails TEXT DEFAULT NULL,
     transportationMode TEXT DEFAULT NULL,
+    deliveryAt TEXT DEFAULT NULL,
     paymentTerms TEXT DEFAULT NULL,
     portOfDischarge TEXT DEFAULT NULL,
     dispatchTerms TEXT DEFAULT NULL,
@@ -288,8 +289,8 @@ INSERT INTO invoiceMaster (
     buyerAddress, buyerCity, buyerZip, buyerState, buyerCountry, currency,
     status, discountType, discountValue, additionalChargeType, additionalChargeValue,
     reference, totalQuantity, totalAmount, totalSquareMeters, rounding, netAmount,
-    deliveryTerms, deliveryDetails, shippingDetails, transportationMode, paymentTerms, portOfDischarge,
-    dispatchTerms, bankName, bankBranch, bankCity, swiftNumber, comments, calculationType,
+    deliveryTerms, deliveryDetails, shippingDetails, transportationMode, deliveryAt, paymentTerms, portOfDischarge,
+    dispatchTerms, deliveryAt, bankName, bankBranch, bankCity, swiftNumber, comments, calculationType,
     bankAddress, fsc
 ) VALUES
 (20, '2488637', '2016-06-06', '49', '2488637/49', 11,
@@ -297,7 +298,7 @@ INSERT INTO invoiceMaster (
 'NOTIFY - NEPTUNE SHIPPING AGENCYHIGHER SHERWELL , SEVENSTONESCALLINGTON,CORNWALL,PL178H', '', '', '', '', 'GBP',
 NULL, 'None', '', 'None', '',
 '', '5600', '32280.0', '16670.080', '0.00', '32280',
-'CIF', 'JULY 01, 2016', '', 'Sea', 'ON 60 DAYS D.A. - L.C.', 'FELIXSTOWE',
+'CIF', 'JULY 01, 2016', '', 'Sea', 'ICD', 'ON 60 DAYS D.A. - L.C.', 'FELIXSTOWE',
 'FELIXSTOWE (U.K)', 'FORTIS BANK S.A. / N.V.BRUSSELS', '', '', '', NULL, 2,
 'ALL BELGIAN OFFICESBRUSSELS', ''),
 
@@ -524,6 +525,11 @@ INSERT INTO finalinvoice (invoiceId, customerName, buyerName, buyerAddress, buye
     version: 13,
     description: "update invoice master",
     script: `ALTER TABLE invoiceMaster ADD transportationMode INTEGER DEFAULT NULL`,
+  },
+  {
+    version: 14,
+    description: "update invoice master",
+    script: `ALTER TABLE invoiceMaster ADD deliveryAt INTEGER DEFAULT NULL`,
   },
 ];
 // db.run("DELETE FROM migrations WHERE version = ?", [13]);

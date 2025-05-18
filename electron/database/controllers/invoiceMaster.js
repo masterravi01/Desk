@@ -90,10 +90,10 @@ function addInvoiceMaster(invoice) {
         buyerAddress, buyerCity, buyerZip, buyerState, buyerCountry, currency, 
         status, discountType, discountValue, additionalChargeType, additionalChargeValue, 
         reference, totalQuantity, totalAmount, totalSquareMeters, rounding, netAmount, 
-        deliveryTerms, deliveryDetails, shippingDetails, transportationMode, paymentTerms, portOfDischarge, 
+        deliveryTerms, deliveryDetails, shippingDetails, transportationMode, deliveryAt, paymentTerms, portOfDischarge, 
         dispatchTerms, bankName, bankBranch, bankCity, swiftNumber, comments, calculationType, 
         bankAddress,fsc
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?)
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?)
     `;
     db.run(
       query,
@@ -130,6 +130,7 @@ function addInvoiceMaster(invoice) {
         invoice.deliveryDetails,
         invoice.shippingDetails,
         invoice.transportationMode,
+        invoice.deliveryAt,
         invoice.paymentTerms,
         invoice.portOfDischarge,
         invoice.dispatchTerms,
@@ -160,7 +161,7 @@ function updateInvoiceMaster(invoice) {
         buyerAddress = ?, buyerCity = ?, buyerZip = ?, buyerState = ?, buyerCountry = ?, currency = ?,
         status = ?, discountType = ?, discountValue = ?, additionalChargeType = ?, additionalChargeValue = ?,
         reference = ?, totalQuantity = ?, totalAmount = ?, totalSquareMeters = ?, rounding = ?, netAmount = ?,
-        deliveryTerms = ?, deliveryDetails = ?, shippingDetails = ?, transportationMode = ?, paymentTerms = ?, portOfDischarge = ?,
+        deliveryTerms = ?, deliveryDetails = ?, shippingDetails = ?, transportationMode = ?, deliveryAt = ?, paymentTerms = ?, portOfDischarge = ?,
         dispatchTerms = ?, bankName = ?, bankBranch = ?, bankCity = ?, swiftNumber = ?, comments = ?, calculationType = ?,
         bankAddress = ?, fsc = ?
       WHERE invoiceId = ?
@@ -200,6 +201,7 @@ function updateInvoiceMaster(invoice) {
         invoice.deliveryDetails,
         invoice.shippingDetails,
         invoice.transportationMode,
+        invoice.deliveryAt,
         invoice.paymentTerms,
         invoice.portOfDischarge,
         invoice.dispatchTerms,
