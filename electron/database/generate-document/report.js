@@ -67,7 +67,7 @@ function modifyCustomInvoiceData(data, totalAddition, totalDiscount, master) {
     data.forEach((item, index) => {
       item.invoices.forEach((invoice, idx) => {
         invoice.isFirst = idx === 0;
-        invoice.value = toFixedToFour(invoice.value);
+        invoice.value = Number(invoice.value ?? "0").toFixed(2);
         invoice.totalSq = toFixedToFour(invoice.totalSq);
         invoice.rate = toFixedToFour(invoice.rate);
       });
@@ -117,6 +117,7 @@ function calculateTotalBoxes(invoiceDetails) {
     console.log(error);
   }
 }
+
 function modifyOC(items, customer) {
   try {
     if (!items || items.length === 0) return items;
@@ -129,6 +130,29 @@ function modifyOC(items, customer) {
         inv.extNotes = "ANTIBACTERIAL GRADE";
       }
     });
+
+    for (let group of items) {
+      for (let invoice of group.invoices) {
+        invoice.rate = toFixedToFour(Number(invoice.rate ?? "0"));
+        invoice.value = Number(invoice.value ?? "0").toFixed(2);
+      }
+    }
+
+    return items;
+  } catch (error) {
+    console.log(error);
+    return items;
+  }
+}
+
+function modifyIP(items) {
+  try {
+    for (let group of items) {
+      for (let invoice of group.invoices) {
+        invoice.rate = Number(invoice.rate ?? "0").toFixed(2);
+        invoice.value = Number(invoice.value ?? "0").toFixed(2);
+      }
+    }
 
     return items;
   } catch (error) {
@@ -201,14 +225,15 @@ async function readInvoiceData(invoiceId, isCustom, country = "") {
     });
 
     let groupedInvoicesBySize = [];
+    let sampleBox = null;
 
     let totalBox = calculateTotalBoxes(invoiceDetails);
 
     invoiceDetails.forEach((invoice) => {
       const type = invoice.containerType;
 
-      invoice.squareMeter = toFixedToFour(invoice.squareMeter);
-      invoice.rate = toFixedToFour(invoice.rate);
+      invoice.squareMeter = invoice.squareMeter;
+      invoice.rate = invoice.rate;
       invoice.netWeight = invoice.netWeight.toFixed(0);
       invoice.preRate = invoice.rate;
       invoice.lwh = `${invoice?.length} X ${invoice?.width} X ${invoice?.thickness}`;
@@ -217,7 +242,7 @@ async function readInvoiceData(invoiceId, isCustom, country = "") {
 
       const quantity = Number(invoice?.quantity || 0);
       const rate = parseFloat(invoice?.rate || 0);
-      invoice.value = parseFloat((quantity * rate).toFixed(2));
+      invoice.value = parseFloat(quantity * rate);
 
       let addedToExistingGroup = false;
 
@@ -242,17 +267,21 @@ async function readInvoiceData(invoiceId, isCustom, country = "") {
 
       // Create a new group if not added to an existing one
       if (!addedToExistingGroup) {
-        groupedInvoicesBySize.push({
-          containerType: type,
-          containerSize: size,
-          thicknessDetail: `${(
-            invoice.thicknessDetail ?? ""
-          ).toUpperCase()} DECORATIVE LAMINATES WITH BARRIER PAPER`,
-          width: invoice?.width ?? 0,
-          height: invoice?.thickness ?? 0,
-          length: invoice?.length ?? 0,
-          invoices: [invoice],
-        });
+        if (invoice?.width == 0 && invoice?.width == 0 && invoice?.width == 0) {
+          sampleBox = invoice;
+        } else {
+          groupedInvoicesBySize.push({
+            containerType: type,
+            containerSize: size,
+            thicknessDetail: `${(
+              invoice.thicknessDetail ?? ""
+            ).toUpperCase()} DECORATIVE LAMINATES WITH BARRIER PAPER`,
+            width: invoice?.width ?? 0,
+            height: invoice?.thickness ?? 0,
+            length: invoice?.length ?? 0,
+            invoices: [invoice],
+          });
+        }
       }
     });
 
@@ -279,9 +308,7 @@ async function readInvoiceData(invoiceId, isCustom, country = "") {
       }
       if (isCustom || master.calculationType != "Per Sheet") {
         item.invoices.forEach((invoice) => {
-          invoice.rate = toFixedToFour(
-            Number(invoice.value) / Number(invoice.squareMeter)
-          );
+          invoice.rate = Number(invoice.value) / Number(invoice.squareMeter);
         });
       }
     });
@@ -367,11 +394,6 @@ async function readInvoiceData(invoiceId, isCustom, country = "") {
     );
 
     const containerSummary = groupedInvoicesBySize.map((item) => {
-      item.invoices.forEach((inv) => {
-        inv.value = toFixedToFour(inv.value);
-        inv.rate = toFixedToFour(inv.rate);
-      });
-
       return {
         width: item.width,
         height: item.height,
@@ -433,23 +455,15 @@ async function readInvoiceData(invoiceId, isCustom, country = "") {
 
       dischargeTerms: final.dischargeTerms ?? "",
 
-      // invoiceItems: invoiceDetails.map((detail) => ({
-      //   sizeThickness: `${detail?.length ?? ""} x ${detail?.width ?? ""} x ${
-      //     detail?.thickness ?? ""
-      //   } MM`,
-      //   designFinish: detail?.finishType ?? "",
-      //   quantity: detail?.quantity ?? "",
-      //   totalSqMt: detail?.squareMeter ?? "",
-      //   price: detail?.rate ?? "",
-      //   value: (
-      //     parseFloat(detail?.quantity || "0") * parseFloat(detail?.rate || "0")
-      //   ).toFixed(2),
-      // })),
       invoiceDetails,
       invoiceItems: groupedInvoicesBySize,
-      IPItems: groupedInvoicesBySize,
-      OCItems: modifyOC(groupedInvoicesBySize, customer),
+      IPItems: modifyIP(JSON.parse(JSON.stringify(groupedInvoicesBySize))),
+      OCItems: modifyOC(
+        JSON.parse(JSON.stringify(groupedInvoicesBySize)),
+        customer
+      ),
       CIItems,
+      sampleBox,
       rounding: master.rounding ?? "0",
       totalQuantity: master.totalQuantity ?? "0",
       totalBox,
@@ -457,18 +471,18 @@ async function readInvoiceData(invoiceId, isCustom, country = "") {
       totalNetWeight,
       totalSqMt: toFixedToFour(master.totalSquareMeters),
       totalAmount: master.totalAmount ?? "0",
-      netAmount: master.netAmount ?? "",
+      netAmount: Number(master.netAmount ?? "0").toFixed(2),
       netAmountWords: convertToCapitalize(
         converter.toWords(master.netAmount ?? 0)
       ),
       currencyChar: currency.currencyChar,
       totalDiscount,
       totalAddition,
-      additionSumAmount: toFixedToFour(
-        Number(totalAddition) +
-          Number(master.totalAmount ?? "0") -
-          Number(totalDiscount ?? "0")
-      ),
+      additionSumAmount: (
+        Number(totalAddition ?? "0") +
+        Number(master.totalAmount ?? "0") -
+        Number(totalDiscount ?? "0")
+      ).toFixed(2),
       commision: (Number(master.totalAmount ?? "0") * 0.05)?.toFixed(2),
 
       containerSummary,
