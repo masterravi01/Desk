@@ -683,18 +683,19 @@ function toFixedToFour(value) {
 
 async function generateOrderConfirmation(body) {
   try {
-    const { invoiceId, country, format, type } = body;
+    const { invoiceId, country, format, type, invoicePiNo } = body;
     let data = await readInvoiceData(invoiceId, false, country);
 
+    let piID = cleanSlashes(invoicePiNo, "getLast");
     let template = "order-confirmation.docx";
-    let fileName = `PI ${invoiceId}`;
+    let fileName = `PI ${piID}`;
 
     if (type == "opf") {
       template = "order-processing-form.docx";
-      fileName = `OPF ${invoiceId}`;
+      fileName = `OPF ${piID}`;
     } else if (type == "contract") {
       template = "contract-review.docx";
-      fileName = `Contract Review ${invoiceId}`;
+      fileName = `Contract Review ${piID}`;
     }
 
     let outputPath = await generateWordDocument(data, template, fileName);
