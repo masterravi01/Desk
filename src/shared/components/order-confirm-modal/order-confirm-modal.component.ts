@@ -172,15 +172,15 @@ export class OrderConfirmModalComponent implements OnInit {
       discountType === 'percentage'
         ? (finalAmount * discountValue) / 100
         : discountType === 'flat'
-          ? discountValue
-          : 0;
+        ? discountValue
+        : 0;
 
     const totalAddition =
       additionalChargeType === 'percentage'
         ? (finalAmount * additionalChargeValue) / 100
         : additionalChargeType === 'flat'
-          ? additionalChargeValue
-          : 0;
+        ? additionalChargeValue
+        : 0;
 
     finalAmount = finalAmount - totalDiscount + totalAddition;
 
@@ -208,7 +208,7 @@ export class OrderConfirmModalComponent implements OnInit {
     private masterService: MasterService,
     private invoiceDetailsService: InvoiceDetailsService,
     private _snackBar: SnackbarService
-  ) { }
+  ) {}
 
   ngOnInit(): void {
     this.instructions = [];
@@ -337,10 +337,9 @@ export class OrderConfirmModalComponent implements OnInit {
       this.invoiceDetailsForm.get('width')!.valueChanges,
       this.invoiceDetailsForm.get('quantity')!.valueChanges,
     ]).subscribe(([length, width, quantity]) => {
-
       const squareMeter =
         length && width && quantity
-          ? parseFloat((((length * width * quantity) / 10000) / 100).toFixed(4))
+          ? parseFloat(((length * width * quantity) / 10000 / 100).toFixed(4))
           : 0;
       this.invoiceDetailsForm
         .get('squareMeter')
@@ -355,7 +354,7 @@ export class OrderConfirmModalComponent implements OnInit {
       const { length, width, quantity } = this.invoiceDetailsForm.value;
       const squareMeter =
         length && width && quantity
-          ? parseFloat((((length * width * quantity) / 10000) / 100).toFixed(4))
+          ? parseFloat(((length * width * quantity) / 10000 / 100).toFixed(4))
           : 0;
       this.invoiceDetailsForm
         .get('squareMeter')
@@ -381,6 +380,7 @@ export class OrderConfirmModalComponent implements OnInit {
             'grossWeight',
             'netWeight',
             'remarks',
+            'quantity',
           ].forEach((k) => delete original[k]);
 
           this.invoiceDetailsForm.patchValue({
@@ -460,7 +460,7 @@ export class OrderConfirmModalComponent implements OnInit {
 
     row.squareMeter =
       length && width && quantity
-        ? parseFloat((((length * width * quantity) / 10000) / 100).toFixed(4))
+        ? parseFloat(((length * width * quantity) / 10000 / 100).toFixed(4))
         : 0;
     this.boxes.set([...currentBoxes]); // Trigger signal update
   }
@@ -581,8 +581,6 @@ export class OrderConfirmModalComponent implements OnInit {
     }
   }
 
-
-
   deleteRow() {
     if (this.selectedIndex !== null && this.selectedIndex >= 0) {
       const updatedBoxes = this.boxes().filter(
@@ -669,9 +667,9 @@ export class OrderConfirmModalComponent implements OnInit {
       ?.setValue(
         this.invoiceForm.get('invoiceDate')?.value
           ? new DatePipe('en-US').transform(
-            new Date(this.invoiceForm.get('invoiceDate')?.value),
-            'yyyy-MM-dd'
-          )
+              new Date(this.invoiceForm.get('invoiceDate')?.value),
+              'yyyy-MM-dd'
+            )
           : ''
       );
 
