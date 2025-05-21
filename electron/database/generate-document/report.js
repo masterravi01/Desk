@@ -67,7 +67,7 @@ function modifyCustomInvoiceData(data, totalAddition, totalDiscount, master) {
     data.forEach((item, index) => {
       item.invoices.forEach((invoice, idx) => {
         invoice.isFirst = idx === 0;
-        invoice.value = Number(invoice.value ?? "0").toFixed(2);
+        invoice.value = toFixedToTwo(Number(invoice.value ?? "0"));
         invoice.totalSq = toFixedToFour(invoice.totalSq);
         invoice.rate = toFixedToFour(invoice.rate);
       });
@@ -134,7 +134,7 @@ function modifyOC(items, customer) {
     for (let group of items) {
       for (let invoice of group.invoices) {
         invoice.rate = toFixedToFour(Number(invoice.rate ?? "0"));
-        invoice.value = Number(invoice.value ?? "0").toFixed(2);
+        invoice.value = toFixedToTwo(Number(invoice.value ?? "0"));
       }
     }
 
@@ -149,8 +149,8 @@ function modifyIP(items) {
   try {
     for (let group of items) {
       for (let invoice of group.invoices) {
-        invoice.rate = Number(invoice.rate ?? "0").toFixed(2);
-        invoice.value = Number(invoice.value ?? "0").toFixed(2);
+        invoice.rate = toFixedToTwo(Number(invoice.rate ?? "0"));
+        invoice.value = toFixedToTwo(Number(invoice.value ?? "0"));
       }
     }
 
@@ -464,26 +464,26 @@ async function readInvoiceData(invoiceId, isCustom, country = "") {
       ),
       CIItems,
       sampleBox,
-      rounding: master.rounding ?? "0",
+      rounding: toFixedToTwo(master.rounding ?? "0"),
       totalQuantity: master.totalQuantity ?? "0",
       totalBox,
       totalGrossWeight,
       totalNetWeight,
       totalSqMt: toFixedToFour(master.totalSquareMeters),
-      totalAmount: master.totalAmount ?? "0",
-      netAmount: Number(master.netAmount ?? "0").toFixed(2),
+      totalAmount: toFixedToTwo(master.totalAmount ?? "0"),
+      netAmount: toFixedToTwo(Number(master.netAmount ?? "0")),
       netAmountWords: convertToCapitalize(
         converter.toWords(master.netAmount ?? 0)
       ),
       currencyChar: currency.currencyChar,
-      totalDiscount,
-      totalAddition,
-      additionSumAmount: (
+      totalDiscount: toFixedToTwo(totalDiscount ?? "0"),
+      totalAddition: toFixedToTwo(totalAddition ?? "0"),
+      additionSumAmount: toFixedToTwo(
         Number(totalAddition ?? "0") +
-        Number(master.totalAmount ?? "0") -
-        Number(totalDiscount ?? "0")
-      ).toFixed(2),
-      commision: (Number(master.totalAmount ?? "0") * 0.05)?.toFixed(2),
+          Number(master.totalAmount ?? "0") -
+          Number(totalDiscount ?? "0")
+      ),
+      commision: toFixedToTwo(Number(master.totalAmount ?? "0") * 0.05),
 
       containerSummary,
 
@@ -679,6 +679,11 @@ async function convertToPdf(inputPath, fileName) {
 function toFixedToFour(value) {
   const num = Number(value);
   return isNaN(num) ? "0.0000" : num.toFixed(4);
+}
+
+function toFixedToTwo(value) {
+  const num = Number(value);
+  return isNaN(num) ? "0.00" : num.toFixed(2);
 }
 
 async function generateOrderConfirmation(body) {
