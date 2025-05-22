@@ -25,7 +25,7 @@ function createWindow() {
       preload: path.join(app.getAppPath(), "electron", "preload.js"), // FIXED PATH
     },
   });
-
+  mainWindow.maximize();
   const startURL = isDev
     ? "http://localhost:4200"
     : `file://${path.resolve(
