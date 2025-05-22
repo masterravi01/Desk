@@ -166,8 +166,8 @@ function AusNzPackingListRoundOf(
   totalGrossWeight,
   groupedInvoicesBySize
 ) {
-  let toReduce = totalNetWeight % 100;
-  totalNetWeight = Math.floor(totalNetWeight / 100) * 100; // Round down to nearest 100
+  let toReduce = totalNetWeight % 10;
+  totalNetWeight = Math.floor(totalNetWeight / 10) * 10; // Round down to nearest 10
 
   for (let group of groupedInvoicesBySize) {
     for (let invoice of group.invoices) {
@@ -183,8 +183,8 @@ function AusNzPackingListRoundOf(
     if (toReduce <= 0) break;
   }
 
-  toReduce = totalGrossWeight % 100;
-  totalGrossWeight = Math.floor(totalGrossWeight / 100) * 100; // Round down to nearest 100
+  toReduce = totalGrossWeight % 10;
+  totalGrossWeight = Math.floor(totalGrossWeight / 10) * 10; // Round down to nearest 10
 
   for (let group of groupedInvoicesBySize) {
     for (let invoice of group.invoices) {
