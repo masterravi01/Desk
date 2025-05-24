@@ -249,6 +249,11 @@ async function readInvoiceData(invoiceId, isCustom, country = "") {
     containers.forEach((c) => {
       containerObj[c.containerName] = c;
     });
+    if (master.specialInstruction && master.specialInstruction != "") {
+      invoiceInstruction.unshift({
+        invoiceInstruction: master.specialInstruction,
+      });
+    }
 
     let groupedInvoicesBySize = [];
     let sampleBox = null;
@@ -546,6 +551,7 @@ async function readInvoiceData(invoiceId, isCustom, country = "") {
       shippingDetails: master.shippingDetails ?? "",
       transportationMode: master.transportationMode ?? "",
       deliveryAt: master.deliveryAt ?? "ICD - AHD",
+      specialInstruction: master.specialInstruction ?? "",
       paymentTerms: master.paymentTerms ?? "",
       dispatchTerms: master.dispatchTerms ?? "",
       calculationType: master.calculationType ?? "",
@@ -553,7 +559,6 @@ async function readInvoiceData(invoiceId, isCustom, country = "") {
       invoiceInstructions: invoiceInstruction.map(
         (inst) => inst?.invoiceInstruction ?? ""
       ),
-      crFirstIns: invoiceInstruction[0]?.invoiceInstruction ?? "",
 
       privateRemark: final.privateRemark ?? "",
       bottomNotes: invoiceBottomNote,
