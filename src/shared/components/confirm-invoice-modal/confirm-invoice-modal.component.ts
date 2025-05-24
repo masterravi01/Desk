@@ -234,6 +234,7 @@ export class ConfirmInvoiceModalComponent implements OnInit {
             consigneeZip: data.invoiceMaster.customerZip,
             consigneeState: data.invoiceMaster.customerState,
             consigneeCountry: data.invoiceMaster.customerCountry,
+            dischargeTerms: data.invoiceMaster.dispatchTerms,
           });
         }
         this.invoiceBottomNotes = data.invoiceBottomNote;
