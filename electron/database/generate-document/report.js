@@ -436,7 +436,10 @@ async function readInvoiceData(invoiceId, isCustom, country = "") {
       };
     });
 
-    if (country === "aus") {
+    if (
+      country === "aus" ||
+      customer?.name?.trim() === "FOREST ONE AUSTRALIA PTY LTD"
+    ) {
       [totalNetWeight, totalGrossWeight] = AusNzPackingListRoundOf(
         totalNetWeight,
         totalGrossWeight,
@@ -453,21 +456,21 @@ async function readInvoiceData(invoiceId, isCustom, country = "") {
       invoicePiNo: master.invoicePiNo ?? "",
       fsc: master.fsc ?? "",
 
-      consigneeName: final.consigneeName ?? master.customerName ?? "",
-      consigneeAddress: final.consigneeAddress ?? master.customerAddress ?? "",
-      consigneeCity: final.consigneeCity ?? master.customerCity ?? "",
-      consigneeState: final.consigneeState ?? master.customerState ?? "",
-      consigneeCountry: final.consigneeCountry ?? master.customerCountry ?? "",
-      consigneeZip: final.consigneeZip ?? master.customerZip ?? "",
+      consigneeName: final.consigneeName || master.customerName || "",
+      consigneeAddress: final.consigneeAddress || master.customerAddress || "",
+      consigneeCity: final.consigneeCity || master.customerCity || "",
+      consigneeState: final.consigneeState || master.customerState || "",
+      consigneeCountry: final.consigneeCountry || master.customerCountry || "",
+      consigneeZip: final.consigneeZip || master.customerZip || "",
       consigneePhone: customer?.phone ?? "",
       consigneeEmail: customer?.email ?? "",
 
-      buyerAddress: final.buyerAddress ?? master.buyerAddress ?? "",
-      buyerCity: final.buyerCity ?? master.buyerCity ?? "",
-      buyerName: final.buyerName ?? master.buyerName ?? "",
-      buyerCountry: final.buyerCountry ?? master.buyerCountry ?? "",
-      buyerState: final.buyerState ?? master.buyerState ?? "",
-      buyerZip: final.buyerZip ?? master.buyerZip ?? "",
+      buyerAddress: final.buyerAddress || master.buyerAddress || "",
+      buyerCity: final.buyerCity || master.buyerCity || "",
+      buyerName: final.buyerName || master.buyerName || "",
+      buyerCountry: final.buyerCountry || master.buyerCountry || "",
+      buyerState: final.buyerState || master.buyerState || "",
+      buyerZip: final.buyerZip || master.buyerZip || "",
 
       originOfGoods: final.originOfGoods ?? "",
       finalDestination: final.finalDestination ?? "",
@@ -475,7 +478,7 @@ async function readInvoiceData(invoiceId, isCustom, country = "") {
 
       precarriageBy: final.precarriage ?? "",
       vesselNo: final.vesselNo ?? "",
-      portOfDischarge: final.portOfDischarge ?? "",
+      portOfDischarge: final.portOfDischarge || master.portOfDischarge || "",
       placeOfReceipt: final.receiptPlace ?? "",
       portOfLoading: final.loadingPort ?? "",
 
@@ -538,7 +541,7 @@ async function readInvoiceData(invoiceId, isCustom, country = "") {
       discountValue: master.discountValue ?? "",
       additionalChargeType: master.additionalChargeType ?? "",
       additionalChargeValue: master.additionalChargeValue ?? "",
-      deliveryTerms: final.deliveryTerms ?? "",
+      deliveryTerms: final.deliveryTerms || master.deliveryTerms || "",
       deliveryDetails: master.deliveryDetails ?? "",
       shippingDetails: master.shippingDetails ?? "",
       transportationMode: master.transportationMode ?? "",
