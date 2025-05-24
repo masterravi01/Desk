@@ -633,6 +633,11 @@
 2025-05-13 16:43:48 [INFO]: 🔗 Foreign Key support enabled.
 2025-05-16 11:40:44 [INFO]: ✅ Connected to SQLite Database at: C:\Users\Harun\AppData\Roaming\alfa\database.sqlite
 2025-05-16 11:40:44 [INFO]: 🔗 Foreign Key support enabled.
+<<<<<<< HEAD
 2025-05-21 20:40:55 [INFO]: ✅ Connected to SQLite Database at: C:\Users\Hiren\AppData\Roaming\alfa\database.sqlite
 2025-05-21 20:40:56 [INFO]: 🔗 Foreign Key support enabled.
 2025-05-21 20:40:56 [ERROR]: ❌ Migration 13 Failed: SQLITE_ERROR: duplicate column name: transportationMode
+=======
+2025-05-22 23:35:07 [INFO]: ✅ Connected to SQLite Database at: C:\Users\Harun\AppData\Roaming\alfa\database.sqlite
+2025-05-22 23:35:07 [INFO]: 🔗 Foreign Key support enabled.
+>>>>>>> cbcf68dce8f809a73568954efdca130ee61ea9af
