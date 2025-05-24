@@ -51,10 +51,10 @@ function insertInvoice({ invoiceMaster, invoiceDetails, invoiceInstruction }) {
         buyerCountry, currency, status, discountType, discountValue,
         additionalChargeType, additionalChargeValue, reference, totalQuantity,
         totalAmount, totalSquareMeters, rounding, netAmount, deliveryTerms,
-        deliveryDetails, shippingDetails, transportationMode, deliveryAt, paymentTerms, portOfDischarge,
+        deliveryDetails, shippingDetails, transportationMode,specialInstruction, deliveryAt, paymentTerms, portOfDischarge,
         dispatchTerms, bankName, bankBranch, bankCity, swiftNumber,
         comments, calculationType, bankAddress,fsc
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?,?,?)`;
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?,?,?)`;
 
       runQuery(masterInsertQuery, [
         invoiceMaster.customerOrderNo ?? null,
@@ -89,6 +89,7 @@ function insertInvoice({ invoiceMaster, invoiceDetails, invoiceInstruction }) {
         invoiceMaster.deliveryDetails ?? null,
         invoiceMaster.shippingDetails ?? null,
         invoiceMaster.transportationMode ?? null,
+        invoiceMaster.specialInstruction ?? null,
         invoiceMaster.deliveryAt ?? null,
         invoiceMaster.paymentTerms ?? null,
         invoiceMaster.portOfDischarge ?? null,
@@ -195,7 +196,7 @@ function updateInvoice({ invoiceMaster, invoiceDetails, invoiceInstruction }) {
           buyerCountry = ?, currency = ?, status = ?, discountType = ?, discountValue = ?,
           additionalChargeType = ?, additionalChargeValue = ?, reference = ?, totalQuantity = ?,
           totalAmount = ?, totalSquareMeters = ?, rounding = ?, netAmount = ?, deliveryTerms = ?,
-          deliveryDetails = ?, shippingDetails = ?, transportationMode = ?, deliveryAt = ?, paymentTerms = ?, portOfDischarge = ?,
+          deliveryDetails = ?, shippingDetails = ?, transportationMode = ?,specialInstruction = ?, deliveryAt = ?, paymentTerms = ?, portOfDischarge = ?,
           dispatchTerms = ?, bankName = ?, bankBranch = ?, bankCity = ?, swiftNumber = ?,
           comments = ?, calculationType = ?, bankAddress = ?,fsc = ? WHERE invoiceId = ?`;
 
@@ -232,6 +233,7 @@ function updateInvoice({ invoiceMaster, invoiceDetails, invoiceInstruction }) {
         invoiceMaster.deliveryDetails ?? null,
         invoiceMaster.shippingDetails ?? null,
         invoiceMaster.transportationMode ?? null,
+        invoiceMaster.specialInstruction ?? null,
         invoiceMaster.deliveryAt ?? null,
         invoiceMaster.paymentTerms ?? null,
         invoiceMaster.portOfDischarge ?? null,
@@ -555,7 +557,7 @@ async function importInvoice(data) {
           buyerCountry = ?, currency = ?, status = ?, discountType = ?, discountValue = ?,
           additionalChargeType = ?, additionalChargeValue = ?, reference = ?, totalQuantity = ?,
           totalAmount = ?, totalSquareMeters = ?, rounding = ?, netAmount = ?, deliveryTerms = ?,
-          deliveryDetails = ?, shippingDetails = ?, transportationMode = ?, deliveryAt = ?, paymentTerms = ?, portOfDischarge = ?,
+          deliveryDetails = ?, shippingDetails = ?, transportationMode = ?,  specialInstruction = ?,deliveryAt = ?, paymentTerms = ?, portOfDischarge = ?,
           dispatchTerms = ?, bankName = ?, bankBranch = ?, bankCity = ?, swiftNumber = ?,
           comments = ?, calculationType = ?, bankAddress = ?,fsc = ? 
           WHERE invoiceId = ?`;
@@ -593,6 +595,7 @@ async function importInvoice(data) {
             invoiceMaster.deliveryDetails ?? null,
             invoiceMaster.shippingDetails ?? null,
             invoiceMaster.transportationMode ?? null,
+            invoiceMaster.specialInstruction ?? null,
             invoiceMaster.deliveryAt ?? null,
             invoiceMaster.paymentTerms ?? null,
             invoiceMaster.portOfDischarge ?? null,

@@ -664,7 +664,7 @@
     <mat-divider></mat-divider>
     <ng-container *ngTemplateOutlet="bottomButtons"></ng-container>
   </mat-tab>
-  <mat-tab label="Instrutions">
+  <mat-tab label="Instructions">
     <div class="outer-div" [formGroup]="invoiceForm">
       <h3 class="section-title h3">Payment Term</h3>
       <div class="grid">
@@ -767,6 +767,16 @@
                   <div class="label-cell">Delivery At</div>
                   <mat-form-field appearance="outline">
                     <input matInput formControlName="deliveryAt" />
+                  </mat-form-field>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td class="input-cell">
+                <div class="d-flex">
+                  <div class="label-cell">Special Instruction</div>
+                  <mat-form-field appearance="outline">
+                    <input matInput formControlName="specialInstruction" />
                   </mat-form-field>
                 </div>
               </td>
