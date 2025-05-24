@@ -16,7 +16,14 @@ const { app } = require("electron");
 const { getCompany } = require("../controllers/company");
 const { getCustomer } = require("../controllers/customer");
 
-function modifyCustomInvoiceData(data, totalAddition, totalDiscount, master) {
+function modifyCustomInvoiceData(
+  data,
+  totalAddition,
+  totalDiscount,
+  master,
+  country,
+  customer
+) {
   try {
     data = data.map((container) => {
       const groupedInvoices = {};
@@ -60,7 +67,7 @@ function modifyCustomInvoiceData(data, totalAddition, totalDiscount, master) {
         Number(totalAddition ?? "0") -
         Number(totalDiscount ?? "0");
       maxInvoice.rate = toFixedToFour(
-        maxInvoice.value / Number(maxInvoice.totalSq)
+        Number(maxInvoice.value ?? "0") / Number(maxInvoice.totalSq ?? "0")
       );
     }
 
@@ -79,7 +86,17 @@ function modifyCustomInvoiceData(data, totalAddition, totalDiscount, master) {
         item.showThickness = false;
       }
 
-      item.isLast = index === data.length - 1;
+      if (index == data.length - 1) {
+        item.isLast = true;
+        if (
+          country === "aus" ||
+          customer?.name?.trim() === "FOREST ONE AUSTRALIA PTY LTD"
+        ) {
+          item.commision = toFixedToTwo(
+            Number(master.totalAmount ?? "0") * 0.05
+          );
+        }
+      }
     });
 
     return data;
@@ -120,8 +137,6 @@ function calculateTotalBoxes(invoiceDetails) {
 
 function modifyOC(items, customer) {
   try {
-    if (!items || items.length === 0) return items;
-
     items.forEach((inv) => {
       if (
         customer?.name?.trim() === "FOREST ONE AUSTRALIA PTY LTD" &&
@@ -133,7 +148,8 @@ function modifyOC(items, customer) {
 
     for (let group of items) {
       for (let invoice of group.invoices) {
-        invoice.rate = toFixedToFour(Number(invoice.rate ?? "0"));
+        const rate = Number(invoice.rate ?? "0");
+        invoice.rate = Number.isInteger(rate) ? rate.toFixed(2) : rate;
         invoice.value = toFixedToTwo(Number(invoice.value ?? "0"));
       }
     }
@@ -149,7 +165,8 @@ function modifyIP(items) {
   try {
     for (let group of items) {
       for (let invoice of group.invoices) {
-        invoice.rate = toFixedToTwo(Number(invoice.rate ?? "0"));
+        const rate = Number(invoice.rate ?? "0");
+        invoice.rate = Number.isInteger(rate) ? rate.toFixed(2) : rate;
         invoice.value = toFixedToTwo(Number(invoice.value ?? "0"));
       }
     }
@@ -232,8 +249,6 @@ async function readInvoiceData(invoiceId, isCustom, country = "") {
     invoiceDetails.forEach((invoice) => {
       const type = invoice.containerType;
 
-      invoice.squareMeter = invoice.squareMeter;
-      invoice.rate = invoice.rate;
       invoice.netWeight = invoice.netWeight.toFixed(0);
       invoice.preRate = invoice.rate;
       invoice.lwh = `${invoice?.length} X ${invoice?.width} X ${invoice?.thickness}`;
@@ -390,7 +405,9 @@ async function readInvoiceData(invoiceId, isCustom, country = "") {
       groupedInvoicesBySize,
       totalAddition,
       totalDiscount,
-      master
+      master,
+      country,
+      customer
     );
 
     const containerSummary = groupedInvoicesBySize.map((item) => {
@@ -483,7 +500,6 @@ async function readInvoiceData(invoiceId, isCustom, country = "") {
           Number(master.totalAmount ?? "0") -
           Number(totalDiscount ?? "0")
       ),
-      commision: toFixedToTwo(Number(master.totalAmount ?? "0") * 0.05),
 
       containerSummary,
 
