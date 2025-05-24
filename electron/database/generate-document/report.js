@@ -487,7 +487,8 @@ async function readInvoiceData(invoiceId, isCustom, country = "") {
       placeOfReceipt: final.receiptPlace ?? "",
       portOfLoading: final.loadingPort ?? "",
 
-      dischargeTerms: final.dischargeTerms ?? "",
+      dischargeTerms: final.dischargeTerms || master.dispatchTerms || "",
+      dispatchTerms: final.dischargeTerms || master.dispatchTerms || "",
 
       invoiceDetails,
       invoiceItems: groupedInvoicesBySize,
@@ -553,7 +554,6 @@ async function readInvoiceData(invoiceId, isCustom, country = "") {
       deliveryAt: master.deliveryAt ?? "ICD - AHD",
       specialInstruction: master.specialInstruction ?? "",
       paymentTerms: master.paymentTerms ?? "",
-      dispatchTerms: master.dispatchTerms ?? "",
       calculationType: master.calculationType ?? "",
 
       invoiceInstructions: invoiceInstruction.map(
