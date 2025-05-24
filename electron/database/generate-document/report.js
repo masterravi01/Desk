@@ -161,8 +161,17 @@ function modifyOC(items, customer) {
   }
 }
 
-function modifyIP(items) {
+function modifyIP(items, customer) {
   try {
+    items.forEach((inv) => {
+      if (
+        customer?.name?.trim() === "FOREST ONE AUSTRALIA PTY LTD" &&
+        Number(inv.height) === 3
+      ) {
+        inv.extNotes = "ANTIBACTERIAL GRADE";
+      }
+    });
+
     for (let group of items) {
       for (let invoice of group.invoices) {
         const rate = Number(invoice.rate ?? "0");
@@ -474,7 +483,10 @@ async function readInvoiceData(invoiceId, isCustom, country = "") {
 
       invoiceDetails,
       invoiceItems: groupedInvoicesBySize,
-      IPItems: modifyIP(JSON.parse(JSON.stringify(groupedInvoicesBySize))),
+      IPItems: modifyIP(
+        JSON.parse(JSON.stringify(groupedInvoicesBySize)),
+        customer
+      ),
       OCItems: modifyOC(
         JSON.parse(JSON.stringify(groupedInvoicesBySize)),
         customer
