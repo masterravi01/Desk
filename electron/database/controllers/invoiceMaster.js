@@ -130,6 +130,7 @@ function addInvoiceMaster(invoice) {
         invoice.deliveryDetails,
         invoice.shippingDetails,
         invoice.transportationMode,
+        invoice.specialInstruction,
         invoice.deliveryAt,
         invoice.paymentTerms,
         invoice.portOfDischarge,
@@ -161,7 +162,7 @@ function updateInvoiceMaster(invoice) {
         buyerAddress = ?, buyerCity = ?, buyerZip = ?, buyerState = ?, buyerCountry = ?, currency = ?,
         status = ?, discountType = ?, discountValue = ?, additionalChargeType = ?, additionalChargeValue = ?,
         reference = ?, totalQuantity = ?, totalAmount = ?, totalSquareMeters = ?, rounding = ?, netAmount = ?,
-        deliveryTerms = ?, deliveryDetails = ?, shippingDetails = ?, transportationMode = ?, deliveryAt = ?, paymentTerms = ?, portOfDischarge = ?,
+        deliveryTerms = ?, deliveryDetails = ?, shippingDetails = ?, transportationMode = ?, specialInstruction = ?, deliveryAt = ?, paymentTerms = ?, portOfDischarge = ?,
         dispatchTerms = ?, bankName = ?, bankBranch = ?, bankCity = ?, swiftNumber = ?, comments = ?, calculationType = ?,
         bankAddress = ?, fsc = ?
       WHERE invoiceId = ?
@@ -201,6 +202,7 @@ function updateInvoiceMaster(invoice) {
         invoice.deliveryDetails,
         invoice.shippingDetails,
         invoice.transportationMode,
+        invoice.specialInstruction,
         invoice.deliveryAt,
         invoice.paymentTerms,
         invoice.portOfDischarge,

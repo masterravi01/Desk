@@ -264,13 +264,14 @@ export class OrderConfirmModalComponent implements OnInit {
       paymentTerms: [],
       portOfDischarge: [],
       dispatchTerms: [],
-      bankName: [''],
-      bankBranch: [''],
+      bankName: ['STATE BANK OF INDIA'],
+      bankBranch: ['T.F.C.P.C'],
       bankCity: [''],
-      swiftNumber: [''],
+      swiftNumber: ['SBIN IN BB 598'],
       comments: [''],
-      bankAddress: [''],
+      bankAddress: ['VIIDYAPTIH , AHMEDABAD'],
       fsc: [''],
+      specialInstruction: [''],
     });
   }
   initCalculationForm() {
