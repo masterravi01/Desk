@@ -98,8 +98,21 @@ function modifyCustomInvoiceData(
         }
       }
     });
-
-    return data;
+    let diff = 0;
+    data.forEach((item, index) => {
+      item.invoices.forEach((invoice, idx) => {
+        let postValue = toFixedToTwo(
+          Number(invoice.totalSq) * Number(invoice.rate)
+        );
+        if (postValue != invoice.value) {
+          diff += Number(
+            toFixedToTwo(Number(postValue) - Number(invoice.value))
+          );
+          invoice.value = postValue;
+        }
+      });
+    });
+    return { CIItems: data, diff };
   } catch (error) {
     console.log(error);
   }
@@ -415,7 +428,7 @@ async function readInvoiceData(invoiceId, isCustom, country = "") {
       });
     });
 
-    let CIItems = modifyCustomInvoiceData(
+    let { CIItems, diff } = modifyCustomInvoiceData(
       groupedInvoicesBySize,
       totalAddition,
       totalDiscount,
@@ -451,7 +464,15 @@ async function readInvoiceData(invoiceId, isCustom, country = "") {
         groupedInvoicesBySize
       );
     }
-
+    let additionSumAmount = toFixedToTwo(
+      Number(totalAddition ?? "0") +
+        Number(master.totalAmount ?? "0") -
+        Number(totalDiscount ?? "0") +
+        diff
+    );
+    let rounding = toFixedToTwo(
+      -(Number(additionSumAmount) - Number(master.netAmount ?? "0"))
+    );
     let docData = {
       invoiceNo: final.finalInvoice ?? "",
       modifyInvNo: cleanSlashes(final.finalInvoice, "removeMiddle") ?? "",
@@ -502,7 +523,7 @@ async function readInvoiceData(invoiceId, isCustom, country = "") {
       ),
       CIItems,
       sampleBox,
-      rounding: toFixedToTwo(master.rounding ?? "0"),
+      rounding: toFixedToTwo(rounding ?? "0"),
       totalQuantity: master.totalQuantity ?? "0",
       totalBox,
       totalGrossWeight,
@@ -516,11 +537,7 @@ async function readInvoiceData(invoiceId, isCustom, country = "") {
       currencyChar: currency.currencyChar,
       totalDiscount: toFixedToTwo(totalDiscount ?? "0"),
       totalAddition: toFixedToTwo(totalAddition ?? "0"),
-      additionSumAmount: toFixedToTwo(
-        Number(totalAddition ?? "0") +
-          Number(master.totalAmount ?? "0") -
-          Number(totalDiscount ?? "0")
-      ),
+      additionSumAmount: additionSumAmount,
 
       containerSummary,
 
