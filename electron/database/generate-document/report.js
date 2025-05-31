@@ -464,15 +464,18 @@ async function readInvoiceData(invoiceId, isCustom, country = "") {
         groupedInvoicesBySize
       );
     }
-    let additionSumAmount = toFixedToTwo(
+    let additionSumAmount =
       Number(totalAddition ?? "0") +
-        Number(master.totalAmount ?? "0") -
-        Number(totalDiscount ?? "0") +
-        diff
+      Number(master.totalAmount ?? "0") -
+      Number(totalDiscount ?? "0");
+    additionSumAmount = toFixedToTwo(
+      isCustom ? additionSumAmount + diff : additionSumAmount
     );
-    let rounding = toFixedToTwo(
-      -(Number(additionSumAmount) - Number(master.netAmount ?? "0"))
-    );
+    let rounding = isCustom
+      ? toFixedToTwo(
+          -(Number(additionSumAmount) - Number(master.netAmount ?? "0"))
+        )
+      : master.rounding;
     let docData = {
       invoiceNo: final.finalInvoice ?? "",
       modifyInvNo: cleanSlashes(final.finalInvoice, "removeMiddle") ?? "",
