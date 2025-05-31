@@ -100,7 +100,7 @@ export class ConfirmInvoiceModalComponent implements OnInit {
     private fb: FormBuilder,
     private masterService: MasterService,
     private _snackBar: SnackbarService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.invoiceBottomNotes = [];
@@ -235,6 +235,7 @@ export class ConfirmInvoiceModalComponent implements OnInit {
             consigneeState: data.invoiceMaster.customerState,
             consigneeCountry: data.invoiceMaster.customerCountry,
             dischargeTerms: data.invoiceMaster.dispatchTerms,
+            termsOfDp: data.invoiceMaster.paymentTerms,
           });
         }
         this.invoiceBottomNotes = data.invoiceBottomNote;
@@ -293,9 +294,9 @@ export class ConfirmInvoiceModalComponent implements OnInit {
       ?.setValue(
         this.finalInvoiceForm.get('invoiceDate')?.value
           ? new DatePipe('en-US').transform(
-              new Date(this.finalInvoiceForm.get('invoiceDate')?.value),
-              'yyyy-MM-dd'
-            )
+            new Date(this.finalInvoiceForm.get('invoiceDate')?.value),
+            'yyyy-MM-dd'
+          )
           : ''
       );
     console.log({

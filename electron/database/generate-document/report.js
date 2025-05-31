@@ -269,7 +269,7 @@ async function readInvoiceData(invoiceId, isCustom, country = "") {
     }
 
     let groupedInvoicesBySize = [];
-    let sampleBox = null;
+    let sampleBox = [];
 
     let totalBox = calculateTotalBoxes(invoiceDetails);
 
@@ -309,8 +309,15 @@ async function readInvoiceData(invoiceId, isCustom, country = "") {
 
       // Create a new group if not added to an existing one
       if (!addedToExistingGroup) {
-        if (invoice?.width == 0 && invoice?.width == 0 && invoice?.width == 0) {
-          sampleBox = invoice;
+        if (
+          invoice?.width == 0 &&
+          invoice?.length == 0 &&
+          invoice?.thickness == 0
+        ) {
+          sampleBox.push(invoice);
+          if (sampleBox.length == 1) {
+            sampleBox[0].isFirst = true;
+          }
         } else {
           groupedInvoicesBySize.push({
             containerType: type,
@@ -526,6 +533,7 @@ async function readInvoiceData(invoiceId, isCustom, country = "") {
       ),
       CIItems,
       sampleBox,
+      isSampleBox: sampleBox?.length != 0,
       rounding: toFixedToTwo(rounding ?? "0"),
       totalQuantity: master.totalQuantity ?? "0",
       totalBox,
