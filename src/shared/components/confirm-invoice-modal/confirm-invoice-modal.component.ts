@@ -16,6 +16,7 @@ import {
   MatDialogClose,
   MatDialogContent,
   MatDialogTitle,
+  MatDialog,
 } from '@angular/material/dialog';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatTableModule } from '@angular/material/table';
@@ -51,6 +52,7 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { SelectBottomNoteComponent } from '../select-bottom-note/select-bottom-note.component';
 import { SnackbarService } from '../../../core/services/snackbar.service';
 import { TextFieldModule } from '@angular/cdk/text-field';
+import { ConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.component';
 
 @UntilDestroy()
 @Component({
@@ -85,6 +87,7 @@ import { TextFieldModule } from '@angular/cdk/text-field';
 })
 export class ConfirmInvoiceModalComponent implements OnInit {
   readonly dialogRef = inject(MatDialogRef<ConfirmInvoiceModalComponent>);
+  readonly dialog = inject(MatDialog);
   invoiceBottomNotes: any[] = [];
   finalInvoiceForm!: FormGroup;
 
@@ -100,7 +103,7 @@ export class ConfirmInvoiceModalComponent implements OnInit {
     private fb: FormBuilder,
     private masterService: MasterService,
     private _snackBar: SnackbarService
-  ) { }
+  ) {}
 
   ngOnInit(): void {
     this.invoiceBottomNotes = [];
@@ -172,27 +175,33 @@ export class ConfirmInvoiceModalComponent implements OnInit {
   }
 
   onDelete(): void {
-    const confirmed = window.confirm(
-      'Are you sure you want to delete invoice?'
-    );
-    if (confirmed) {
-      if (this.finalInvoiceForm.get('id')?.value) {
-        this.masterService
-          .invoke(
-            'deleteFinalInvoice',
-            this.finalInvoiceForm.get('invoiceId')?.value
-          )
-          .pipe(untilDestroyed(this))
-          .subscribe((data) => {
-            console.log(data);
-            this.ngOnInit();
-          });
-      } else {
-        this.ngOnInit();
-      }
-    }
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      data: {
+        title: 'Delete Confirmation',
+        message: 'Are you sure you want to delete invoice?',
+      },
+    });
 
-    // this.dialogRef.close(true);
+    dialogRef.afterClosed().subscribe((result: any) => {
+      if (result) {
+        if (this.finalInvoiceForm.get('id')?.value) {
+          this.masterService
+            .invoke(
+              'deleteFinalInvoice',
+              this.finalInvoiceForm.get('invoiceId')?.value
+            )
+            .pipe(untilDestroyed(this))
+            .subscribe((data) => {
+              console.log(data);
+              this.ngOnInit();
+            });
+        } else {
+          this.ngOnInit();
+        }
+      } else {
+        console.log('User cancelled');
+      }
+    });
   }
   enableEdit() {
     this.finalInvoiceForm.enable();
@@ -294,9 +303,9 @@ export class ConfirmInvoiceModalComponent implements OnInit {
       ?.setValue(
         this.finalInvoiceForm.get('invoiceDate')?.value
           ? new DatePipe('en-US').transform(
-            new Date(this.finalInvoiceForm.get('invoiceDate')?.value),
-            'yyyy-MM-dd'
-          )
+              new Date(this.finalInvoiceForm.get('invoiceDate')?.value),
+              'yyyy-MM-dd'
+            )
           : ''
       );
     console.log({

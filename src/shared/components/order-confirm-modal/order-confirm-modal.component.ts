@@ -10,6 +10,7 @@ import {
 import { MatButtonModule } from '@angular/material/button';
 import {
   MAT_DIALOG_DATA,
+  MatDialog,
   MatDialogRef,
   MatDialogModule,
   MatDialogActions,
@@ -45,6 +46,7 @@ import { debounceTime } from 'rxjs/internal/operators/debounceTime';
 import { combineLatest } from 'rxjs';
 import { SnackbarService } from '../../../core/services/snackbar.service';
 import { TextFieldModule } from '@angular/cdk/text-field';
+import { ConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.component';
 
 @UntilDestroy()
 @Component({
@@ -70,12 +72,14 @@ import { TextFieldModule } from '@angular/cdk/text-field';
     CommonModule,
     TextFieldModule,
     FormsModule,
+    ConfirmDialogComponent,
   ],
   providers: [provideNativeDateAdapter()],
   templateUrl: './order-confirm-modal.component.html',
   styleUrl: './order-confirm-modal.component.css',
 })
 export class OrderConfirmModalComponent implements OnInit {
+  readonly dialog = inject(MatDialog);
   readonly dialogRef = inject(MatDialogRef<OrderConfirmModalComponent>);
   invoiceForm!: FormGroup;
   invoiceDetailsForm!: FormGroup;
@@ -172,15 +176,15 @@ export class OrderConfirmModalComponent implements OnInit {
       discountType === 'percentage'
         ? (finalAmount * discountValue) / 100
         : discountType === 'flat'
-          ? discountValue
-          : 0;
+        ? discountValue
+        : 0;
 
     const totalAddition =
       additionalChargeType === 'percentage'
         ? (finalAmount * additionalChargeValue) / 100
         : additionalChargeType === 'flat'
-          ? additionalChargeValue
-          : 0;
+        ? additionalChargeValue
+        : 0;
 
     finalAmount = finalAmount - totalDiscount + totalAddition;
 
@@ -208,7 +212,7 @@ export class OrderConfirmModalComponent implements OnInit {
     private masterService: MasterService,
     private invoiceDetailsService: InvoiceDetailsService,
     private _snackBar: SnackbarService
-  ) { }
+  ) {}
 
   ngOnInit(): void {
     this.instructions = [];
@@ -427,27 +431,30 @@ export class OrderConfirmModalComponent implements OnInit {
   }
 
   onDelete(): void {
-    const confirmed = window.confirm(
-      'Are you sure you want to delete invoice?'
-    );
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      data: {
+        title: 'Delete Confirmation',
+        message: 'Are you sure you want to delete invoice?',
+      },
+    });
 
-    if (confirmed) {
-      if (this.invoiceForm.get('invoiceId')?.value) {
-        this.masterService
-          .invoke('deleteInvoice', this.invoiceForm.get('invoiceId')?.value)
-          .pipe(untilDestroyed(this))
-          .subscribe((data) => {
-            console.log(data);
-            this.ngOnInit();
-          });
+    dialogRef.afterClosed().subscribe((result: any) => {
+      if (result) {
+        if (this.invoiceForm.get('invoiceId')?.value) {
+          this.masterService
+            .invoke('deleteInvoice', this.invoiceForm.get('invoiceId')?.value)
+            .pipe(untilDestroyed(this))
+            .subscribe((data) => {
+              console.log(data);
+              this.ngOnInit();
+            });
+        } else {
+          this.ngOnInit();
+        }
       } else {
-        this.ngOnInit();
+        console.log('User cancelled');
       }
-    } else {
-      console.log('User cancelled!');
-    }
-
-    // this.dialogRef.close(true);
+    });
   }
   enableEdit() {
     this.invoiceForm.enable();
@@ -571,7 +578,8 @@ export class OrderConfirmModalComponent implements OnInit {
     this.boxes.update((prev) => [...prev, this.invoiceDetailsForm.value]);
     const currentBoxes = this.boxes();
 
-    const firstEntry = currentBoxes.length > 0 ? currentBoxes[currentBoxes.length - 1] : null;
+    const firstEntry =
+      currentBoxes.length > 0 ? currentBoxes[currentBoxes.length - 1] : null;
     this.initInvoiceDetailsForm();
 
     if (firstEntry) {
@@ -671,9 +679,9 @@ export class OrderConfirmModalComponent implements OnInit {
       ?.setValue(
         this.invoiceForm.get('invoiceDate')?.value
           ? new DatePipe('en-US').transform(
-            new Date(this.invoiceForm.get('invoiceDate')?.value),
-            'yyyy-MM-dd'
-          )
+              new Date(this.invoiceForm.get('invoiceDate')?.value),
+              'yyyy-MM-dd'
+            )
           : ''
       );
 
