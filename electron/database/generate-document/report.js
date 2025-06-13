@@ -444,17 +444,22 @@ async function readInvoiceData(invoiceId, isCustom, country = "") {
       customer
     );
 
+    let totalSqMt = 0;
     const containerSummary = groupedInvoicesBySize.map((item) => {
+      const totalSqMtPerType = toFixedToFour(
+        item.invoices.reduce(
+          (sum, invoice) => sum + parseFloat(invoice.squareMeter),
+          0
+        )
+      );
+
+      totalSqMt += Number(totalSqMtPerType ?? 0);
+
       return {
         width: item.width,
         height: item.height,
         length: item.length,
-        totalSqMtPerType: toFixedToFour(
-          item.invoices.reduce(
-            (sum, invoice) => sum + parseFloat(invoice.squareMeter),
-            0
-          )
-        ),
+        totalSqMtPerType,
         avgWeight: toFixedToFour(
           (item.width * item.height * item.length * 1410) / 1000000000
         ),
@@ -539,7 +544,8 @@ async function readInvoiceData(invoiceId, isCustom, country = "") {
       totalBox,
       totalGrossWeight,
       totalNetWeight,
-      totalSqMt: toFixedToFour(master.totalSquareMeters),
+      // totalSqMt: toFixedToFour(master.totalSquareMeters),
+      totalSqMt: toFixedToFour(totalSqMt),
       totalAmount: toFixedToTwo(master.totalAmount ?? "0"),
       netAmount: toFixedToTwo(Number(master.netAmount ?? "0")),
       netAmountWords: convertToCapitalize(
