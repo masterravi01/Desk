@@ -161,8 +161,7 @@ function modifyOC(items, customer) {
 
     for (let group of items) {
       for (let invoice of group.invoices) {
-        const rate = Number(invoice.rate ?? "0");
-        invoice.rate = Number.isInteger(rate) ? rate.toFixed(2) : rate;
+        invoice.rate = formatRate(invoice.rate);
         invoice.value = toFixedToTwo(Number(invoice.value ?? "0"));
       }
     }
@@ -172,6 +171,17 @@ function modifyOC(items, customer) {
     console.log(error);
     return items;
   }
+}
+function formatRate(rate) {
+  const num = Number(rate);
+  if (isNaN(num)) return "0";
+
+  if (Number.isInteger(num)) return num.toFixed(2);
+
+  const decimalPart = num.toString().split(".")[1];
+  if (decimalPart.length === 1) return num.toFixed(2);
+
+  return num.toString(); // Convert 16.124 to "16.124" for consistency
 }
 
 function modifyIP(items, customer) {
@@ -187,8 +197,7 @@ function modifyIP(items, customer) {
 
     for (let group of items) {
       for (let invoice of group.invoices) {
-        const rate = Number(invoice.rate ?? "0");
-        invoice.rate = Number.isInteger(rate) ? rate.toFixed(2) : rate;
+        invoice.rate = formatRate(invoice.rate);
         invoice.value = toFixedToTwo(Number(invoice.value ?? "0"));
       }
     }
@@ -256,7 +265,14 @@ async function readInvoiceData(invoiceId, isCustom, country = "") {
     const final = finalInvoice[0] || {};
 
     const containers = await getAllContainer();
-    const currency = await getCurrencyByName(master.currency);
+    let currency = await getCurrencyByName(master.currency);
+    if (!currency)
+      currency = {
+        id: 1,
+        currencyName: null,
+        currencyChar: "SIN $",
+        currencyCountry: null,
+      };
     const customer = await getCustomer(master.customerId);
     const containerObj = {};
     containers.forEach((c) => {
