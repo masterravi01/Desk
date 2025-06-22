@@ -161,7 +161,7 @@ function modifyOC(items, customer) {
 
     for (let group of items) {
       for (let invoice of group.invoices) {
-        invoice.rate = formatRate(invoice.rate);
+        invoice.rate = toFixedToTwo(Number(invoice.rate ?? "0"));
         invoice.value = toFixedToTwo(Number(invoice.value ?? "0"));
       }
     }
@@ -197,7 +197,7 @@ function modifyIP(items, customer) {
 
     for (let group of items) {
       for (let invoice of group.invoices) {
-        invoice.rate = formatRate(invoice.rate);
+        invoice.rate = toFixedToTwo(Number(invoice.rate ?? "0"));
         invoice.value = toFixedToTwo(Number(invoice.value ?? "0"));
       }
     }
@@ -787,6 +787,12 @@ async function generateOrderConfirmation(body) {
     } else if (type == "contract") {
       template = "contract-review.docx";
       fileName = `Contract Review ${piID}`;
+    } else {
+      if (country == "aus") {
+        template = "order-confirmation-aus.docx";
+      } else {
+        template = "order-confirmation.docx";
+      }
     }
 
     let outputPath = await generateWordDocument(data, template, fileName);
