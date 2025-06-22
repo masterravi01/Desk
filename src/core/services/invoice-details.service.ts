@@ -9,23 +9,23 @@ import { MasterService } from './master.service';
 })
 export class InvoiceDetailsService {
   private searchSubject = new Subject<{
-    materialGrade: string;
+    designType: string;
     customerId: string;
   }>();
 
-  constructor(private masterService: MasterService) {}
+  constructor(private masterService: MasterService) { }
 
   searchInvoiceDetails(
-    materialGrade: string,
+    designType: string,
     customerId: string
   ): Observable<any> {
     return this.masterService.invoke('getInvoiceDetails', {
-      materialGrade,
+      designType,
       customerId,
     });
   }
 
-  setSearchParams(params: { materialGrade: string; customerId: string }) {
+  setSearchParams(params: { designType: string; customerId: string }) {
     this.searchSubject.next(params);
   }
 
@@ -34,11 +34,11 @@ export class InvoiceDetailsService {
       debounceTime(500), // 500ms debounce time
       distinctUntilChanged(
         (prev, curr) =>
-          prev.materialGrade === curr.materialGrade &&
+          prev.designType === curr.designType &&
           prev.customerId === curr.customerId
       ),
       switchMap((params) =>
-        this.searchInvoiceDetails(params.materialGrade, params.customerId)
+        this.searchInvoiceDetails(params.designType, params.customerId)
       )
     );
   }

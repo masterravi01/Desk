@@ -1307,16 +1307,16 @@ async function deleteFinalInvoice(invoiceId) {
   }
 }
 
-async function getInvoiceDetails({ materialGrade, customerId }) {
+async function getInvoiceDetails({ designType, customerId }) {
   try {
     const result = await runQuery(
       `
         SELECT * FROM invoiceDetails 
-        WHERE materialGrade = ? AND customerId = ? 
+        WHERE designType = ? AND customerId = ? 
         ORDER BY invoiceDetailId DESC 
         LIMIT 1
     `,
-      [materialGrade, customerId]
+      [designType, customerId]
     );
 
     if (result && Object.keys(result).length != 0) {
