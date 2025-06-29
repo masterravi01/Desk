@@ -323,18 +323,18 @@ export class OrderConfirmModalComponent implements OnInit {
       ?.patchValue(this.invoiceForm.get('customerId')?.value);
 
     // Step 3: Listen to designType changes (after form init)
-    this.invoiceDetailsForm
-      .get('designType')
-      ?.valueChanges.pipe(debounceTime(500))
-      .subscribe((designType) => {
-        const customerId = this.invoiceDetailsForm.get('customerId')?.value;
-        if (designType && customerId) {
-          this.invoiceDetailsService.setSearchParams({
-            designType,
-            customerId,
-          });
-        }
-      });
+    // this.invoiceDetailsForm
+    //   .get('designType')
+    //   ?.valueChanges.pipe(debounceTime(500))
+    //   .subscribe((designType) => {
+    //     const customerId = this.invoiceDetailsForm.get('customerId')?.value;
+    //     if (designType && customerId) {
+    //       this.invoiceDetailsService.setSearchParams({
+    //         designType,
+    //         customerId,
+    //       });
+    //     }
+    //   });
 
     // Step 4: Auto-calculate square meter
     combineLatest([

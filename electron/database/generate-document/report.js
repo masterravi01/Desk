@@ -16,6 +16,23 @@ const { app } = require("electron");
 const { getCompany } = require("../controllers/company");
 const { getCustomer } = require("../controllers/customer");
 
+function groupByContainerSize(data) {
+  const map = new Map();
+
+  data.forEach((item) => {
+    const key = item.containerSize;
+
+    if (map.has(key)) {
+      const existing = map.get(key);
+      existing.invoices.push(...item.invoices);
+    } else {
+      map.set(key, { ...item, invoices: [...item.invoices] });
+    }
+  });
+
+  return Array.from(map.values());
+}
+
 function modifyCustomInvoiceData(
   data,
   totalAddition,
@@ -25,6 +42,8 @@ function modifyCustomInvoiceData(
   customer
 ) {
   try {
+    let sampleInvoice = [];
+    data = groupByContainerSize(data);
     data = data.map((container) => {
       const groupedInvoices = {};
 
@@ -37,12 +56,17 @@ function modifyCustomInvoiceData(
             quantity: 0,
             totalSq: 0,
             value: 0,
+            sampleDetails: "",
           };
         }
 
         groupedInvoices[rateKey].quantity += Number(invoice.quantity);
         groupedInvoices[rateKey].totalSq += Number(invoice.squareMeter);
         groupedInvoices[rateKey].value += Number(invoice.value);
+        groupedInvoices[rateKey].sampleDetails += " " + invoice.brandName;
+        groupedInvoices[rateKey].sampleDetails += " " + invoice.designType;
+        groupedInvoices[rateKey].sampleDetails += " " + invoice.finishType;
+        groupedInvoices[rateKey].sampleDetails += " " + invoice.materialGrade;
       });
 
       return {
@@ -50,10 +74,15 @@ function modifyCustomInvoiceData(
         invoices: Object.values(groupedInvoices),
       };
     });
-
     let maxInvoice = null;
 
     data.forEach((container) => {
+      if (
+        container?.width == "0" &&
+        container?.length == "0" &&
+        container?.height == "0"
+      )
+        return;
       container.invoices.forEach((invoice) => {
         if (!maxInvoice || Number(invoice.rate) > Number(maxInvoice.rate)) {
           maxInvoice = invoice;
@@ -101,9 +130,17 @@ function modifyCustomInvoiceData(
     let diff = 0;
     data.forEach((item, index) => {
       item.invoices.forEach((invoice, idx) => {
-        let postValue = toFixedToTwo(
-          Number(invoice.totalSq) * Number(invoice.rate)
-        );
+        let postValue = 0;
+        if (item?.width == "0" && item?.length == "0" && item?.height == "0") {
+          sampleInvoice.push(invoice);
+          postValue = toFixedToTwo(
+            Number(invoice.quantity) * Number(invoice.rate)
+          );
+        } else {
+          postValue = toFixedToTwo(
+            Number(invoice.totalSq) * Number(invoice.rate)
+          );
+        }
         if (postValue != invoice.value) {
           diff += Number(
             toFixedToTwo(Number(postValue) - Number(invoice.value))
@@ -112,7 +149,10 @@ function modifyCustomInvoiceData(
         }
       });
     });
-    return { CIItems: data, diff };
+    if (sampleInvoice.length > 0) {
+      data.pop();
+    }
+    return { CIItems: data, diff, sampleInvoice };
   } catch (error) {
     console.log(error);
   }
@@ -251,7 +291,20 @@ function AusNzPackingListRoundOf(
   return [totalNetWeight, totalGrossWeight];
 }
 
-async function readInvoiceData(invoiceId, isCustom, country = "") {
+function sampleBoxPriceToFree(sampleBox) {
+  sampleBox.forEach((item) => {
+    if (Number(item.rate) === 0) {
+      item.rate = "FREE";
+    }
+    if (Number(item.value) === 0) {
+      item.value = "FREE";
+    } else {
+      item.value = toFixedToTwo(item.value);
+    }
+  });
+}
+
+async function readInvoiceData(invoiceId, isCustom, country = "", document) {
   try {
     let {
       invoiceMaster = [],
@@ -334,19 +387,20 @@ async function readInvoiceData(invoiceId, isCustom, country = "") {
           if (sampleBox.length == 1) {
             sampleBox[0].isFirst = true;
           }
-        } else {
-          groupedInvoicesBySize.push({
-            containerType: type,
-            containerSize: size,
-            thicknessDetail: `${(
-              invoice.thicknessDetail ?? ""
-            ).toUpperCase()} DECORATIVE LAMINATES WITH BARRIER PAPER`,
-            width: invoice?.width ?? 0,
-            height: invoice?.thickness ?? 0,
-            length: invoice?.length ?? 0,
-            invoices: [invoice],
-          });
         }
+        // } else {
+        groupedInvoicesBySize.push({
+          containerType: type,
+          containerSize: size,
+          thicknessDetail: `${(
+            invoice.thicknessDetail ?? ""
+          ).toUpperCase()} DECORATIVE LAMINATES WITH BARRIER PAPER`,
+          width: invoice?.width ?? 0,
+          height: invoice?.thickness ?? 0,
+          length: invoice?.length ?? 0,
+          invoices: [invoice],
+        });
+        // }
       }
     });
 
@@ -373,7 +427,10 @@ async function readInvoiceData(invoiceId, isCustom, country = "") {
       }
       if (isCustom || master.calculationType != "Per Sheet") {
         item.invoices.forEach((invoice) => {
-          invoice.rate = Number(invoice.value) / Number(invoice.squareMeter);
+          invoice.rate =
+            Number(invoice.squareMeter) != 0
+              ? Number(invoice.value) / Number(invoice.squareMeter)
+              : invoice.rate;
         });
       }
     });
@@ -451,7 +508,7 @@ async function readInvoiceData(invoiceId, isCustom, country = "") {
       });
     });
 
-    let { CIItems, diff } = modifyCustomInvoiceData(
+    let { CIItems, diff, sampleInvoice } = modifyCustomInvoiceData(
       groupedInvoicesBySize,
       totalAddition,
       totalDiscount,
@@ -461,10 +518,10 @@ async function readInvoiceData(invoiceId, isCustom, country = "") {
     );
 
     let totalSqMt = 0;
-    const containerSummary = groupedInvoicesBySize.map((item) => {
+    const containerSummary = CIItems.map((item) => {
       const totalSqMtPerType = toFixedToFour(
         item.invoices.reduce(
-          (sum, invoice) => sum + parseFloat(invoice.squareMeter),
+          (sum, invoice) => sum + parseFloat(invoice.totalSq),
           0
         )
       );
@@ -504,6 +561,19 @@ async function readInvoiceData(invoiceId, isCustom, country = "") {
           -(Number(additionSumAmount) - Number(master.netAmount ?? "0"))
         )
       : master.rounding;
+
+    if (sampleBox.length > 0) {
+      if (isCustom && document == "invoice") {
+        sampleBox = sampleInvoice;
+      } else {
+        sampleBox =
+          groupedInvoicesBySize[groupedInvoicesBySize.length - 1].invoices;
+        groupedInvoicesBySize.pop();
+      }
+    }
+
+    sampleBoxPriceToFree(sampleBox);
+
     let docData = {
       invoiceNo: final.finalInvoice ?? "",
       modifyInvNo: cleanSlashes(final.finalInvoice, "removeMiddle") ?? "",
@@ -628,7 +698,7 @@ async function generateInvoiceDocument(body) {
   try {
     const { invoiceId, format, type, document, country, finalInvoice } = body;
     const isCustom = type === "custom";
-    let data = await readInvoiceData(invoiceId, isCustom, country);
+    let data = await readInvoiceData(invoiceId, isCustom, country, document);
 
     let template;
     let fileName = "output";
