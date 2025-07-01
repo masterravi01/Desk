@@ -201,7 +201,12 @@ function modifyOC(items, customer) {
 
     for (let group of items) {
       for (let invoice of group.invoices) {
-        invoice.rate = toFixedToTwo(Number(invoice.rate ?? "0"));
+        const rate = Number(invoice.rate ?? "0");
+        invoice.rate = rate.toLocaleString("en-US", {
+          minimumFractionDigits: 2,
+          useGrouping: false,
+        });
+
         invoice.value = toFixedToTwo(Number(invoice.value ?? "0"));
       }
     }
