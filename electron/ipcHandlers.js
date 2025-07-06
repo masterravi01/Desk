@@ -2,6 +2,7 @@ const { ipcMain } = require("electron");
 
 const {
   getCompany,
+  getAllCompanies,
   addCompany,
   updateCompany,
   deleteCompany,
@@ -81,6 +82,10 @@ function setupIpcHandlers() {
   // Company APIs
   ipcMain.handle("getCompany", async (event, id) => {
     return await getCompany(id);
+  });
+
+  ipcMain.handle("getAllCompanies", async (event) => {
+    return await getAllCompanies();
   });
 
   ipcMain.handle("addCompany", async (event, company) => {

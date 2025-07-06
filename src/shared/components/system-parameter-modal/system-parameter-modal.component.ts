@@ -13,8 +13,10 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatDividerModule } from '@angular/material/divider';
-import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
+import { MatOptionModule } from '@angular/material/core';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 
 import { NewCustomerComponent } from '../new-customer/new-customer.component';
@@ -24,6 +26,7 @@ import { MasterService } from '../../../core/services/master.service';
 import { MatCardModule } from '@angular/material/card';
 import { NewParameterComponent } from '../new-parameter/new-parameter.component';
 import { TableComponent } from '../table/table.component';
+import { CommonModule } from '@angular/common';
 
 @UntilDestroy()
 @Component({
@@ -42,8 +45,12 @@ import { TableComponent } from '../table/table.component';
     MatDividerModule,
     ReactiveFormsModule,
     MatInputModule,
+    MatSelectModule,
+    MatOptionModule,
     MatCardModule,
     TableComponent,
+    FormsModule,
+    CommonModule
   ],
   templateUrl: './system-parameter-modal.component.html',
   styleUrl: './system-parameter-modal.component.css',
@@ -55,6 +62,8 @@ export class SystemParameterModalComponent implements OnInit {
   displayedColumns: string[] = ['name', 'email', 'phone'];
   companyForm!: FormGroup;
   parameters = new MatTableDataSource<any>([]);
+  companies: any[] = [];
+  selectedCompanyId: number | null = null;
 
   constructor(
     private modalService: ModalService,
@@ -64,12 +73,13 @@ export class SystemParameterModalComponent implements OnInit {
 
   ngOnInit(): void {
     this.initForm();
-    this.loadCompanyData();
+    this.loadCompanies();
     this.loadParameters();
   }
+
   private initForm() {
     this.companyForm = this.fb.group({
-      id: [1],
+      id: [null],
       companyCode: [''],
       companyName: [''],
       entryDate: [''],
@@ -97,17 +107,65 @@ export class SystemParameterModalComponent implements OnInit {
       taxIdentificationNumber: [''],
     });
   }
-  private loadCompanyData() {
+
+  private loadCompanies() {
     this.masterService
-      .invoke('getCompany', 1)
+      .invoke('getAllCompanies')
+      .pipe(untilDestroyed(this))
+      .subscribe({
+        next: (data: any) => {
+          console.log('Companies loaded:', data);
+          this.companies = data || [];
+          if (this.companies.length > 0) {
+            this.selectedCompanyId = this.companies[0].id;
+            if (this.selectedCompanyId) {
+              this.loadCompanyData(this.selectedCompanyId);
+            }
+          } else {
+            console.log('No companies found in database');
+          }
+        },
+        error: (error) => {
+          console.error('Error loading companies:', error);
+          this.companies = [];
+        }
+      });
+  }
+
+  private loadCompanyData(companyId: number) {
+    this.masterService
+      .invoke('getCompany', companyId)
       .pipe(untilDestroyed(this))
       .subscribe((data: any) => {
-        console.log(data);
+        console.log('Company data loaded:', data);
         if (data) {
           this.companyForm.patchValue(data);
           this.companyForm.disable();
         }
       });
+  }
+
+  onCompanyChange(companyId: number | null) {
+    this.selectedCompanyId = companyId;
+    if (companyId) {
+      this.loadCompanyData(companyId);
+    } else {
+      // Reset form when no company is selected
+      this.companyForm.reset();
+      this.companyForm.disable();
+    }
+  }
+
+  addNewCompany() {
+    this.companyForm.reset();
+    this.companyForm.enable();
+    this.selectedCompanyId = null;
+    // Set default values for new company
+    this.companyForm.patchValue({
+      isCurrentCompany: 0,
+      entryDate: new Date().toISOString().split('T')[0], // Today's date
+      createdBy: 'admin' // Default creator
+    });
   }
 
   private loadParameters() {
@@ -127,9 +185,11 @@ export class SystemParameterModalComponent implements OnInit {
   onConfirm(): void {
     this.dialogRef.close(true);
   }
+
   enableEdit() {
     this.companyForm.enable();
   }
+
   openCustomerModal() {
     this.modalService.openModal(NewCustomerComponent, {
       width: '90%',
@@ -155,16 +215,25 @@ export class SystemParameterModalComponent implements OnInit {
     if (this.companyForm.disabled) {
       this.companyForm.enable();
     }
-    const callUrl = this.companyForm.get('id')?.value
-      ? 'updateCompany'
-      : 'addCompany';
+    
+    const formValue = this.companyForm.value;
+    const callUrl = formValue.id ? 'updateCompany' : 'addCompany';
+    
     this.masterService
-      .invoke(callUrl, this.companyForm.value)
+      .invoke(callUrl, formValue)
       .pipe(untilDestroyed(this))
-      .subscribe((data) => {
-        console.log(data);
-        this.initForm();
-        this.loadCompanyData();
+      .subscribe({
+        next: (data: any) => {
+          console.log('Company saved:', data);
+          this.loadCompanies(); // Reload companies list
+          // If this was a new company, select it
+          if (!formValue.id && data.id) {
+            this.selectedCompanyId = data.id;
+          }
+        },
+        error: (error) => {
+          console.error('Error saving company:', error);
+        }
       });
   }
 }

@@ -14,6 +14,35 @@
 <mat-tab-group>
   <mat-tab label="Company Information">
     <div>
+      <!-- Company Selection -->
+      <mat-card appearance="outlined" style="margin-bottom: 16px;">
+        <mat-card-content>
+          <div class="d-flex" style="align-items: center; gap: 16px;">
+            <div style="min-width: 350px;">
+              <mat-form-field appearance="outline" style="width: 350px;" floatLabel="always">
+                <mat-label>Select Company</mat-label>
+                <mat-select
+                  [(value)]="selectedCompanyId"
+                  (selectionChange)="onCompanyChange($event.value)">
+                  <mat-option *ngFor="let company of companies" [value]="company.id">
+                    {{ company.companyName }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+              
+            </div>
+            <button
+              class="btn"
+              mat-raised-button
+              color="primary"
+              (click)="addNewCompany()"
+            >
+              Add New Company
+            </button>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
       <form [formGroup]="companyForm" class="form-card">
         <!-- Basic Details -->
         <mat-card appearance="outlined">

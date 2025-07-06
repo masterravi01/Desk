@@ -9,6 +9,15 @@ function getCompany(id) {
   });
 }
 
+function getAllCompanies() {
+  return new Promise((resolve, reject) => {
+    db.all("SELECT * FROM company ORDER BY id", (err, rows) => {
+      if (err) reject(err);
+      else resolve(rows);
+    });
+  });
+}
+
 function addCompany(company) {
   return new Promise((resolve, reject) => {
     const query = `
@@ -117,4 +126,4 @@ function deleteCompany(id) {
   });
 }
 
-module.exports = { getCompany, addCompany, updateCompany, deleteCompany };
+module.exports = { getCompany, getAllCompanies, addCompany, updateCompany, deleteCompany };
