@@ -15,6 +15,8 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { MatTableModule } from '@angular/material/table';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatSelectModule } from '@angular/material/select';
+import { MatOptionModule } from '@angular/material/core';
 import { ModalService } from '../../../core/services/modal.service';
 import { MasterService } from '../../../core/services/master.service';
 import {
@@ -26,6 +28,7 @@ import {
 } from '@angular/forms';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { SelectInvoiceComponent } from '../select-invoice/select-invoice.component';
+import { CommonModule } from '@angular/common';
 
 @UntilDestroy()
 @Component({
@@ -43,6 +46,10 @@ import { SelectInvoiceComponent } from '../select-invoice/select-invoice.compone
     MatTabsModule,
     MatDividerModule,
     MatRadioModule,
+    MatFormFieldModule,
+    MatSelectModule,
+    MatOptionModule,
+    CommonModule
   ],
   templateUrl: './final-invoice-report-modal.component.html',
   styleUrl: './final-invoice-report-modal.component.css',
@@ -52,6 +59,8 @@ export class FinalInvoiceReportModalComponent {
   invoiceForm!: FormGroup;
   reportType: string = 'ms-word';
   documentType: string = 'custom';
+  companies: any[] = [];
+  selectedCompanyId: number | null = null;
 
   constructor(
     private modalService: ModalService,
@@ -61,6 +70,7 @@ export class FinalInvoiceReportModalComponent {
 
   ngOnInit(): void {
     this.initForm();
+    this.loadCompanies();
     this.invoiceForm.disable();
   }
 
@@ -72,6 +82,26 @@ export class FinalInvoiceReportModalComponent {
       finalInvoice: [''],
     });
   }
+
+  private loadCompanies() {
+    this.masterService
+      .invoke('getAllCompanies')
+      .pipe(untilDestroyed(this))
+      .subscribe({
+        next: (data: any) => {
+          console.log('Companies loaded:', data);
+          this.companies = data || [];
+          if (this.companies.length > 0) {
+            this.selectedCompanyId = this.companies[0].id;
+          }
+        },
+        error: (error) => {
+          console.error('Error loading companies:', error);
+          this.companies = [];
+        }
+      });
+  }
+
 
   onCancel(): void {
     this.dialogRef.close(false);
@@ -102,6 +132,7 @@ export class FinalInvoiceReportModalComponent {
       type: this.documentType,
       document: template,
       country,
+      companyId: this.selectedCompanyId,
     };
 
     console.log(body);
