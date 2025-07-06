@@ -18,6 +18,8 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { MatTableModule } from '@angular/material/table';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatSelectModule } from '@angular/material/select';
+import { MatOptionModule } from '@angular/material/core';
 import { ModalService } from '../../../core/services/modal.service';
 import { MasterService } from '../../../core/services/master.service';
 import {
@@ -29,6 +31,7 @@ import {
 } from '@angular/forms';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { SelectInvoiceComponent } from '../select-invoice/select-invoice.component';
+import { CommonModule } from '@angular/common';
 
 @UntilDestroy()
 
@@ -45,7 +48,11 @@ import { SelectInvoiceComponent } from '../select-invoice/select-invoice.compone
     MatDialogContent,
     MatTableModule,
     MatTabsModule,
-    MatDividerModule
+    MatDividerModule,
+    MatFormFieldModule,
+    MatSelectModule,
+    MatOptionModule,
+    CommonModule
   ],
   templateUrl: './order-confirm-report-modal.component.html',
   styleUrl: './order-confirm-report-modal.component.css'
@@ -54,6 +61,8 @@ export class OrderConfirmReportModalComponent {
   readonly dialogRef = inject(MatDialogRef<OrderConfirmReportModalComponent>);
   orderForm!: FormGroup;
   reportType: string = 'ms-word';
+  companies: any[] = [];
+  selectedCompanyId: number | null = null;
 
   constructor(
     private modalService: ModalService,
@@ -63,6 +72,7 @@ export class OrderConfirmReportModalComponent {
 
   ngOnInit(): void {
     this.initForm();
+    this.loadCompanies();
     this.orderForm.disable();
   }
 
@@ -74,6 +84,26 @@ export class OrderConfirmReportModalComponent {
       invoicePiNo: [''],
     });
   }
+
+  private loadCompanies() {
+    this.masterService
+      .invoke('getAllCompanies')
+      .pipe(untilDestroyed(this))
+      .subscribe({
+        next: (data: any) => {
+          console.log('Companies loaded:', data);
+          this.companies = data || [];
+          if (this.companies.length > 0) {
+            this.selectedCompanyId = this.companies[0].id;
+          }
+        },
+        error: (error) => {
+          console.error('Error loading companies:', error);
+          this.companies = [];
+        }
+      });
+  }
+
 
   onCancel(): void {
     this.dialogRef.close(false);
@@ -102,6 +132,7 @@ export class OrderConfirmReportModalComponent {
     let body = {
       ...this.orderForm.value,
       format: this.reportType,
+      companyId: this.selectedCompanyId,
       type,
       country
     };

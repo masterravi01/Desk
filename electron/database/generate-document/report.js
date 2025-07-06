@@ -309,7 +309,7 @@ function sampleBoxPriceToFree(sampleBox) {
   });
 }
 
-async function readInvoiceData(invoiceId, isCustom, country = "", document) {
+async function readInvoiceData(invoiceId, isCustom, country = "", document, companyId) {
   try {
     let {
       invoiceMaster = [],
@@ -318,7 +318,7 @@ async function readInvoiceData(invoiceId, isCustom, country = "", document) {
       finalInvoice = [],
       invoiceBottomNote = [],
     } = await getInvoice(invoiceId);
-    let companyData = await getCompany(1);
+    let companyData = await getCompany(companyId || 1);
     const master = invoiceMaster[0] || {};
     const final = finalInvoice[0] || {};
 
@@ -648,7 +648,7 @@ async function readInvoiceData(invoiceId, isCustom, country = "", document) {
       additionSumAmount: additionSumAmount,
 
       containerSummary,
-
+      companyData,
       bankName: companyData.bankName ?? "",
       bankBranch: companyData.bankAddressLine1 ?? "",
       bankCity: companyData.bankCity ?? "",
@@ -701,9 +701,9 @@ async function readInvoiceData(invoiceId, isCustom, country = "", document) {
 
 async function generateInvoiceDocument(body) {
   try {
-    const { invoiceId, format, type, document, country, finalInvoice } = body;
+    const { invoiceId, format, type, document, country, finalInvoice, companyId } = body;
     const isCustom = type === "custom";
-    let data = await readInvoiceData(invoiceId, isCustom, country, document);
+    let data = await readInvoiceData(invoiceId, isCustom, country, document, companyId);
 
     let template;
     let fileName = "output";
@@ -849,8 +849,8 @@ function toFixedToTwo(value) {
 
 async function generateOrderConfirmation(body) {
   try {
-    const { invoiceId, country, format, type, invoicePiNo } = body;
-    let data = await readInvoiceData(invoiceId, false, country);
+    const { invoiceId, country, format, type, invoicePiNo, companyId } = body;
+    let data = await readInvoiceData(invoiceId, false, country, undefined, companyId);
 
     let piID = cleanSlashes(invoicePiNo, "getLast");
     let template = "order-confirmation.docx";

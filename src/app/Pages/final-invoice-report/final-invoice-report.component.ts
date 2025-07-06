@@ -21,7 +21,7 @@ export class FinalInvoiceReportComponent {
     this.modalService.openModal(FinalInvoiceReportModalComponent, {
       data: {},
       width: '50%',
-      height: '50vh',
+      height: '60vh',
       position: {
         top: '80px',
       },

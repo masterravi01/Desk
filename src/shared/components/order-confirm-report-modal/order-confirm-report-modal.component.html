@@ -22,6 +22,21 @@
   >
     Select Invoice
   </button>
+  
+  <!-- Company Selection -->
+  <div style="margin: 20px 0px">
+    <mat-form-field appearance="outline" style="width: 100%;" floatLabel="always">
+      <mat-label>Select Company</mat-label>
+      <mat-select
+        [(ngModel)]="selectedCompanyId"
+        [disabled]="orderForm.disabled">
+        <mat-option *ngFor="let company of companies" [value]="company.id">
+          {{ company.companyName }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+  
   <table class="form-table">
     <tbody>
       <tr>
