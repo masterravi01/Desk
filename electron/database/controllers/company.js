@@ -25,8 +25,9 @@ function addCompany(company) {
       companyCode, companyName, entryDate, currencyCode, createdBy, remarks, isCurrentCompany,
       bankName, bankAddressLine1, bankAddressLine2, bankCity, bankPostalCode, bankCountry, swiftCode,
       accountNumber, additionalNumber, importExportCode, bankState, taxIdentificationNumber,
-      companyAddressLine1, companyAddressLine2, companyCity, companyPostalCode, companyCountry, companyState
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      companyAddressLine1, companyAddressLine2, companyCity, companyPostalCode, companyCountry, companyState,
+      telephone, email, website, remark2
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
   `;
     db.run(
       query,
@@ -56,6 +57,10 @@ function addCompany(company) {
         company.companyPostalCode ?? null,
         company.companyCountry ?? null,
         company.companyState ?? null,
+        company.telephone ?? null,
+        company.email ?? null,
+        company.website ?? null,
+        company.remark2 ?? null,
       ],
       function (err) {
         if (err) {
@@ -76,7 +81,8 @@ function updateCompany(company) {
       companyCode = ?, companyName = ?, entryDate = ?, currencyCode = ?, createdBy = ?, remarks = ?, isCurrentCompany = ?,
       bankName = ?, bankAddressLine1 = ?, bankAddressLine2 = ?, bankCity = ?, bankPostalCode = ?, bankCountry = ?, swiftCode = ?,
       accountNumber = ?, additionalNumber = ?, importExportCode = ?, bankState = ?, taxIdentificationNumber = ?,
-      companyAddressLine1 = ?, companyAddressLine2 = ?, companyCity = ?, companyPostalCode = ?, companyCountry = ?, companyState = ?
+      companyAddressLine1 = ?, companyAddressLine2 = ?, companyCity = ?, companyPostalCode = ?, companyCountry = ?, companyState = ?,
+      telephone = ?, email = ?, website = ?, remark2 = ?
     WHERE id = ?
   `;
     db.run(
@@ -107,6 +113,10 @@ function updateCompany(company) {
         company.companyPostalCode,
         company.companyCountry,
         company.companyState,
+        company.telephone,
+        company.email,
+        company.website,
+        company.remark2,
         company.id,
       ],
       function (err) {

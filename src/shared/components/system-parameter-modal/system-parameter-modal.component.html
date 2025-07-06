@@ -15,21 +15,28 @@
   <mat-tab label="Company Information">
     <div>
       <!-- Company Selection -->
-      <mat-card appearance="outlined" style="margin-bottom: 16px;">
+      <mat-card appearance="outlined" style="margin-bottom: 16px">
         <mat-card-content>
-          <div class="d-flex" style="align-items: center; gap: 16px;">
-            <div style="min-width: 350px;">
-              <mat-form-field appearance="outline" style="width: 350px;" floatLabel="always">
+          <div class="d-flex" style="align-items: center; gap: 16px">
+            <div style="min-width: 350px">
+              <mat-form-field
+                appearance="outline"
+                style="width: 350px"
+                floatLabel="always"
+              >
                 <mat-label>Select Company</mat-label>
                 <mat-select
                   [(value)]="selectedCompanyId"
-                  (selectionChange)="onCompanyChange($event.value)">
-                  <mat-option *ngFor="let company of companies" [value]="company.id">
+                  (selectionChange)="onCompanyChange($event.value)"
+                >
+                  <mat-option
+                    *ngFor="let company of companies"
+                    [value]="company.id"
+                  >
                     {{ company.companyName }}
                   </mat-option>
                 </mat-select>
               </mat-form-field>
-              
             </div>
             <button
               class="btn"
@@ -140,9 +147,51 @@
                       </div>
 
                       <div class="d-flex">
+                        <div class="label-cell">Website</div>
+                        <mat-form-field appearance="outline">
+                          <input matInput formControlName="website" />
+                        </mat-form-field>
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td class="input-cell" colspan="2">
+                    <div class="grid">
+                      <div class="d-flex">
+                        <div class="label-cell">Telephone</div>
+                        <mat-form-field appearance="outline">
+                          <input matInput formControlName="telephone" />
+                        </mat-form-field>
+                      </div>
+
+                      <div class="d-flex">
+                        <div class="label-cell">Email</div>
+                        <mat-form-field appearance="outline">
+                          <input
+                            matInput
+                            formControlName="email"
+                            type="email"
+                          />
+                        </mat-form-field>
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td class="input-cell" colspan="2">
+                    <div class="grid">
+                      <div class="d-flex">
                         <div class="label-cell">Remarks</div>
                         <mat-form-field appearance="outline">
                           <input matInput formControlName="remarks" />
+                        </mat-form-field>
+                      </div>
+
+                      <div class="d-flex">
+                        <div class="label-cell">Remark 2</div>
+                        <mat-form-field appearance="outline">
+                          <input matInput formControlName="remark2" />
                         </mat-form-field>
                       </div>
                     </div>

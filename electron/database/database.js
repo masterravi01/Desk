@@ -96,7 +96,7 @@ const migrations = [
     1, 'AL', 'ALFA ICA (I) LTD.', '08-11-0002', '$', 'admin', '', 0, 
     'STATE BANK OF INDIA', 'LAGHU UDYOG BRANCH', '', 'AHMEDABAD', '380014', 'INDIA', 
     'SBIN IN BB 598', '10204722953', '0020438-5700009', '0891012222', 'GUJARAT', 
-    'AABCA2800Q', 'ALFA PALAZZO', 'NR SHIVRANJANI X ROAD, SATELLITE', 
+    'AABCA2800Q', 'ALFA PALAZZO', 'NEAR SHIVRANJANI X ROAD, SATELLITE', 
     'AHMEDABAD', '380015', 'INDIA', 'GUJARAT'
   );
    `,
@@ -536,6 +536,16 @@ INSERT INTO finalinvoice (invoiceId, customerName, buyerName, buyerAddress, buye
     version: 15,
     description: "update invoice master",
     script: `ALTER TABLE invoiceMaster ADD specialInstruction TEXT DEFAULT NULL`,
+  },
+  {
+    version: 16,
+    description: "Add new fields to company table",
+    script: `
+      ALTER TABLE company ADD telephone TEXT DEFAULT NULL;
+      ALTER TABLE company ADD email TEXT DEFAULT NULL;
+      ALTER TABLE company ADD website TEXT DEFAULT NULL;
+      ALTER TABLE company ADD remark2 TEXT DEFAULT NULL;
+    `,
   },
 ];
 // db.run("DELETE FROM migrations WHERE version = ?", [13]);
