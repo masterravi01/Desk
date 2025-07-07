@@ -26,8 +26,8 @@ function addCompany(company) {
       bankName, bankAddressLine1, bankAddressLine2, bankCity, bankPostalCode, bankCountry, swiftCode,
       accountNumber, additionalNumber, importExportCode, bankState, taxIdentificationNumber,
       companyAddressLine1, companyAddressLine2, companyCity, companyPostalCode, companyCountry, companyState,
-      telephone, email, website, remark2
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      telephone, email, website, remark2, logoPath
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
   `;
     db.run(
       query,
@@ -61,6 +61,7 @@ function addCompany(company) {
         company.email ?? null,
         company.website ?? null,
         company.remark2 ?? null,
+        company.logoPath ?? null,
       ],
       function (err) {
         if (err) {
@@ -82,7 +83,7 @@ function updateCompany(company) {
       bankName = ?, bankAddressLine1 = ?, bankAddressLine2 = ?, bankCity = ?, bankPostalCode = ?, bankCountry = ?, swiftCode = ?,
       accountNumber = ?, additionalNumber = ?, importExportCode = ?, bankState = ?, taxIdentificationNumber = ?,
       companyAddressLine1 = ?, companyAddressLine2 = ?, companyCity = ?, companyPostalCode = ?, companyCountry = ?, companyState = ?,
-      telephone = ?, email = ?, website = ?, remark2 = ?
+      telephone = ?, email = ?, website = ?, remark2 = ?, logoPath = ?
     WHERE id = ?
   `;
     db.run(
@@ -117,6 +118,7 @@ function updateCompany(company) {
         company.email,
         company.website,
         company.remark2,
+        company.logoPath,
         company.id,
       ],
       function (err) {

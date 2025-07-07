@@ -197,6 +197,34 @@
                     </div>
                   </td>
                 </tr>
+                <tr>
+                  <td class="label-cell">
+                    <label>Company Logo</label>
+                  </td>
+                  <td class="input-cell">
+                    <div class="flex items-center gap-4">
+                      <button
+                        mat-raised-button
+                        color="primary"
+                        (click)="fileInput.click()"
+                        [disabled]="companyForm.disabled"
+                      >
+                        Choose Logo
+                      </button>
+                      <input
+                        type="file"
+                        #fileInput
+                        accept="image/*"
+                        (change)="onLogoSelected($event)"
+                        hidden
+                      />
+                    </div>
+
+                    <div *ngIf="logoPreview" class="logo-preview">
+                      <img [src]="logoPreview" alt="Company Logo" />
+                    </div>
+                  </td>
+                </tr>
               </tbody>
             </table>
           </mat-card-content>

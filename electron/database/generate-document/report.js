@@ -6,6 +6,7 @@ const libre = require("libreoffice-convert");
 const converter = require("number-to-words");
 const { exec } = require("child_process"); // Import the exec function from child_process
 libre.convertAsync = require("util").promisify(libre.convert);
+const ImageModule = require("docxtemplater-image-module-free");
 
 const db = require("../database");
 const { getInvoice } = require("../controllers/invoice");
@@ -309,7 +310,13 @@ function sampleBoxPriceToFree(sampleBox) {
   });
 }
 
-async function readInvoiceData(invoiceId, isCustom, country = "", document, companyId) {
+async function readInvoiceData(
+  invoiceId,
+  isCustom,
+  country = "",
+  document,
+  companyId
+) {
   try {
     let {
       invoiceMaster = [],
@@ -579,6 +586,10 @@ async function readInvoiceData(invoiceId, isCustom, country = "", document, comp
 
     sampleBoxPriceToFree(sampleBox);
 
+    companyData.logoPath = companyData.logoPath
+      ? path.join(__dirname, "../../../src/", companyData.logoPath)
+      : path.join(__dirname, "../../../src/assets/alfaica_logo1.png");
+
     let docData = {
       invoiceNo: final.finalInvoice ?? "",
       modifyInvNo: cleanSlashes(final.finalInvoice, "removeMiddle") ?? "",
@@ -701,9 +712,23 @@ async function readInvoiceData(invoiceId, isCustom, country = "", document, comp
 
 async function generateInvoiceDocument(body) {
   try {
-    const { invoiceId, format, type, document, country, finalInvoice, companyId } = body;
+    const {
+      invoiceId,
+      format,
+      type,
+      document,
+      country,
+      finalInvoice,
+      companyId,
+    } = body;
     const isCustom = type === "custom";
-    let data = await readInvoiceData(invoiceId, isCustom, country, document, companyId);
+    let data = await readInvoiceData(
+      invoiceId,
+      isCustom,
+      country,
+      document,
+      companyId
+    );
 
     let template;
     let fileName = "output";
@@ -752,38 +777,51 @@ async function generateInvoiceDocument(body) {
 
 async function generateWordDocument(data, template, fileName) {
   try {
-    // Load the template file
     const content = fs.readFileSync(
       path.join(__dirname, `./templates/${template}`),
       "binary"
     );
 
-    // Create a PizZip instance with the template content
     const zip = new PizZip(content);
 
-    // Initialize the docxtemplater with the zip file
+    // Path to your image (logo)
+    const imagePath =
+      data.companyData.logoPath ||
+      path.join(__dirname, "../../../src/assets/alfaica_logo1.png");
+
+    // Image module configuration
+    const imageOpts = {
+      getImage: function (tagValue, tagName) {
+        return fs.readFileSync(imagePath);
+      },
+      getSize: function (img, tagValue, tagName) {
+        return [80, 80]; // width, height in pixels
+      },
+    };
+
+    const imageModule = new ImageModule(imageOpts);
+
     const doc = new Docxtemplater(zip, {
       paragraphLoop: true,
       linebreaks: true,
+      modules: [imageModule],
     });
 
-    // Render the document by replacing placeholders with data
-    doc.render(data);
+    // You must pass the placeholder key as part of `data`
+    doc.render({ ...data, logo: "Logo" }); // "logo" is the placeholder
 
-    // Generate the output document
     const buf = doc.getZip().generate({
       type: "nodebuffer",
       compression: "DEFLATE",
     });
 
-    // Save the output document
     const outputPath = path.join(app.getPath("documents"), `${fileName}.docx`);
     fs.writeFileSync(outputPath, buf);
 
     console.log("Word document generated successfully!");
     return outputPath;
   } catch (error) {
-    console.log(error);
+    console.log("Docxtemplater Error: ", error);
     throw new Error(error.message);
   }
 }
@@ -850,7 +888,13 @@ function toFixedToTwo(value) {
 async function generateOrderConfirmation(body) {
   try {
     const { invoiceId, country, format, type, invoicePiNo, companyId } = body;
-    let data = await readInvoiceData(invoiceId, false, country, undefined, companyId);
+    let data = await readInvoiceData(
+      invoiceId,
+      false,
+      country,
+      undefined,
+      companyId
+    );
 
     let piID = cleanSlashes(invoicePiNo, "getLast");
     let template = "order-confirmation.docx";

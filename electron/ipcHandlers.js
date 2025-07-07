@@ -1,4 +1,6 @@
 const { ipcMain } = require("electron");
+const fs = require('fs');
+const path = require('path');
 
 const {
   getCompany,
@@ -231,6 +233,20 @@ function setupIpcHandlers() {
 
   ipcMain.handle("generateOrderConfirmation", async (event, body) => {
     return await generateOrderConfirmation(body);
+  });
+
+  // IPC handler to save image to src/assets
+  ipcMain.handle('saveImageToAssets', async (event, { fileName, base64Data }) => {
+    try {
+      const assetsPath = path.join(__dirname, '../src/assets', fileName);
+      // Remove the data URL prefix if present
+      const base64 = base64Data.replace(/^data:image\/[a-zA-Z]+;base64,/, '');
+      const buffer = Buffer.from(base64, 'base64');
+      fs.writeFileSync(assetsPath, buffer);
+      return { success: true, path: 'assets/' + fileName };
+    } catch (error) {
+      return { success: false, error: error.message };
+    }
   });
 }
 

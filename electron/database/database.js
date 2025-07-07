@@ -547,6 +547,13 @@ INSERT INTO finalinvoice (invoiceId, customerName, buyerName, buyerAddress, buye
       ALTER TABLE company ADD remark2 TEXT DEFAULT NULL;
     `,
   },
+  {
+    version: 17,
+    description: "Add logoPath to Company Table",
+    script: `
+      ALTER TABLE company ADD COLUMN logoPath TEXT DEFAULT NULL;
+    `,
+  },
 ];
 // db.run("DELETE FROM migrations WHERE version = ?", [13]);
 // db.run("ALTER TABLE invoiceMaster ADD transportationMode INTEGER DEFAULT NULL");
