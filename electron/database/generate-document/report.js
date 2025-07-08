@@ -585,10 +585,7 @@ async function readInvoiceData(
     }
 
     sampleBoxPriceToFree(sampleBox);
-
-    companyData.logoPath = companyData.logoPath
-      ? path.join(__dirname, "../../../src/", companyData.logoPath)
-      : path.join(__dirname, "../../../src/assets/alfaica_logo1.png");
+    companyData.logoPath = getLogoPath(companyData?.id);
 
     let docData = {
       invoiceNo: final.finalInvoice ?? "",
@@ -785,9 +782,7 @@ async function generateWordDocument(data, template, fileName) {
     const zip = new PizZip(content);
 
     // Path to your image (logo)
-    const imagePath =
-      data.companyData.logoPath ||
-      path.join(__dirname, "../../../src/assets/alfaica_logo1.png");
+    const imagePath = data.companyData.logoPath;
 
     // Image module configuration
     const imageOpts = {
@@ -981,6 +976,22 @@ function cleanSlashes(value, action) {
   return value;
 }
 
+function getLogoPath(id = 1) {
+  if (app.isPackaged) {
+    return path.join(
+      process.resourcesPath,
+      "assets",
+      id == 1 ? "alfa.png" : "toplam.png"
+    );
+  } else {
+    return path.join(
+      __dirname,
+      "../../../src/",
+      "assets",
+      id == 1 ? "alfa.png" : "toplam.png"
+    );
+  }
+}
 module.exports = {
   generateInvoiceDocument,
   generateOrderConfirmation,

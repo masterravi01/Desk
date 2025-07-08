@@ -1,6 +1,6 @@
 {
   "name": "alfa",
-  "version": "1.1.8",
+  "version": "1.3.1",
   "main": "electron/main.js",
   "author": "Master Ravi",
   "description": "this is desktop app",
@@ -22,6 +22,12 @@
       "dist/alfa/**/*",
       "electron/**/*",
       "package.json"
+    ],
+    "extraResources": [
+      {
+        "from": "src/assets",
+        "to": "assets"
+      }
     ],
     "asar": true,
     "win": {

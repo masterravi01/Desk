@@ -1,7 +1,7 @@
 const { ipcMain } = require("electron");
-const fs = require('fs');
-const path = require('path');
-
+const fs = require("fs");
+const path = require("path");
+const { app } = require("electron");
 const {
   getCompany,
   getAllCompanies,
@@ -235,18 +235,42 @@ function setupIpcHandlers() {
     return await generateOrderConfirmation(body);
   });
 
-  // IPC handler to save image to src/assets
-  ipcMain.handle('saveImageToAssets', async (event, { fileName, base64Data }) => {
-    try {
-      const assetsPath = path.join(__dirname, '../src/assets', fileName);
-      // Remove the data URL prefix if present
-      const base64 = base64Data.replace(/^data:image\/[a-zA-Z]+;base64,/, '');
-      const buffer = Buffer.from(base64, 'base64');
-      fs.writeFileSync(assetsPath, buffer);
-      return { success: true, path: 'assets/' + fileName };
-    } catch (error) {
-      return { success: false, error: error.message };
+  ipcMain.handle(
+    "saveImageToAssets",
+    async (event, { fileName, base64Data }) => {
+      try {
+        const userDataPath = app.getPath("userData");
+        const assetsPath = path.join(userDataPath, "assets");
+
+        // Ensure the directory exists
+        if (!fs.existsSync(assetsPath)) {
+          fs.mkdirSync(assetsPath, { recursive: true });
+        }
+
+        // Remove the data URL prefix if present
+        const base64 = base64Data.replace(/^data:image\/[a-zA-Z]+;base64,/, "");
+        const buffer = Buffer.from(base64, "base64");
+        const filePath = path.join(assetsPath, fileName);
+
+        fs.writeFileSync(filePath, buffer);
+
+        return { success: true, path: filePath };
+      } catch (error) {
+        return { success: false, error: error.message };
+      }
     }
+  );
+  ipcMain.handle("getLogoPath", (event, logoRelPath) => {
+    const fileName = logoRelPath || "alfa.png";
+    const baseAssetsPath = app.isPackaged
+      ? path.join(process.resourcesPath, "assets")
+      : path.join(__dirname, "../src/assets");
+
+    return {
+      resourcesPath: process.resourcesPath,
+      fileName,
+      joinpath: path.join(baseAssetsPath, fileName),
+    };
   });
 }
 

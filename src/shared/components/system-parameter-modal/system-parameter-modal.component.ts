@@ -13,7 +13,12 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatDividerModule } from '@angular/material/divider';
-import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import {
+  FormBuilder,
+  FormGroup,
+  FormsModule,
+  ReactiveFormsModule,
+} from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatOptionModule } from '@angular/material/core';
@@ -50,7 +55,7 @@ import { CommonModule } from '@angular/common';
     MatCardModule,
     TableComponent,
     FormsModule,
-    CommonModule
+    CommonModule,
   ],
   templateUrl: './system-parameter-modal.component.html',
   styleUrl: './system-parameter-modal.component.css',
@@ -64,14 +69,12 @@ export class SystemParameterModalComponent implements OnInit {
   parameters = new MatTableDataSource<any>([]);
   companies: any[] = [];
   selectedCompanyId: number | null = null;
-  logoPreview: string | ArrayBuffer | null = null;
-  logoFile: File | null = null;
 
   constructor(
     private modalService: ModalService,
     private fb: FormBuilder,
     private masterService: MasterService
-  ) { }
+  ) {}
 
   ngOnInit(): void {
     this.initForm();
@@ -111,7 +114,6 @@ export class SystemParameterModalComponent implements OnInit {
       additionalNumber: [''],
       importExportCode: [''],
       taxIdentificationNumber: [''],
-      logoPath: [''],
     });
   }
 
@@ -135,7 +137,7 @@ export class SystemParameterModalComponent implements OnInit {
         error: (error) => {
           console.error('Error loading companies:', error);
           this.companies = [];
-        }
+        },
       });
   }
 
@@ -144,10 +146,9 @@ export class SystemParameterModalComponent implements OnInit {
       .invoke('getCompany', companyId)
       .pipe(untilDestroyed(this))
       .subscribe((data: any) => {
+        console.log('Company data loaded:', data);
         if (data) {
           this.companyForm.patchValue(data);
-          // this.logoPreview = data.logoPath ? (data.logoPath.startsWith('assets/') ? data.logoPath : 'assets/' + data.logoPath) : null;
-          // console.log(this.logoPreview);
           this.companyForm.disable();
         }
       });
@@ -172,7 +173,7 @@ export class SystemParameterModalComponent implements OnInit {
     this.companyForm.patchValue({
       isCurrentCompany: 0,
       entryDate: new Date().toISOString().split('T')[0], // Today's date
-      createdBy: 'admin' // Default creator
+      createdBy: 'admin', // Default creator
     });
   }
 
@@ -219,59 +220,29 @@ export class SystemParameterModalComponent implements OnInit {
       });
   }
 
-  onLogoSelected(event: Event) {
-    const input = event.target as HTMLInputElement;
-    if (input.files && input.files[0]) {
-      this.logoFile = input.files[0];
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        this.logoPreview = e.target?.result ?? null;
-      };
-      reader.readAsDataURL(this.logoFile);
-    }
-  }
-
-  async onSave() {
+  onSave() {
     if (this.companyForm.disabled) {
       this.companyForm.enable();
     }
+
     const formValue = this.companyForm.value;
     const callUrl = formValue.id ? 'updateCompany' : 'addCompany';
-    // Handle logo upload
-    if (this.logoFile) {
-      const fileExt = this.logoFile.name.split('.').pop(); // Get file extension (e.g., jpg, png)
-      const fileName = `logo_${Date.now()}.${fileExt}`;
-      // Read the file as base64 and send to Electron
-      const base64Data = await new Promise<string>((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onload = () => resolve(reader.result as string);
-        reader.onerror = reject;
-        reader.readAsDataURL(this.logoFile!);
-      });
-      // Send to Electron via IPC
-      const result = await (window as any).electron.invoke('saveImageToAssets', { fileName, base64Data });
-      if (result.success) {
-        formValue.logoPath = result.path;
-      } else {
-        console.error('Error saving image:', result.error);
-        // Optionally show error to user
-        return;
-      }
-      this.logoPreview = null;
-    }
+
     this.masterService
       .invoke(callUrl, formValue)
       .pipe(untilDestroyed(this))
       .subscribe({
         next: (data: any) => {
-          this.loadCompanies();
+          console.log('Company saved:', data);
+          this.loadCompanies(); // Reload companies list
+          // If this was a new company, select it
           if (!formValue.id && data.id) {
             this.selectedCompanyId = data.id;
           }
         },
         error: (error) => {
           console.error('Error saving company:', error);
-        }
+        },
       });
   }
 }
