@@ -49,7 +49,7 @@ import { CommonModule } from '@angular/common';
     MatFormFieldModule,
     MatSelectModule,
     MatOptionModule,
-    CommonModule
+    CommonModule,
   ],
   templateUrl: './final-invoice-report-modal.component.html',
   styleUrl: './final-invoice-report-modal.component.css',
@@ -66,7 +66,7 @@ export class FinalInvoiceReportModalComponent {
     private modalService: ModalService,
     private fb: FormBuilder,
     private masterService: MasterService
-  ) { }
+  ) {}
 
   ngOnInit(): void {
     this.initForm();
@@ -80,6 +80,7 @@ export class FinalInvoiceReportModalComponent {
       customerName: [''],
       invoiceId: [''],
       finalInvoice: [''],
+      isSqMt: [false],
     });
   }
 
@@ -98,10 +99,9 @@ export class FinalInvoiceReportModalComponent {
         error: (error) => {
           console.error('Error loading companies:', error);
           this.companies = [];
-        }
+        },
       });
   }
-
 
   onCancel(): void {
     this.dialogRef.close(false);
@@ -139,10 +139,12 @@ export class FinalInvoiceReportModalComponent {
     this.invoiceForm.disable();
     this.masterService
       .invoke('generateInvoiceDocument', body)
-      .pipe(untilDestroyed(this),
+      .pipe(
+        untilDestroyed(this),
         finalize(() => {
           this.invoiceForm.enable();
-        }))
+        })
+      )
       .subscribe((data: any) => {
         console.log(data);
       });

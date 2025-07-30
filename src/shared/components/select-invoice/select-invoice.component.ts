@@ -148,6 +148,7 @@ export class SelectInvoiceComponent implements OnInit, AfterViewInit {
       status: row.status,
       totalAmount: row.totalAmount,
       netAmount: row.netAmount,
+      isSqMt: row?.calculationType === 'Per Sq. Mt',
     });
   }
   applyFilter(event: Event) {

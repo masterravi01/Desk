@@ -1,7 +1,4 @@
-import {
-  Component,
-  inject,
-} from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { finalize } from 'rxjs/operators';
 import {
   MAT_DIALOG_DATA,
@@ -27,14 +24,13 @@ import {
   FormGroup,
   ReactiveFormsModule,
   Validators,
-  FormsModule
+  FormsModule,
 } from '@angular/forms';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { SelectInvoiceComponent } from '../select-invoice/select-invoice.component';
 import { CommonModule } from '@angular/common';
 
 @UntilDestroy()
-
 @Component({
   selector: 'app-order-confirm-report-modal',
   standalone: true,
@@ -52,10 +48,10 @@ import { CommonModule } from '@angular/common';
     MatFormFieldModule,
     MatSelectModule,
     MatOptionModule,
-    CommonModule
+    CommonModule,
   ],
   templateUrl: './order-confirm-report-modal.component.html',
-  styleUrl: './order-confirm-report-modal.component.css'
+  styleUrl: './order-confirm-report-modal.component.css',
 })
 export class OrderConfirmReportModalComponent {
   readonly dialogRef = inject(MatDialogRef<OrderConfirmReportModalComponent>);
@@ -68,7 +64,7 @@ export class OrderConfirmReportModalComponent {
     private modalService: ModalService,
     private fb: FormBuilder,
     private masterService: MasterService
-  ) { }
+  ) {}
 
   ngOnInit(): void {
     this.initForm();
@@ -82,6 +78,7 @@ export class OrderConfirmReportModalComponent {
       customerName: [''],
       invoiceId: [''],
       invoicePiNo: [''],
+      isSqMt: [false],
     });
   }
 
@@ -100,10 +97,9 @@ export class OrderConfirmReportModalComponent {
         error: (error) => {
           console.error('Error loading companies:', error);
           this.companies = [];
-        }
+        },
       });
   }
-
 
   onCancel(): void {
     this.dialogRef.close(false);
@@ -127,27 +123,27 @@ export class OrderConfirmReportModalComponent {
       });
   }
 
-
   generateDocument(type: any, country?: any) {
     let body = {
       ...this.orderForm.value,
       format: this.reportType,
       companyId: this.selectedCompanyId,
       type,
-      country
+      country,
     };
     console.log(body);
     this.orderForm.disable();
 
     this.masterService
       .invoke('generateOrderConfirmation', body)
-      .pipe(untilDestroyed(this),
+      .pipe(
+        untilDestroyed(this),
         finalize(() => {
           this.orderForm.enable();
-        }))
+        })
+      )
       .subscribe((data: any) => {
         console.log(data);
       });
   }
-
 }

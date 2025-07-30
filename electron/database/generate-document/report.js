@@ -365,7 +365,11 @@ async function readInvoiceData(
 
       const quantity = Number(invoice?.quantity || 0);
       const rate = parseFloat(invoice?.rate || 0);
-      invoice.value = parseFloat(quantity * rate);
+      const squareMeter = Number(invoice?.squareMeter || 0);
+      invoice.value =
+        master.calculationType == "Per Sheet"
+          ? parseFloat(quantity * rate)
+          : parseFloat(squareMeter * rate);
 
       let addedToExistingGroup = false;
 
@@ -717,6 +721,7 @@ async function generateInvoiceDocument(body) {
       country,
       finalInvoice,
       companyId,
+      isSqMt,
     } = body;
     const isCustom = type === "custom";
     let data = await readInvoiceData(
@@ -742,7 +747,7 @@ async function generateInvoiceDocument(body) {
         } else if (country == "aus") {
           template = "party-invoice-aus.docx";
         } else {
-          template = "party-invoice.docx";
+          template = isSqMt ? "party-invoice-sq-mt.docx" : "party-invoice.docx";
         }
         fileName = `INV ${invID} (party)`;
       }
@@ -882,7 +887,8 @@ function toFixedToTwo(value) {
 
 async function generateOrderConfirmation(body) {
   try {
-    const { invoiceId, country, format, type, invoicePiNo, companyId } = body;
+    const { invoiceId, country, format, type, invoicePiNo, companyId, isSqMt } =
+      body;
     let data = await readInvoiceData(
       invoiceId,
       false,
@@ -905,7 +911,9 @@ async function generateOrderConfirmation(body) {
       if (country == "aus") {
         template = "order-confirmation-aus.docx";
       } else {
-        template = "order-confirmation.docx";
+        template = isSqMt
+          ? "order-confirmation-sq-mt.docx"
+          : "order-confirmation.docx";
       }
     }
 
