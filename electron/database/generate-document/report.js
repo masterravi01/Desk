@@ -667,6 +667,9 @@ async function readInvoiceData(
       swiftNumber: companyData.swiftCode ?? "",
       bankAddress: companyData.bankAddressLine1 ?? "",
 
+      notifyName: final?.bankName ?? "",
+      notifyAddress: final?.bankAddress ?? "",
+
       bNameOC: master.bankName ?? "",
       bBranchOC: master.bankBranch ?? "",
       bAddressOC: master.bankAddress ?? "",
