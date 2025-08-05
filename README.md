@@ -37,3 +37,56 @@ To run electron app run below command in root directory
 
 Need to download libre office software in the system
 Window OS - https://www.libreoffice.org/donate/dl/win-x86_64/25.2.1/en-US/LibreOffice_25.2.1_Win_x86-64.msi
+
+# 🚀 Release Build Steps
+
+## 1. Draft a New Release on GitHub
+
+- Visit: [https://github.com/masterravi01/Desk/releases](https://github.com/masterravi01/Desk/releases)
+- Click on **"Draft a new release"**
+- Set the **tag** and **release title** to the next version from `package.json`
+  - Example:
+    - If current version is `"version": "1.3.2"`, then set **1.3.3**
+- Click **Publish release**
+
+---
+
+## 2. Update Local Project Version and Create Package
+
+- Open `package.json` and update the version field:
+  ```json
+  "version": "1.3.3"
+  Run the packaging script:
+  ```
+
+bash
+Copy
+Edit
+npm run package
+This will create a new folder called release-builds/
+
+3. Rename Generated Files
+   In the release-builds/ folder:
+
+Rename the following files:
+
+nginx
+Copy
+Edit
+Alfa Setup 1.3.3.exe → Alfa-Setup-1.3.3.exe
+Alfa Setup 1.3.3.exe.blockmap → Alfa-Setup-1.3.3.exe.blockmap
+⚠️ Make sure to replace spaces (" ") with dashes ("-") in the filenames.
+
+4. Upload Files to GitHub Release
+   Visit: https://github.com/masterravi01/Desk/releases/edit/1.3.3
+
+Upload the renamed files from release-builds/
+
+❌ Do NOT upload the win-unpacked folder
+
+Click Update release
+
+✅ Result
+Users on client machines will now see a notification:
+
+"New update is available"
