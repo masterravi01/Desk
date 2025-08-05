@@ -176,15 +176,15 @@ export class OrderConfirmModalComponent implements OnInit {
       discountType === 'percentage'
         ? (finalAmount * discountValue) / 100
         : discountType === 'flat'
-          ? discountValue
-          : 0;
+        ? discountValue
+        : 0;
 
     const totalAddition =
       additionalChargeType === 'percentage'
         ? (finalAmount * additionalChargeValue) / 100
         : additionalChargeType === 'flat'
-          ? additionalChargeValue
-          : 0;
+        ? additionalChargeValue
+        : 0;
 
     finalAmount = finalAmount - totalDiscount + totalAddition;
 
@@ -212,7 +212,7 @@ export class OrderConfirmModalComponent implements OnInit {
     private masterService: MasterService,
     private invoiceDetailsService: InvoiceDetailsService,
     private _snackBar: SnackbarService
-  ) { }
+  ) {}
 
   ngOnInit(): void {
     this.instructions = [];
@@ -306,7 +306,9 @@ export class OrderConfirmModalComponent implements OnInit {
       materialGrade: [''],
       brandName: [''],
       finishType: [''],
-      thicknessDetail: ['Single Side'],
+      thicknessDetail: [
+        this.invoiceDetailsForm?.get('thicknessDetail')?.value ?? 'Single Side',
+      ],
       quantity: [0, Validators.required],
       rate: [0, Validators.required],
       remarks: [''],
@@ -679,9 +681,9 @@ export class OrderConfirmModalComponent implements OnInit {
       ?.setValue(
         this.invoiceForm.get('invoiceDate')?.value
           ? new DatePipe('en-US').transform(
-            new Date(this.invoiceForm.get('invoiceDate')?.value),
-            'yyyy-MM-dd'
-          )
+              new Date(this.invoiceForm.get('invoiceDate')?.value),
+              'yyyy-MM-dd'
+            )
           : ''
       );
 
