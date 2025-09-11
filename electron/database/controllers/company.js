@@ -26,7 +26,7 @@ function addCompany(company) {
       bankName, bankAddressLine1, bankAddressLine2, bankCity, bankPostalCode, bankCountry, swiftCode,
       accountNumber, additionalNumber, importExportCode, bankState, taxIdentificationNumber,
       companyAddressLine1, companyAddressLine2, companyCity, companyPostalCode, companyCountry, companyState,
-      telephone, email, website, remark2, logoPath
+      telephone, email, website, remark2, signPerson, logoPath
     ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
   `;
     db.run(
@@ -61,6 +61,7 @@ function addCompany(company) {
         company.email ?? null,
         company.website ?? null,
         company.remark2 ?? null,
+        company.signPerson ?? null,
         company.logoPath ?? null,
       ],
       function (err) {
@@ -83,7 +84,7 @@ function updateCompany(company) {
       bankName = ?, bankAddressLine1 = ?, bankAddressLine2 = ?, bankCity = ?, bankPostalCode = ?, bankCountry = ?, swiftCode = ?,
       accountNumber = ?, additionalNumber = ?, importExportCode = ?, bankState = ?, taxIdentificationNumber = ?,
       companyAddressLine1 = ?, companyAddressLine2 = ?, companyCity = ?, companyPostalCode = ?, companyCountry = ?, companyState = ?,
-      telephone = ?, email = ?, website = ?, remark2 = ?, logoPath = ?
+      telephone = ?, email = ?, website = ?, remark2 = ?, signPerson = ?, logoPath = ?
     WHERE id = ?
   `;
     db.run(
@@ -118,6 +119,7 @@ function updateCompany(company) {
         company.email,
         company.website,
         company.remark2,
+        company.signPerson,
         company.logoPath,
         company.id,
       ],
@@ -138,4 +140,10 @@ function deleteCompany(id) {
   });
 }
 
-module.exports = { getCompany, getAllCompanies, addCompany, updateCompany, deleteCompany };
+module.exports = {
+  getCompany,
+  getAllCompanies,
+  addCompany,
+  updateCompany,
+  deleteCompany,
+};

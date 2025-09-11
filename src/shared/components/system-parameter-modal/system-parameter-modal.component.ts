@@ -74,7 +74,7 @@ export class SystemParameterModalComponent implements OnInit {
     private modalService: ModalService,
     private fb: FormBuilder,
     private masterService: MasterService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.initForm();
@@ -101,6 +101,7 @@ export class SystemParameterModalComponent implements OnInit {
       telephone: [''],
       email: [''],
       website: [''],
+      signPerson: [''],
       remark2: [''],
       bankName: [''],
       bankAddressLine1: [''],
