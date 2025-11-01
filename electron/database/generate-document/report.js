@@ -120,7 +120,8 @@ function modifyCustomInvoiceData(
         item.isLast = true;
         if (
           country === "aus" ||
-          customer?.name?.trim() === "FOREST ONE AUSTRALIA PTY LTD"
+          customer?.name?.trim() === "FOREST ONE AUSTRALIA PTY LTD" ||
+          customer?.name?.trim() === "NEWZEALAND WOOD PRODUCTS LTD"
         ) {
           item.commision = toFixedToTwo(
             Number(master.totalAmount ?? "0") * 0.05
@@ -557,7 +558,8 @@ async function readInvoiceData(
 
     if (
       country === "aus" ||
-      customer?.name?.trim() === "FOREST ONE AUSTRALIA PTY LTD"
+      customer?.name?.trim() === "FOREST ONE AUSTRALIA PTY LTD" ||
+      customer?.name?.trim() === "NEWZEALAND WOOD PRODUCTS LTD"
     ) {
       [totalNetWeight, totalGrossWeight] = AusNzPackingListRoundOf(
         totalNetWeight,
