@@ -525,6 +525,34 @@ export class OrderConfirmModalComponent implements OnInit {
         }
       });
   }
+  openImportModal() {
+    this.modalService
+      .openModal(SelectInvoiceComponent, {
+        data: { final: false },
+        width: '80%',
+        height: '90%',
+      })
+      .afterClosed()
+      .subscribe((result) => {
+        if (result && result.invoiceId) {
+          console.log(result);
+          this.masterService
+            .invoke('getInvoice', result.invoiceId)
+            .pipe(untilDestroyed(this))
+            .subscribe((data: any) => {
+              console.log(data);
+              data.invoiceDetails.forEach((inv: any) => {
+                inv.invoiceDetailId = '';
+                inv.invoiceId = this.invoiceForm.get('invoiceId')?.value;
+                inv.customerId = this.invoiceForm.get('customerId')?.value;
+              });
+
+              console.log(data);
+              this.boxes.set(data.invoiceDetails);
+            });
+        }
+      });
+  }
   openCustomerModal() {
     this.modalService
       .openModal(SelectCustomerComponent, {

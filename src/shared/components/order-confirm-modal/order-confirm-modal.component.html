@@ -1,12 +1,6 @@
 <div class="d-flex">
   <h5 mat-dialog-title class="h5">Invoice</h5>
-  <button
-    class="btn"
-    mat-button
-    (click)="onCancel()"
-    tabindex="-1"
-    style="margin-top: 14px; margin-right: 0"
-  >
+  <button class="btn" mat-button (click)="onCancel()" tabindex="-1" style="margin-top: 14px; margin-right: 0">
     ❌
   </button>
 </div>
@@ -29,17 +23,10 @@
                 <div class="d-flex">
                   <div class="label-cell">Date</div>
                   <mat-form-field appearance="outline">
-                    <input
-                      matInput
-                      formControlName="invoiceDate"
-                      [matDatepicker]="picker"
-                    />
+                    <input matInput formControlName="invoiceDate" [matDatepicker]="picker" />
 
-                    <mat-datepicker-toggle
-                      matIconSuffix
-                      [for]="picker"
-                      style="position: relative; top: -14px"
-                    ></mat-datepicker-toggle>
+                    <mat-datepicker-toggle matIconSuffix [for]="picker"
+                      style="position: relative; top: -14px"></mat-datepicker-toggle>
                     <mat-datepicker #picker></mat-datepicker>
                   </mat-form-field>
                 </div>
@@ -70,24 +57,16 @@
               <label>Customer Name</label>
             </td>
             <td class="input-cell">
-              <div
-                class="grid"
-                style="
+              <div class="grid" style="
                   display: grid;
                   grid-template-columns: calc(70% - 8px) calc(30% - 8px);
                   gap: 16px;
-                "
-              >
+                ">
                 <mat-form-field appearance="outline">
                   <input matInput formControlName="customerName" />
                 </mat-form-field>
-                <button
-                  class="btn"
-                  mat-raised-button
-                  style="height: 32px"
-                  [disabled]="invoiceForm.disabled"
-                  (click)="openCustomerModal()"
-                >
+                <button class="btn" mat-raised-button style="height: 32px" [disabled]="invoiceForm.disabled"
+                  (click)="openCustomerModal()">
                   Select Customer
                 </button>
               </div>
@@ -110,13 +89,8 @@
                 </td>
                 <td class="input-cell">
                   <mat-form-field appearance="outline" class="full-width">
-                    <textarea
-                      matInput
-                      rows="2"
-                      formControlName="customerAddress"
-                      cdkTextareaAutosize
-                      cdkAutosizeMinRows="2"
-                    ></textarea>
+                    <textarea matInput rows="2" formControlName="customerAddress" cdkTextareaAutosize
+                      cdkAutosizeMinRows="2"></textarea>
                   </mat-form-field>
                 </td>
               </tr>
@@ -173,13 +147,8 @@
                 </td>
                 <td class="input-cell">
                   <mat-form-field appearance="outline" class="full-width">
-                    <textarea
-                      matInput
-                      rows="2"
-                      formControlName="buyerAddress"
-                      cdkTextareaAutosize
-                      cdkAutosizeMinRows="2"
-                    ></textarea>
+                    <textarea matInput rows="2" formControlName="buyerAddress" cdkTextareaAutosize
+                      cdkAutosizeMinRows="2"></textarea>
                   </mat-form-field>
                 </td>
               </tr>
@@ -235,31 +204,21 @@
                 <div class="d-flex" [formGroup]="calculationForm">
                   <div class="label-cell">
                     Rate Calculation Base
-                    <mat-radio-group
-                      aria-label="Select an option"
-                      formControlName="calculationType"
-                    >
-                      <mat-radio-button value="Per Sq. Mt"
-                        >Per Sq. Mt</mat-radio-button
-                      >
-                      <mat-radio-button value="Per Sheet"
-                        >Per Sheet</mat-radio-button
-                      >
+                    <mat-radio-group aria-label="Select an option" formControlName="calculationType">
+                      <mat-radio-button value="Per Sq. Mt">Per Sq. Mt</mat-radio-button>
+                      <mat-radio-button value="Per Sheet">Per Sheet</mat-radio-button>
                     </mat-radio-group>
                   </div>
                 </div>
 
                 <div class="d-flex">
                   <div class="label-cell">Currency</div>
-                  <select
-                    style="
+                  <select style="
                       background: #fff;
                       height: 32px;
                       width: 100%;
                       border-radius: 4px;
-                    "
-                    formControlName="currency"
-                  >
+                    " formControlName="currency">
                     @for (cur of currencies; track cur) {
                     <option [value]="cur.currencyName">
                       {{ cur.currencyChar }}
@@ -277,25 +236,19 @@
     <ng-container *ngTemplateOutlet="bottomButtons"></ng-container>
   </mat-tab>
   <mat-tab label="Item Details" [formGroup]="invoiceDetailsForm">
-    <div
-      class="item-details grid"
-      style="
+    <div class="item-details grid" style="
         grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
         gap: 0 8px;
         margin: 0 20px;
-      "
-    >
+      ">
       <div class="form-field">
         <label class="label">Container Type</label>
-        <select
-          style="
+        <select style="
             background: #fff;
             height: 32px;
             border-radius: 4px;
             min-width: 100px;
-          "
-          formControlName="containerType"
-        >
+          " formControlName="containerType">
           @for (c of containers; track c) {
           <option [value]="c.containerName">
             {{ c.containerName }}
@@ -365,15 +318,12 @@
       </div>
       <div class="form-field">
         <label class="label">Description:</label>
-        <select
-          style="
+        <select style="
             background: #fff;
             height: 32px;
             border-radius: 4px;
             min-width: 100px;
-          "
-          formControlName="thicknessDetail"
-        >
+          " formControlName="thicknessDetail">
           <option value="Single Side">Single Side</option>
           <option value="Double Side">Double Side</option>
         </select>
@@ -398,25 +348,15 @@
       </div>
       <div class="form-field">
         <label class="label">&nbsp;</label>
-        <button
-          class="btn"
-          mat-raised-button
-          style="height: 32px"
-          [disabled]="invoiceDetailsForm.disabled || invoiceDetailsForm.invalid"
-          (click)="addDetailsToTable()"
-        >
+        <button class="btn" mat-raised-button style="height: 32px"
+          [disabled]="invoiceDetailsForm.disabled || invoiceDetailsForm.invalid" (click)="addDetailsToTable()">
           Add
         </button>
       </div>
 
       <div class="form-field">
         <label class="label">&nbsp;</label>
-        <button
-          class="btn"
-          mat-raised-button
-          style="height: 32px"
-          (click)="initInvoiceDetailsForm()"
-        >
+        <button class="btn" mat-raised-button style="height: 32px" (click)="initInvoiceDetailsForm()">
           Clear
         </button>
       </div>
@@ -425,69 +365,47 @@
       </div>
       <div class="form-field">
         <label class="label">&nbsp;</label>
-        <button
-          class="btn"
-          mat-raised-button
-          style="height: 32px; padding: 0"
-          (click)="moveUp()"
-        >
+        <button class="btn" mat-raised-button style="height: 32px; padding: 0" (click)="moveUp()">
           Move Up
         </button>
       </div>
       <div class="form-field">
         <label class="label">&nbsp;</label>
-        <button
-          class="btn"
-          mat-raised-button
-          style="height: 32px; padding: 0"
-          (click)="moveDown()"
-        >
+        <button class="btn" mat-raised-button style="height: 32px; padding: 0" (click)="moveDown()">
           Move Down
         </button>
       </div>
       <div class="form-field">
         <label class="label">&nbsp;</label>
-        <button
-          class="btn"
-          mat-raised-button
-          style="height: 32px"
-          (click)="copyValue()"
-        >
+        <button class="btn" mat-raised-button style="height: 32px" (click)="copyValue()">
           Copy
         </button>
       </div>
       <div class="form-field">
         <label class="label">&nbsp;</label>
-        <button
-          class="btn"
-          mat-raised-button
-          style="height: 32px"
-          (click)="deleteRow()"
-        >
+        <button class="btn" mat-raised-button style="height: 32px" (click)="deleteRow()">
           Delete
+        </button>
+      </div>
+      <div class="form-field">
+        <label class="label">&nbsp;</label>
+      </div>
+      <div class="form-field">
+        <label class="label">&nbsp;</label>
+        <button class="btn" mat-raised-button style="height: 32px" (click)="openImportModal()">
+          Import
         </button>
       </div>
     </div>
     <div class="table-container" style="margin-top: 16px; min-height: 200px">
-      <table
-        mat-table
-        [dataSource]="boxes()"
-        class="mat-elevation-z8 small-table"
-      >
-        <ng-container
-          *ngFor="let column of displayedColumns"
-          [matColumnDef]="column"
-        >
+      <table mat-table [dataSource]="boxes()" class="mat-elevation-z8 small-table">
+        <ng-container *ngFor="let column of displayedColumns" [matColumnDef]="column">
           <th mat-header-cell *matHeaderCellDef>
             {{ columnHeaderMap[column] || column | titlecase }}
           </th>
           <td mat-cell *matCellDef="let element; let rowIndex = index">
             @if(selectedIndex === rowIndex){ @if(column==='containerType'){
-            <select
-              style="background: #fff"
-              [(ngModel)]="element[column]"
-              [ngModelOptions]="{ standalone: true }"
-            >
+            <select style="background: #fff" [(ngModel)]="element[column]" [ngModelOptions]="{ standalone: true }">
               @for (c of containers; track c) {
               <option [value]="c.containerName">
                 {{ c.containerName }}
@@ -495,64 +413,38 @@
               }
             </select>
             }@else if(column==='thicknessDetail') {
-            <select
-              style="background: #fff"
-              [(ngModel)]="element[column]"
-              [ngModelOptions]="{ standalone: true }"
-            >
+            <select style="background: #fff" [(ngModel)]="element[column]" [ngModelOptions]="{ standalone: true }">
               <option value="Single Side">Single Side</option>
               <option value="Double Side">Double Side</option>
             </select>
             }@else if(column === 'length' || column === 'width'||
             column==='quantity' ){
-            <input
-              matInput
-              type="number"
-              [(ngModel)]="element[column]"
-              [ngModelOptions]="{ standalone: true }"
-              (ngModelChange)="updateSquareMeter(rowIndex)"
-            />
+            <input matInput type="number" [(ngModel)]="element[column]" [ngModelOptions]="{ standalone: true }"
+              (ngModelChange)="updateSquareMeter(rowIndex)" />
             }@else {
-            <input
-              matInput
-              [(ngModel)]="element[column]"
-              [ngModelOptions]="{ standalone: true }"
-            />
+            <input matInput [(ngModel)]="element[column]" [ngModelOptions]="{ standalone: true }" />
             } }@else {
             {{ element[column] }}
             }
           </td>
         </ng-container>
 
-        <tr
-          mat-header-row
-          *matHeaderRowDef="displayedColumns; sticky: true"
-        ></tr>
+        <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
 
-        <tr
-          mat-row
-          *matRowDef="let row; let i = index; columns: displayedColumns"
-          (click)="onRowClick(i)"
-          [ngClass]="{ highlighted: selectedIndex === i }"
-        ></tr>
+        <tr mat-row *matRowDef="let row; let i = index; columns: displayedColumns" (click)="onRowClick(i)"
+          [ngClass]="{ highlighted: selectedIndex === i }"></tr>
       </table>
     </div>
     <ng-container [formGroup]="invoiceForm">
-      <div
-        class="d-flex"
-        style="justify-content: start; margin: 20px 20px 0 20px"
-      >
+      <div class="d-flex" style="justify-content: start; margin: 20px 20px 0 20px">
         <div class="d-flex" [formGroup]="calculationForm">
           <div class="label-cell">Discount</div>
-          <select
-            style="
+          <select style="
               background: #fff;
               height: 32px;
               min-width: 200px;
               border-radius: 4px;
-            "
-            formControlName="discountType"
-          >
+            " formControlName="discountType">
             <option value="">None</option>
             <option value="flat">Flat</option>
             <option value="percentage">Percentage</option>
@@ -561,21 +453,14 @@
             <input matInput formControlName="discountValue" />
           </mat-form-field>
         </div>
-        <div
-          class="d-flex"
-          style="margin-left: 8px"
-          [formGroup]="calculationForm"
-        >
+        <div class="d-flex" style="margin-left: 8px" [formGroup]="calculationForm">
           <div class="label-cell">Addition</div>
-          <select
-            style="
+          <select style="
               background: #fff;
               height: 32px;
               min-width: 200px;
               border-radius: 4px;
-            "
-            formControlName="additionalChargeType"
-          >
+            " formControlName="additionalChargeType">
             <option value="">None</option>
             <option value="flat">Flat</option>
             <option value="percentage">Percentage</option>
@@ -590,8 +475,7 @@
             {{ totalQuantity() }}
           </div>
           <div class="label-cell" style="margin-left: 20px">
-            <span style="font-weight: 600; margin-right: 2px"> Total SqMt:</span
-            >{{ totalSquareMeters() }}
+            <span style="font-weight: 600; margin-right: 2px"> Total SqMt:</span>{{ totalSquareMeters() }}
           </div>
         </div>
       </div>
@@ -616,8 +500,8 @@
                 <label class="label">Total Amount</label>
                 <div>
                   {{
-                    (invoiceForm.get("netAmount")?.value || 0) -
-                      (invoiceForm.get("rounding")?.value || 0)
+                  (invoiceForm.get("netAmount")?.value || 0) -
+                  (invoiceForm.get("rounding")?.value || 0)
                   }}
                 </div>
               </td>
@@ -674,15 +558,12 @@
               <td class="input-cell" colspan="2">
                 <div class="d-flex">
                   <div class="label-cell">Delivery Term</div>
-                  <select
-                    style="
+                  <select style="
                       background: #fff;
                       height: 32px;
                       width: 100%;
                       border-radius: 4px;
-                    "
-                    formControlName="deliveryTerms"
-                  >
+                    " formControlName="deliveryTerms">
                     <option value="FOB">FOB</option>
                     <option value="CFR">CFR</option>
                     <option value="CIF">CIF</option>
@@ -746,15 +627,12 @@
               <td class="input-cell" colspan="2">
                 <div class="d-flex">
                   <div class="label-cell">Transportation Mode</div>
-                  <select
-                    style="
+                  <select style="
                       background: #fff;
                       height: 32px;
                       width: 100%;
                       border-radius: 4px;
-                    "
-                    formControlName="transportationMode"
-                  >
+                    " formControlName="transportationMode">
                     <option value="Sea">Sea</option>
                     <option value="Air">Air</option>
                   </select>
@@ -815,13 +693,8 @@
                 <div class="d-flex">
                   <div class="label-cell">Address</div>
                   <mat-form-field appearance="outline" class="full-width">
-                    <textarea
-                      matInput
-                      rows="2"
-                      formControlName="bankAddress"
-                      cdkTextareaAutosize
-                      cdkAutosizeMinRows="2"
-                    ></textarea>
+                    <textarea matInput rows="2" formControlName="bankAddress" cdkTextareaAutosize
+                      cdkAutosizeMinRows="2"></textarea>
                   </mat-form-field>
                 </div>
               </td>
@@ -852,29 +725,16 @@
 
       <h3 class="section-title h3" style="margin-top: 20px">Instrutions</h3>
       <div class="d-flex">
-        <button
-          mat-raised-button
-          style="height: 32px"
-          [disabled]="invoiceForm.disabled"
-          (click)="openInstructionModal()"
-        >
+        <button mat-raised-button style="height: 32px" [disabled]="invoiceForm.disabled"
+          (click)="openInstructionModal()">
           Select Instrutions
         </button>
-        <button
-          mat-raised-button
-          style="height: 32px"
-          [disabled]="invoiceForm.disabled"
-          (click)="deleteInstruction()"
-        >
+        <button mat-raised-button style="height: 32px" [disabled]="invoiceForm.disabled" (click)="deleteInstruction()">
           Delete
         </button>
       </div>
       <div style="max-height: 200px; margin-top: 8px; overflow-y: auto">
-        <table
-          mat-table
-          [dataSource]="instructions"
-          class="mat-elevation-z8 table"
-        >
+        <table mat-table [dataSource]="instructions" class="mat-elevation-z8 table">
           <ng-contaier matColumnDef="instructionId">
             <th mat-header-cell *matHeaderCellDef>ID</th>
             <td mat-cell *matCellDef="let element" style="cursor: pointer">
@@ -883,41 +743,24 @@
           </ng-contaier>
           <ng-contaier matColumnDef="invoiceInstruction">
             <th mat-header-cell *matHeaderCellDef>Instructions</th>
-            <td
-              mat-cell
-              *matCellDef="let element; let rowIndex = index"
-              style="cursor: pointer"
-            >
+            <td mat-cell *matCellDef="let element; let rowIndex = index" style="cursor: pointer">
               @if(selectedIntructionIndex === rowIndex){
-              <textarea
-                matInput
-                rows="2"
-                [(ngModel)]="element.invoiceInstruction"
-                [ngModelOptions]="{ standalone: true }"
-                cdkTextareaAutosize
-                cdkAutosizeMinRows="1"
-                style="width: 100%"
-              ></textarea>
+              <textarea matInput rows="2" [(ngModel)]="element.invoiceInstruction"
+                [ngModelOptions]="{ standalone: true }" cdkTextareaAutosize cdkAutosizeMinRows="1"
+                style="width: 100%"></textarea>
               }@else {
               {{ element.invoiceInstruction || "-" }}
               }
             </td>
           </ng-contaier>
           <!-- Use 'displayedColumns' for consistency -->
-          <tr
-            mat-header-row
-            *matHeaderRowDef="['instructionId', 'invoiceInstruction']"
-          ></tr>
-          <tr
-            (click)="selectRowInstruction(i)"
-            mat-row
-            [ngClass]="{ highlighted: selectedIntructionIndex === i }"
+          <tr mat-header-row *matHeaderRowDef="['instructionId', 'invoiceInstruction']"></tr>
+          <tr (click)="selectRowInstruction(i)" mat-row [ngClass]="{ highlighted: selectedIntructionIndex === i }"
             *matRowDef="
               let row;
               let i = index;
               columns: ['instructionId', 'invoiceInstruction']
-            "
-          ></tr>
+            "></tr>
         </table>
       </div>
       <mat-divider></mat-divider>
@@ -926,44 +769,23 @@
   </mat-tab>
 </mat-tab-group>
 <ng-template #bottomButtons>
-  <div
-    class="d-flex"
-    style="justify-content: center; margin-top: 20px; margin-bottom: 10px"
-  >
+  <div class="d-flex" style="justify-content: center; margin-top: 20px; margin-bottom: 10px">
     <button class="btn" mat-raised-button (click)="clearData()">New</button>
-    <button
-      class="btn"
-      mat-raised-button
-      [disabled]="invoiceForm.disabled || invoiceForm.invalid"
-      (click)="onSave(true)"
-    >
+    <button class="btn" mat-raised-button [disabled]="invoiceForm.disabled || invoiceForm.invalid"
+      (click)="onSave(true)">
       Add
     </button>
     <button class="btn" mat-raised-button (click)="openSelectModal()">
       Select
     </button>
-    <button
-      class="btn"
-      mat-raised-button
-      [disabled]="invoiceForm.disabled || invoiceForm.invalid"
-      (click)="onSave()"
-    >
+    <button class="btn" mat-raised-button [disabled]="invoiceForm.disabled || invoiceForm.invalid" (click)="onSave()">
       Save
     </button>
-    <button
-      class="btn"
-      mat-raised-button
-      [disabled]="!invoiceForm.get('invoiceId')?.value"
-      (click)="onDelete()"
-    >
+    <button class="btn" mat-raised-button [disabled]="!invoiceForm.get('invoiceId')?.value" (click)="onDelete()">
       Delete
     </button>
-    <button
-      class="btn"
-      mat-raised-button
-      (click)="clearData()"
-      [disabled]="invoiceForm.disabled || invoiceDetailsForm.disabled"
-    >
+    <button class="btn" mat-raised-button (click)="clearData()"
+      [disabled]="invoiceForm.disabled || invoiceDetailsForm.disabled">
       Clear
     </button>
   </div>

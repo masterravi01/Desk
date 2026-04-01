@@ -53,7 +53,7 @@ function deleteInstruction(Instruction) {
 function getInstructionsByCustomer(customerId) {
   return new Promise((resolve, reject) => {
     const query = `
-  SELECT ii.instructionId, ii.invoiceInstruction
+  SELECT DISTINCT ii.instructionId, ii.invoiceInstruction
   FROM invoiceInstruction ii
   JOIN (
       SELECT invoiceId
