@@ -677,3 +677,27 @@
 2025-07-08 18:50:41 [INFO]: 🔗 Foreign Key support enabled.
 2025-07-08 19:19:30 [INFO]: ✅ Connected to SQLite Database at: C:\Users\Harun\AppData\Roaming\alfa\database.sqlite
 2025-07-08 19:19:30 [INFO]: 🔗 Foreign Key support enabled.
+2026-03-31 12:55:57 [INFO]: ✅ Connected to SQLite Database at: C:\Users\Admin\AppData\Roaming\alfa\database.sqlite
+2026-03-31 12:56:00 [INFO]: 🔗 Foreign Key support enabled.
+2026-03-31 12:56:01 [INFO]: ✅ Migration 1: Create BottomNote Table
+2026-03-31 12:56:01 [INFO]: ✅ Migration 2: Create Company Table
+2026-03-31 12:56:01 [INFO]: ✅ Migration 3: Create Containers Table
+2026-03-31 12:56:01 [INFO]: ✅ Migration 4: Create Currency Table
+2026-03-31 12:56:01 [INFO]: ✅ Migration 5: Create System Parameter
+2026-03-31 12:56:01 [INFO]: ✅ Migration 6: Create Instruction Table
+2026-03-31 12:56:01 [INFO]: ✅ Migration 7: Create Customer Table
+2026-03-31 12:56:01 [ERROR]: ❌ Migration 8 Failed: SQLITE_ERROR: all VALUES must have the same number of terms
+2026-03-31 12:56:01 [INFO]: ✅ Migration 9: Create InvoiceDetails Table
+2026-03-31 12:56:01 [INFO]: ✅ Migration 10: Create Invoice Instructions
+2026-03-31 12:56:01 [INFO]: ✅ Migration 11: Create invoiceBottomNote
+2026-03-31 12:56:01 [INFO]: ✅ Migration 12: Create Final Invoice Table
+2026-03-31 12:56:01 [ERROR]: ❌ Migration 13 Failed: SQLITE_ERROR: duplicate column name: transportationMode
+2026-03-31 12:56:01 [ERROR]: ❌ Migration 14 Failed: SQLITE_ERROR: duplicate column name: deliveryAt
+2026-03-31 12:56:01 [ERROR]: ❌ Migration 15 Failed: SQLITE_ERROR: duplicate column name: specialInstruction
+2026-03-31 12:56:01 [INFO]: ✅ Migration 16: Add new fields to company table
+2026-03-31 12:56:01 [INFO]: ✅ Migration 17: Add logoPath to Company Table
+2026-03-31 12:56:01 [INFO]: ✅ Migration 18: Add signPerson to Company Table
+2026-03-31 12:59:02 [INFO]: ✅ Connected to SQLite Database at: C:\Users\Admin\AppData\Roaming\alfa\database.sqlite
+2026-03-31 12:59:06 [INFO]: 🔗 Foreign Key support enabled.
+2026-04-01 11:23:07 [INFO]: ✅ Connected to SQLite Database at: C:\Users\Admin\AppData\Roaming\alfa\database.sqlite
+2026-04-01 11:23:12 [INFO]: 🔗 Foreign Key support enabled.
