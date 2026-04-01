@@ -115,19 +115,6 @@ function modifyCustomInvoiceData(
       ) {
         item.showThickness = false;
       }
-
-      if (index == data.length - 1) {
-        item.isLast = true;
-        if (
-          country === "aus" ||
-          customer?.name?.trim() === "FOREST ONE AUSTRALIA PTY LTD" ||
-          customer?.name?.trim() === "NEWZEALAND WOOD PRODUCTS LTD"
-        ) {
-          item.commision = toFixedToTwo(
-            Number(master.totalAmount ?? "0") * 0.05
-          );
-        }
-      }
     });
     let diff = 0;
     data.forEach((item, index) => {
@@ -153,6 +140,18 @@ function modifyCustomInvoiceData(
     });
     if (sampleInvoice.length > 0) {
       data.pop();
+    }
+    if (data.length > 0) {
+      data[data.length - 1].isLast = true;
+      if (
+        country === "aus" ||
+        customer?.name?.trim() === "FOREST ONE AUSTRALIA PTY LTD" ||
+        customer?.name?.trim() === "NEWZEALAND WOOD PRODUCTS LTD"
+      ) {
+        data[data.length - 1].commision = toFixedToTwo(
+          Number(master.totalAmount ?? "0") * 0.05
+        );
+      }
     }
     return { CIItems: data, diff, sampleInvoice };
   } catch (error) {
@@ -425,14 +424,14 @@ async function readInvoiceData(
       master.additionalChargeType === "percentage"
         ? (master.totalAmount * master.additionalChargeValue) / 100
         : master.additionalChargeType === "flat"
-        ? master.additionalChargeValue
-        : 0;
+          ? master.additionalChargeValue
+          : 0;
     let totalDiscount =
       master.discountType === "percentage"
         ? (master.totalAmount * master.discountValue) / 100
         : master.discountType === "flat"
-        ? master.discountValue
-        : 0;
+          ? master.discountValue
+          : 0;
 
     groupedInvoicesBySize.forEach((item, index) => {
       item.showThickness = true;
@@ -482,7 +481,7 @@ async function readInvoiceData(
             const lastLocation = fromMap[fromKey];
             const lastInv =
               groupedInvoicesBySize[lastLocation.boxIndex].invoices[
-                lastLocation.invIndex
+              lastLocation.invIndex
               ];
 
             if (lastInv) {
@@ -576,8 +575,8 @@ async function readInvoiceData(
     );
     let rounding = isCustom
       ? toFixedToTwo(
-          -(Number(additionSumAmount) - Number(master.netAmount ?? "0"))
-        )
+        -(Number(additionSumAmount) - Number(master.netAmount ?? "0"))
+      )
       : master.rounding;
 
     if (sampleBox.length > 0) {
