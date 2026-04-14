@@ -96,9 +96,15 @@ function modifyCustomInvoiceData(
         Number(maxInvoice.value ?? "0") +
         Number(totalAddition ?? "0") -
         Number(totalDiscount ?? "0");
-      maxInvoice.rate = toFixedToFour(
-        Number(maxInvoice.value ?? "0") / Number(maxInvoice.totalSq ?? "0")
-      );
+      if ([7000, 5100].includes(Number(maxInvoice.quantity))) {
+        maxInvoice.rate = toFixedToFour(
+          Number(maxInvoice.value ?? "0") / Number(maxInvoice.totalSq ?? "0")
+        );
+      } else {
+        maxInvoice.rate = toFixedToThree(
+          Number(maxInvoice.value ?? "0") / Number(maxInvoice.totalSq ?? "0")
+        );
+      }
     }
 
     data.forEach((item, index) => {
@@ -106,7 +112,7 @@ function modifyCustomInvoiceData(
         invoice.isFirst = idx === 0;
         invoice.value = toFixedToTwo(Number(invoice.value ?? "0"));
         invoice.totalSq = toFixedToFour(invoice.totalSq);
-        invoice.rate = toFixedToFour(invoice.rate);
+        invoice.rate = ([7000, 5100].includes(Number(invoice.quantity))) ? toFixedToFour(invoice.rate) : toFixedToThree(invoice.rate);
       });
       item.showThickness = true;
       if (
@@ -619,6 +625,7 @@ async function readInvoiceData(
 
       originOfGoods: final.originOfGoods ?? "",
       finalDestination: final.finalDestination ?? "",
+      hsCode: 48239019,
       termOfDeliveryAndPayment: final.termsOfDp ?? "",
 
       precarriageBy: final.precarriage ?? "",
@@ -667,6 +674,7 @@ async function readInvoiceData(
       bankCity: companyData.bankCity ?? "",
       swiftNumber: companyData.swiftCode ?? "",
       bankAddress: companyData.bankAddressLine1 ?? "",
+      bankPostalCode: companyData.bankPostalCode ?? "",
 
       notifyName: final?.bankName ?? "",
       notifyAddress: final?.bankAddress ?? "",
@@ -882,6 +890,11 @@ async function convertToPdf(inputPath, fileName) {
 function toFixedToFour(value) {
   const num = Number(value);
   return isNaN(num) ? "0.0000" : num.toFixed(4);
+}
+
+function toFixedToThree(value) {
+  const num = Number(value);
+  return isNaN(num) ? "0.000" : num.toFixed(3);
 }
 
 function toFixedToTwo(value) {
