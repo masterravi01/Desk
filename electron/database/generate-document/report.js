@@ -597,6 +597,7 @@ async function readInvoiceData(
 
     sampleBoxPriceToFree(sampleBox);
     companyData.logoPath = getLogoPath(companyData?.id);
+    const isEasyToOpenCrate = (customer?.name?.trim() === "NU STYLE PRODUCTS LTD" || customer?.name?.trim() === "THE PANEL COMPANY LTD" || customer?.name?.trim() === "THE LAMINEX GROUP") ? true : false;
 
     let docData = {
       invoiceNo: final.finalInvoice ?? "",
@@ -715,6 +716,7 @@ async function readInvoiceData(
       isUK: country === "uk",
       isGen: country === "",
       isCustom,
+      isEasyToOpenCrate
     };
 
     return docData;
