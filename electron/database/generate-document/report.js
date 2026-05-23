@@ -249,7 +249,7 @@ function modifyIP(items, customer) {
 
     for (let group of items) {
       for (let invoice of group.invoices) {
-        invoice.rate = toFixedToTwo(Number(invoice.rate ?? "0"));
+        invoice.rate = toFixedToTwo(Number(invoice.rate ?? "0"),true);
         invoice.value = toFixedToTwo(Number(invoice.value ?? "0"));
       }
     }
@@ -899,10 +899,26 @@ function toFixedToThree(value) {
   return isNaN(num) ? "0.000" : num.toFixed(3);
 }
 
-function toFixedToTwo(value) {
+function toFixedToTwo(value, keepOriginalPrecision = false) {
   const num = Number(value);
-  return isNaN(num) ? "0.00" : num.toFixed(2);
+
+  if (isNaN(num)) {
+    return "0.00";
+  }
+
+  if (keepOriginalPrecision) {
+    const strValue = String(value);
+    const decimalPart = strValue.split(".")[1];
+
+    // Return original value if it already has more than 2 decimal places
+    if (decimalPart?.length > 2) {
+      return strValue;
+    }
+  }
+
+  return num.toFixed(2);
 }
+
 
 async function generateOrderConfirmation(body) {
   try {
