@@ -75,75 +75,16 @@ function modifyCustomInvoiceData(
         invoices: Object.values(groupedInvoices),
       };
     });
-    let maxInvoice = null;
-
-    data.forEach((container) => {
-      if (
-        container?.width == "0" &&
-        container?.length == "0" &&
-        container?.height == "0"
-      )
-        return;
-      container.invoices.forEach((invoice) => {
-        if (!maxInvoice || Number(invoice.rate) > Number(maxInvoice.rate)) {
-          maxInvoice = invoice;
-        }
-      });
-    });
-
-    if (maxInvoice) {
-      maxInvoice.value =
-        Number(maxInvoice.value ?? "0") +
-        Number(totalAddition ?? "0") -
-        Number(totalDiscount ?? "0");
-      if ([7000, 5100].includes(Number(maxInvoice.quantity))) {
-        maxInvoice.rate = toFixedToFour(
-          Number(maxInvoice.value ?? "0") / Number(maxInvoice.totalSq ?? "0")
-        );
-      } else {
-        maxInvoice.rate = toFixedToThree(
-          Number(maxInvoice.value ?? "0") / Number(maxInvoice.totalSq ?? "0")
-        );
-      }
+    let checkData=shouldRoundOffWithThreeDecimals(JSON.parse(JSON.stringify(data)),totalAddition,
+    totalDiscount,true);
+    if(Math.abs(checkData.diff)>=1){
+       checkData=shouldRoundOffWithThreeDecimals(JSON.parse(JSON.stringify(data)),totalAddition,
+       totalDiscount,false);
+    
     }
-
-    data.forEach((item, index) => {
-      item.invoices.forEach((invoice, idx) => {
-        invoice.isFirst = idx === 0;
-        invoice.value = toFixedToTwo(Number(invoice.value ?? "0"));
-        invoice.totalSq = toFixedToFour(invoice.totalSq);
-        invoice.rate = ([7000, 5100].includes(Number(invoice.quantity))) ? toFixedToFour(invoice.rate) : toFixedToThree(invoice.rate);
-      });
-      item.showThickness = true;
-      if (
-        index > 0 &&
-        item.thicknessDetail == data[index - 1].thicknessDetail
-      ) {
-        item.showThickness = false;
-      }
-    });
-    let diff = 0;
-    data.forEach((item, index) => {
-      item.invoices.forEach((invoice, idx) => {
-        let postValue = 0;
-        if (item?.width == "0" && item?.length == "0" && item?.height == "0") {
-          sampleInvoice.push(invoice);
-          postValue = toFixedToTwo(
-            Number(invoice.quantity) * Number(invoice.rate)
-          );
-        } else {
-          postValue = toFixedToTwo(
-            Number(invoice.totalSq) * Number(invoice.rate)
-          );
-        }
-        if (postValue != invoice.value) {
-          diff += Number(
-            toFixedToTwo(Number(postValue) - Number(invoice.value))
-          );
-          invoice.value = postValue;
-        }
-      });
-    });
+    data=checkData.data;
+    diff=checkData.diff;
+    sampleInvoice=checkData.sampleInvoice;
     if (sampleInvoice.length > 0) {
       data.pop();
     }
@@ -164,7 +105,79 @@ function modifyCustomInvoiceData(
     console.log(error);
   }
 }
+function shouldRoundOffWithThreeDecimals(data,totalAddition,
+  totalDiscount,doRoundByThreeDecimals=true){
+  let maxInvoice = null;
+let sampleInvoice=[];
+  data.forEach((container) => {
+    if (
+      container?.width == "0" &&
+      container?.length == "0" &&
+      container?.height == "0"
+    )
+      return;
+    container.invoices.forEach((invoice) => {
+      if (!maxInvoice || Number(invoice.rate) > Number(maxInvoice.rate)) {
+        maxInvoice = invoice;
+      }
+    });
+  });
 
+  if (maxInvoice) {
+    maxInvoice.value =
+      Number(maxInvoice.value ?? "0") +
+      Number(totalAddition ?? "0") -
+      Number(totalDiscount ?? "0");
+    if (!doRoundByThreeDecimals) {
+      maxInvoice.rate = toFixedToFour(
+        Number(maxInvoice.value ?? "0") / Number(maxInvoice.totalSq ?? "0")
+      );
+    } else {
+      maxInvoice.rate = toFixedToThree(
+        Number(maxInvoice.value ?? "0") / Number(maxInvoice.totalSq ?? "0")
+      );
+    }
+  }
+
+  data.forEach((item, index) => {
+    item.invoices.forEach((invoice, idx) => {
+      invoice.isFirst = idx === 0;
+      invoice.value = toFixedToTwo(Number(invoice.value ?? "0"));
+      invoice.totalSq = toFixedToFour(invoice.totalSq);
+      invoice.rate = !doRoundByThreeDecimals ? toFixedToFour(invoice.rate) : toFixedToThree(invoice.rate);
+    });
+    item.showThickness = true;
+    if (
+      index > 0 &&
+      item.thicknessDetail == data[index - 1].thicknessDetail
+    ) {
+      item.showThickness = false;
+    }
+  });
+  let diff = 0;
+  data.forEach((item, index) => {
+    item.invoices.forEach((invoice, idx) => {
+      let postValue = 0;
+      if (item?.width == "0" && item?.length == "0" && item?.height == "0") {
+        sampleInvoice.push(invoice);
+        postValue = toFixedToTwo(
+          Number(invoice.quantity) * Number(invoice.rate)
+        );
+      } else {
+        postValue = toFixedToTwo(
+          Number(invoice.totalSq) * Number(invoice.rate)
+        );
+      }
+      if (postValue != invoice.value) {
+        diff += Number(
+          toFixedToTwo(Number(postValue) - Number(invoice.value))
+        );
+        invoice.value = postValue;
+      }
+    });
+  });
+  return {data,diff,sampleInvoice};
+}
 function calculateTotalBoxes(invoiceDetails) {
   try {
     let totalBox = 0;
@@ -249,7 +262,7 @@ function modifyIP(items, customer) {
 
     for (let group of items) {
       for (let invoice of group.invoices) {
-        invoice.rate = toFixedToTwo(Number(invoice.rate ?? "0"));
+        invoice.rate = toFixedToTwo(Number(invoice.rate ?? "0"),true);
         invoice.value = toFixedToTwo(Number(invoice.value ?? "0"));
       }
     }
@@ -899,10 +912,26 @@ function toFixedToThree(value) {
   return isNaN(num) ? "0.000" : num.toFixed(3);
 }
 
-function toFixedToTwo(value) {
+function toFixedToTwo(value, keepOriginalPrecision = false) {
   const num = Number(value);
-  return isNaN(num) ? "0.00" : num.toFixed(2);
+
+  if (isNaN(num)) {
+    return "0.00";
+  }
+
+  if (keepOriginalPrecision) {
+    const strValue = String(value);
+    const decimalPart = strValue.split(".")[1];
+
+    // Return original value if it already has more than 2 decimal places
+    if (decimalPart?.length > 2) {
+      return strValue;
+    }
+  }
+
+  return num.toFixed(2);
 }
+
 
 async function generateOrderConfirmation(body) {
   try {
