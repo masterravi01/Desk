@@ -460,7 +460,15 @@ async function getInvoice(invoiceId) {
     const queries = {
       invoiceMasterQuery: `SELECT * FROM invoiceMaster WHERE invoiceId = ?`,
       invoiceDetailsQuery: `SELECT * FROM invoiceDetails WHERE invoiceId = ? ORDER BY tableIndex`,
-      invoiceInstructionQuery: `SELECT * FROM invoiceInstruction WHERE invoiceId = ? ORDER BY instructionIndex`,
+      invoiceInstructionQuery: `SELECT 
+    MIN(instructionId) AS instructionId,
+    invoiceId,
+    invoiceInstruction,
+    MIN(instructionIndex) AS instructionIndex
+FROM invoiceInstruction
+WHERE invoiceId = ?
+GROUP BY invoiceInstruction, invoiceId
+ORDER BY MIN(instructionIndex);`,
       invoiceFinalQuery: `SELECT * FROM finalinvoice WHERE invoiceId = ?`,
       invoiceBottomNoteQuery: `SELECT * FROM invoiceBottomNote WHERE invoiceId = ? ORDER BY bottomNoteIndex`,
     };
