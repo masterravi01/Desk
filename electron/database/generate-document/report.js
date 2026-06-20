@@ -40,7 +40,8 @@ function modifyCustomInvoiceData(
   totalDiscount,
   master,
   country,
-  customer
+  customer,
+  isThreeDigit,
 ) {
   try {
     let sampleInvoice = [];
@@ -75,16 +76,23 @@ function modifyCustomInvoiceData(
         invoices: Object.values(groupedInvoices),
       };
     });
-    let checkData=shouldRoundOffWithThreeDecimals(JSON.parse(JSON.stringify(data)),totalAddition,
-    totalDiscount,true);
-    if(Math.abs(checkData.diff)>=1){
-       checkData=shouldRoundOffWithThreeDecimals(JSON.parse(JSON.stringify(data)),totalAddition,
-       totalDiscount,false);
-    
-    }
-    data=checkData.data;
-    diff=checkData.diff;
-    sampleInvoice=checkData.sampleInvoice;
+    let checkData = shouldRoundOffWithThreeDecimals(
+      JSON.parse(JSON.stringify(data)),
+      totalAddition,
+      totalDiscount,
+      isThreeDigit,
+    );
+    // if (Math.abs(checkData.diff) >= 1) {
+    //   checkData = shouldRoundOffWithThreeDecimals(
+    //     JSON.parse(JSON.stringify(data)),
+    //     totalAddition,
+    //     totalDiscount,
+    //     false,
+    //   );
+    // }
+    data = checkData.data;
+    diff = checkData.diff;
+    sampleInvoice = checkData.sampleInvoice;
     if (sampleInvoice.length > 0) {
       data.pop();
     }
@@ -96,7 +104,7 @@ function modifyCustomInvoiceData(
         customer?.name?.trim() === "NEWZEALAND WOOD PRODUCTS LTD"
       ) {
         data[data.length - 1].commision = toFixedToTwo(
-          Number(master.totalAmount ?? "0") * 0.05
+          Number(master.totalAmount ?? "0") * 0.05,
         );
       }
     }
@@ -105,10 +113,14 @@ function modifyCustomInvoiceData(
     console.log(error);
   }
 }
-function shouldRoundOffWithThreeDecimals(data,totalAddition,
-  totalDiscount,doRoundByThreeDecimals=true){
+function shouldRoundOffWithThreeDecimals(
+  data,
+  totalAddition,
+  totalDiscount,
+  doRoundByThreeDecimals = true,
+) {
   let maxInvoice = null;
-let sampleInvoice=[];
+  let sampleInvoice = [];
   data.forEach((container) => {
     if (
       container?.width == "0" &&
@@ -130,11 +142,11 @@ let sampleInvoice=[];
       Number(totalDiscount ?? "0");
     if (!doRoundByThreeDecimals) {
       maxInvoice.rate = toFixedToFour(
-        Number(maxInvoice.value ?? "0") / Number(maxInvoice.totalSq ?? "0")
+        Number(maxInvoice.value ?? "0") / Number(maxInvoice.totalSq ?? "0"),
       );
     } else {
       maxInvoice.rate = toFixedToThree(
-        Number(maxInvoice.value ?? "0") / Number(maxInvoice.totalSq ?? "0")
+        Number(maxInvoice.value ?? "0") / Number(maxInvoice.totalSq ?? "0"),
       );
     }
   }
@@ -144,13 +156,12 @@ let sampleInvoice=[];
       invoice.isFirst = idx === 0;
       invoice.value = toFixedToTwo(Number(invoice.value ?? "0"));
       invoice.totalSq = toFixedToFour(invoice.totalSq);
-      invoice.rate = !doRoundByThreeDecimals ? toFixedToFour(invoice.rate) : toFixedToThree(invoice.rate);
+      invoice.rate = !doRoundByThreeDecimals
+        ? toFixedToFour(invoice.rate)
+        : toFixedToThree(invoice.rate);
     });
     item.showThickness = true;
-    if (
-      index > 0 &&
-      item.thicknessDetail == data[index - 1].thicknessDetail
-    ) {
+    if (index > 0 && item.thicknessDetail == data[index - 1].thicknessDetail) {
       item.showThickness = false;
     }
   });
@@ -161,22 +172,20 @@ let sampleInvoice=[];
       if (item?.width == "0" && item?.length == "0" && item?.height == "0") {
         sampleInvoice.push(invoice);
         postValue = toFixedToTwo(
-          Number(invoice.quantity) * Number(invoice.rate)
+          Number(invoice.quantity) * Number(invoice.rate),
         );
       } else {
         postValue = toFixedToTwo(
-          Number(invoice.totalSq) * Number(invoice.rate)
+          Number(invoice.totalSq) * Number(invoice.rate),
         );
       }
       if (postValue != invoice.value) {
-        diff += Number(
-          toFixedToTwo(Number(postValue) - Number(invoice.value))
-        );
+        diff += Number(toFixedToTwo(Number(postValue) - Number(invoice.value)));
         invoice.value = postValue;
       }
     });
   });
-  return {data,diff,sampleInvoice};
+  return { data, diff, sampleInvoice };
 }
 function calculateTotalBoxes(invoiceDetails) {
   try {
@@ -262,7 +271,7 @@ function modifyIP(items, customer) {
 
     for (let group of items) {
       for (let invoice of group.invoices) {
-        invoice.rate = toFixedToTwo(Number(invoice.rate ?? "0"),true);
+        invoice.rate = toFixedToTwo(Number(invoice.rate ?? "0"), true);
         invoice.value = toFixedToTwo(Number(invoice.value ?? "0"));
       }
     }
@@ -277,7 +286,7 @@ function modifyIP(items, customer) {
 function AusNzPackingListRoundOf(
   totalNetWeight,
   totalGrossWeight,
-  groupedInvoicesBySize
+  groupedInvoicesBySize,
 ) {
   let toReduce = totalNetWeight % 10;
   totalNetWeight = Math.floor(totalNetWeight / 10) * 10; // Round down to nearest 10
@@ -334,7 +343,8 @@ async function readInvoiceData(
   isCustom,
   country = "",
   document,
-  companyId
+  companyId,
+  isThreeDigit,
 ) {
   try {
     let {
@@ -477,7 +487,7 @@ async function readInvoiceData(
       item.invoices.forEach((inv, invIndex) => {
         totalNetWeight += Number(inv.netWeight || 0);
         const containerWeight = Number(
-          containerObj[inv.containerType].weight || 0
+          containerObj[inv.containerType].weight || 0,
         );
         if (inv.containerFrom && inv.containerTo) {
           const from = Number(inv.containerFrom);
@@ -492,7 +502,7 @@ async function readInvoiceData(
             inv?.width,
             inv?.thickness,
             inv?.quantity || 0,
-            totalBoxes
+            totalBoxes,
           );
         } else {
           const fromKey = inv.containerFrom;
@@ -500,7 +510,7 @@ async function readInvoiceData(
             const lastLocation = fromMap[fromKey];
             const lastInv =
               groupedInvoicesBySize[lastLocation.boxIndex].invoices[
-              lastLocation.invIndex
+                lastLocation.invIndex
               ];
 
             if (lastInv) {
@@ -513,7 +523,7 @@ async function readInvoiceData(
                 inv?.width,
                 inv?.thickness,
                 Number(inv?.quantity) + Number(lastInv?.prevQuantity) || 0,
-                1
+                1,
               );
               inv.prevQuantity =
                 Number(inv?.quantity) + Number(lastInv?.prevQuantity);
@@ -535,7 +545,7 @@ async function readInvoiceData(
               inv?.width,
               inv?.thickness,
               inv?.quantity || 0,
-              1
+              1,
             );
             inv.prevQuantity = Number(inv?.quantity) || 0;
           }
@@ -549,7 +559,8 @@ async function readInvoiceData(
       totalDiscount,
       master,
       country,
-      customer
+      customer,
+      isThreeDigit,
     );
 
     let totalSqMt = 0;
@@ -557,8 +568,8 @@ async function readInvoiceData(
       const totalSqMtPerType = toFixedToFour(
         item.invoices.reduce(
           (sum, invoice) => sum + parseFloat(invoice.totalSq),
-          0
-        )
+          0,
+        ),
       );
 
       totalSqMt += Number(totalSqMtPerType ?? 0);
@@ -569,7 +580,7 @@ async function readInvoiceData(
         length: item.length,
         totalSqMtPerType,
         avgWeight: toFixedToFour(
-          (item.width * item.height * item.length * 1410) / 1000000000
+          (item.width * item.height * item.length * 1410) / 1000000000,
         ),
       };
     });
@@ -582,7 +593,7 @@ async function readInvoiceData(
       [totalNetWeight, totalGrossWeight] = AusNzPackingListRoundOf(
         totalNetWeight,
         totalGrossWeight,
-        groupedInvoicesBySize
+        groupedInvoicesBySize,
       );
     }
     let additionSumAmount =
@@ -590,12 +601,12 @@ async function readInvoiceData(
       Number(master.totalAmount ?? "0") -
       Number(totalDiscount ?? "0");
     additionSumAmount = toFixedToTwo(
-      isCustom ? additionSumAmount + diff : additionSumAmount
+      isCustom ? additionSumAmount + diff : additionSumAmount,
     );
     let rounding = isCustom
       ? toFixedToTwo(
-        -(Number(additionSumAmount) - Number(master.netAmount ?? "0"))
-      )
+          -(Number(additionSumAmount) - Number(master.netAmount ?? "0")),
+        )
       : master.rounding;
 
     if (sampleBox.length > 0) {
@@ -610,7 +621,12 @@ async function readInvoiceData(
 
     sampleBoxPriceToFree(sampleBox);
     companyData.logoPath = getLogoPath(companyData?.id);
-    const isEasyToOpenCrate = (customer?.name?.trim() === "NU STYLE PRODUCTS LTD" || customer?.name?.trim() === "THE PANEL COMPANY LTD" || customer?.name?.trim() === "THE LAMINEX GROUP") ? true : false;
+    const isEasyToOpenCrate =
+      customer?.name?.trim() === "NU STYLE PRODUCTS LTD" ||
+      customer?.name?.trim() === "THE PANEL COMPANY LTD" ||
+      customer?.name?.trim() === "THE LAMINEX GROUP"
+        ? true
+        : false;
 
     let docData = {
       invoiceNo: final.finalInvoice ?? "",
@@ -655,11 +671,11 @@ async function readInvoiceData(
       invoiceItems: groupedInvoicesBySize,
       IPItems: modifyIP(
         JSON.parse(JSON.stringify(groupedInvoicesBySize)),
-        customer
+        customer,
       ),
       OCItems: modifyOC(
         JSON.parse(JSON.stringify(groupedInvoicesBySize)),
-        customer
+        customer,
       ),
       CIItems,
       sampleBox,
@@ -674,7 +690,7 @@ async function readInvoiceData(
       totalAmount: toFixedToTwo(master.totalAmount ?? "0"),
       netAmount: toFixedToTwo(Number(master.netAmount ?? "0")),
       netAmountWords: convertToCapitalize(
-        converter.toWords(master.netAmount ?? 0)
+        converter.toWords(master.netAmount ?? 0),
       ),
       currencyChar: currency.currencyChar,
       totalDiscount: toFixedToTwo(totalDiscount ?? "0"),
@@ -720,7 +736,7 @@ async function readInvoiceData(
       calculationType: master.calculationType ?? "",
 
       invoiceInstructions: invoiceInstruction.map(
-        (inst) => inst?.invoiceInstruction ?? ""
+        (inst) => inst?.invoiceInstruction ?? "",
       ),
 
       privateRemark: final.privateRemark ?? "",
@@ -729,7 +745,7 @@ async function readInvoiceData(
       isUK: country === "uk",
       isGen: country === "",
       isCustom,
-      isEasyToOpenCrate
+      isEasyToOpenCrate,
     };
 
     return docData;
@@ -749,6 +765,7 @@ async function generateInvoiceDocument(body) {
       finalInvoice,
       companyId,
       isSqMt,
+      isThreeDigit = false,
     } = body;
     const isCustom = type === "custom";
     let data = await readInvoiceData(
@@ -756,7 +773,8 @@ async function generateInvoiceDocument(body) {
       isCustom,
       country,
       document,
-      companyId
+      companyId,
+      isThreeDigit,
     );
 
     let template;
@@ -808,7 +826,7 @@ async function generateWordDocument(data, template, fileName) {
   try {
     const content = fs.readFileSync(
       path.join(__dirname, `./templates/${template}`),
-      "binary"
+      "binary",
     );
 
     const zip = new PizZip(content);
@@ -890,7 +908,7 @@ async function convertToPdf(inputPath, fileName) {
     } catch (error) {
       if (error && error.code == "EBUSY") {
         throw new Error(
-          "The document is currently open. Please close it and try again."
+          "The document is currently open. Please close it and try again.",
         );
       }
       throw new Error(error.message);
@@ -932,7 +950,6 @@ function toFixedToTwo(value, keepOriginalPrecision = false) {
   return num.toFixed(2);
 }
 
-
 async function generateOrderConfirmation(body) {
   try {
     const { invoiceId, country, format, type, invoicePiNo, companyId, isSqMt } =
@@ -942,7 +959,8 @@ async function generateOrderConfirmation(body) {
       false,
       country,
       undefined,
-      companyId
+      companyId,
+      false,
     );
 
     let piID = cleanSlashes(invoicePiNo, "getLast");
@@ -1003,7 +1021,7 @@ function mmToInch(length, width, thickness, quantity, totalBoxes) {
 
     // Fix: typo in variable name 'thickess' → 'thickness'
     const heightInch = Math.round(
-      (quantity * thickness) / (25 * totalBoxes) + 3
+      (quantity * thickness) / (25 * totalBoxes) + 3,
     );
 
     return `${lengthInch} X ${widthInch} X ${heightInch}"`;
@@ -1037,14 +1055,14 @@ function getLogoPath(id = 1) {
     return path.join(
       process.resourcesPath,
       "assets",
-      id == 1 ? "alfa.png" : "toplam.png"
+      id == 1 ? "alfa.png" : "toplam.png",
     );
   } else {
     return path.join(
       __dirname,
       "../../../src/",
       "assets",
-      id == 1 ? "alfa.png" : "toplam.png"
+      id == 1 ? "alfa.png" : "toplam.png",
     );
   }
 }

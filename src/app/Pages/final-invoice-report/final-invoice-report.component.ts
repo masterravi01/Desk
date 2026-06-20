@@ -25,7 +25,7 @@ export class FinalInvoiceReportComponent {
       position: {
         top: '80px',
       },
-      minHeight: '450px',
+      minHeight: '500px',
       maxWidth: '98vw',
       maxHeight: '98vh',
     });

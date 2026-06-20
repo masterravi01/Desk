@@ -59,13 +59,14 @@ export class FinalInvoiceReportModalComponent {
   invoiceForm!: FormGroup;
   reportType: string = 'ms-word';
   documentType: string = 'custom';
+  isThreeDigit: string = 'three';
   companies: any[] = [];
   selectedCompanyId: number | null = null;
 
   constructor(
     private modalService: ModalService,
     private fb: FormBuilder,
-    private masterService: MasterService
+    private masterService: MasterService,
   ) {}
 
   ngOnInit(): void {
@@ -130,6 +131,7 @@ export class FinalInvoiceReportModalComponent {
       ...this.invoiceForm.value,
       format: this.reportType,
       type: this.documentType,
+      isThreeDigit: this.isThreeDigit === 'three' ? true : false,
       document: template,
       country,
       companyId: this.selectedCompanyId,
@@ -143,7 +145,7 @@ export class FinalInvoiceReportModalComponent {
         untilDestroyed(this),
         finalize(() => {
           this.invoiceForm.enable();
-        })
+        }),
       )
       .subscribe((data: any) => {
         console.log(data);
