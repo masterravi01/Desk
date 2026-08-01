@@ -1,11 +1,29 @@
 const sqlite3 = require("sqlite3").verbose();
 const path = require("path");
 const fs = require("fs");
+const os = require("os");
 const logger = require("../logger");
-const dbPath = path.join(
-  require("electron").app.getPath("userData"),
-  "database.sqlite"
-);
+
+const LOCAL_DB = "C:\\Users\\ALFA ICA\\AppData\\Roaming\\alfa\\database.sqlite";
+const SHARED_DB = "\\\\DESKTOP-7CAQCB8\\alfa\\database.sqlite";
+
+let dbPath;
+
+if (os.hostname().toUpperCase() === "DESKTOP-7CAQCB8") {
+    dbPath = LOCAL_DB;
+} else if (fs.existsSync(SHARED_DB)) {
+    dbPath = SHARED_DB;
+} else {
+    throw new Error("Cannot connect to host database.");
+}
+
+console.log('dbpath',dbPath)
+
+//old code
+// const dbPath = path.join(
+//   require("electron").app.getPath("userData"),
+//   "database.sqlite"
+// );
 
 // Ensure the database file exists
 if (!fs.existsSync(dbPath)) {
